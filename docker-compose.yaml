@@ -1,0 +1,31 @@
+services:
+  server:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: ${PORT}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_ENV: ${APP_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      ROLLBAR_ENVIRONMENT: ${ROLLBAR_ENVIRONMENT}
+      ROLLBAR_ACCESS_TOKEN: ${ROLLBAR_ACCESS_TOKEN}
+    depends_on:
+      - db
+  db:
+    image: postgres:15.8
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - new-db-data:/var/lib/postgresql/data
+
+volumes:
+  new-db-data:
