@@ -12,14 +12,16 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async findByUsername(username: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { username } });
   }
 
   async findAll(): Promise<UserInterface[]> {
-    return await this.userRepository.find({ select: ['id', 'username', 'email'] });
+    return await this.userRepository.find({
+      select: ['id', 'username', 'email'],
+    });
   }
 
   async createUser(registerDto: RegisterDto): Promise<User> {

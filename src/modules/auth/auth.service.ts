@@ -10,12 +10,14 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
-  ) { }
+  ) {}
 
+  
   async register(registerDto: RegisterDto): Promise<User> {
     const newUser = await this.userService.createUser(registerDto);
-    return newUser;
+    return newUser; // Return only the user object
   }
+  
 
   async login(loginDto: LoginDto): Promise<{ access_token: string }> {
     const user = await this.userService.validateUser(loginDto);
@@ -23,6 +25,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     const payload = { username: user.username, sub: user.id };
-    return { access_token: this.jwtService.sign(payload) };
+    return { access_token: this.jwtService.sign(payload)};
   }
 }

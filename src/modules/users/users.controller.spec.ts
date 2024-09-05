@@ -16,8 +16,8 @@ describe('UsersController', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: {} // Mock repository
-        }
+          useValue: {}, // Mock repository
+        },
       ],
     }).compile();
 
@@ -30,7 +30,10 @@ describe('UsersController', () => {
   });
 
   it('should return an array of users', async () => {
-    const result: UserInterface[] = [{ id: 1, username: 'John', email: "john@ex.com"}, { id: 2, username: 'Sam', email: "sam@ex.com" }];
+    const result: UserInterface[] = [
+      { id: 1, username: 'John', email: 'john@ex.com' },
+      { id: 2, username: 'Sam', email: 'sam@ex.com' },
+    ];
     jest.spyOn(userService, 'findAll').mockResolvedValue(result);
 
     expect(await controller.findAll()).toBe(result);

@@ -10,6 +10,8 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { graphql } from 'graphql';
+import { GraphqlModule } from './graphql/graphql.module';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
     UsersModule,
+    GraphqlModule,
   ],
   controllers: [AppController],
   providers: [
@@ -41,4 +44,4 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
