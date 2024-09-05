@@ -13,13 +13,9 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
         configService: ConfigService,
     ): Promise<TypeOrmModuleOptions> => {
         const logging =
-            configService.get<string>('nodeEnv') === 'development'
-                ? true
-                : false;
+            configService.get<string>('nodeEnv') === 'development' ? true : false;
         const sslRequired =
-            configService.get<string>('nodeEnv') === 'development'
-                ? true
-                :false;
+            configService.get<string>('nodeEnv') === 'development' ? true : false;
         return {
             type: 'postgres',
             host: configService.get<string>('database.host'),
@@ -33,9 +29,9 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
             extra: {
                 charset: 'utf8mb4_unicode_ci',
             },
-            ssl: false,
-	    entities: [`${__dirname}/../**/*.entity.{js,ts}`],
-        };
+            ssl: sslRequired,
+            entities: [`${__dirname}/../**/*.entity.{js,ts}`],
+        }
     },
 };
 config();
@@ -50,10 +46,10 @@ const connectionOptions: DataSourceOptions = {
     database: process.env.POSTGRES_DATABASE,
     logging: true,
     synchronize: false,
-    migrationsRun:true,
+    migrationsRun: true,
     entities: [`${__dirname}/../**/*.entity.{js,ts}`],
     migrations: [`${__dirname}/../migrations/*.{js,ts}`],
     ssl: false
 };
 
-export const typeOrmConfig = new DataSource({...connectionOptions});
+export const typeOrmConfig = new DataSource({ ...connectionOptions });
