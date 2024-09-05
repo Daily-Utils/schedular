@@ -2,7 +2,6 @@
 // import { AppModule } from './app.module';
 // import { ConfigService } from '@nestjs/config';
 
-
 // async function bootstrap() {
 //   const app = await NestFactory.create(AppModule);
 //   await app.listen(3000);
@@ -16,7 +15,7 @@ import { RollbarLogger } from 'nestjs-rollbar';
 import { AllExceptionsFilter } from './exceptions/all.exception';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{cors:true});
+  const app = await NestFactory.create(AppModule, { cors: true });
   const httpAdapter = app.get(HttpAdapterHost);
 
   const rollbarLogger = app.get(RollbarLogger);

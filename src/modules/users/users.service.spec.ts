@@ -34,7 +34,14 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const users = [{ id: 1, username: 'user1', email: 'user1@example.com', password: 'password123'  }];
+      const users = [
+        {
+          id: 1,
+          username: 'user1',
+          email: 'user1@example.com',
+          password: 'password123',
+        },
+      ];
       jest.spyOn(userRepository, 'find').mockResolvedValue(users);
 
       const result = await service.findAll();
