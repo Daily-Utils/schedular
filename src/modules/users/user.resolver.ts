@@ -1,36 +1,24 @@
-// src/user/user.resolver.ts
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { User } from './schemas/user.entity';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RegisterDto } from '../auth/dtos/register.dto';
+import { UserGraphQL } from './schemas/user.model';
 import { UserInterface } from './interfaces/user.interface';
 
-@Resolver(() => User)
-export class UserResolver {
-  constructor(private readonly userService: UsersService) {}
+@Resolver()
+export class UsersResolver {
+  constructor(private readonly usersService: UsersService) {}
 
-  
-  
-
-  
-  @UseGuards(JwtAuthGuard)
-  @Query(() => User)
-  async me(@Context() context): Promise<User> {
-    const user = context.req.user; 
-    return user;
+  @Query(() => [UserGraphQL])
+  async findAll() {
+    return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [User])
-  async users(): Promise<UserInterface[]> {
-    return this.userService.findAll();
-  }
-
-  
-  @Mutation(() => User)
-  async register(@Args('registerInput') registerInput: RegisterDto): Promise<User> {
-    return this.userService.createUser(registerInput);
+  @Query(() => String)
+  async dummy() {
+    const randomNumber = Math.random();
+    if (randomNumber < 0.5) {
+      return JSON.stringify({ success: false, message: 'Failed to perform operation' });
+    } else {
+      return JSON.stringify({ success: true, message: 'Operation succeeded' });
+    }
   }
 }

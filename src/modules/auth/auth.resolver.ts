@@ -1,25 +1,37 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
+import { LoginInput } from './dtos/login.dto';
+import { RegisterInput } from './dtos/register.dto';
 import { AuthResponse } from './dtos/authresponse.dto';
-import { LoginDto } from './dtos/login.dto';
-import { RegisterDto } from './dtos/register.dto';
-import { User } from '../users/schemas/user.entity';
+import { UserGraphQL } from '../users/schemas/user.model';
+import { HttpCode } from '@nestjs/common';
+import { Public } from './auth.decorator';
 
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-
-  @Mutation(() => String) // Return only the access token as a string
-  async login(@Args('login') loginData: LoginDto): Promise<string> {
-    const { access_token } = await this.authService.login(loginData);
-    return access_token; // Returning only the access token
+  @Public()
+  @Mutation(() => AuthResponse)
+  @HttpCode(200)
+  async login(
+    @Args('login') loginDto: LoginInput,
+    @Context() context: any,
+  ): Promise<AuthResponse> {
+    const { req } = context;
+    console.log(req.originalUrl); // Ensure req is available
+    const { access_token } = await this.authService.login(loginDto);
+    return { access_token };
   }
 
- 
-  @Mutation(() => User)
-  async register(@Args('register') registerData: RegisterDto): Promise<User> {
-    const user = await this.authService.register(registerData);
-    return user; 
+  @Public()
+  @Mutation(() => UserGraphQL)
+  async register(@Args('register') registerDto: RegisterInput) {
+    return this.authService.register(registerDto);
+  }
+
+  @Mutation(() => String)
+  protectedRoute(): string {
+    return 'This route is protected by JWT authentication';
   }
 }

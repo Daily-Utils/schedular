@@ -10,7 +10,6 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
-import { graphql } from 'graphql';
 import { GraphqlModule } from './graphql/graphql.module';
 
 @Module({

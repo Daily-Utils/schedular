@@ -1,0 +1,35 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserGraphQL {
+  id: ID!
+  username: String!
+  email: String!
+}
+
+type AuthResponse {
+  access_token: String!
+}
+
+type Query {
+  findAll: [UserGraphQL!]!
+  dummy: String!
+}
+
+type Mutation {
+  login(login: LoginInput!): AuthResponse!
+  register(register: RegisterInput!): UserGraphQL!
+  protectedRoute: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+}
