@@ -13,15 +13,12 @@ export class UsersResolver {
   }
 
   @Query(() => String)
-  async dummy(): Promise<{ success: boolean; message: string }> {
-    // Simulate a failure scenario
-    const randomNumber = Math.random(); // Generate a random number between 0 and 1
+  async dummy() {
+    const randomNumber = Math.random();
     if (randomNumber < 0.5) {
-      // Simulate a failure scenario by returning a failure response
-      return { success: false, message: 'Failed to perform operation' };
+      return JSON.stringify({ success: false, message: 'Failed to perform operation' });
     } else {
-      // Simulate a successful scenario
-      return { success: true, message: 'Operation succeeded' };
+      return JSON.stringify({ success: true, message: 'Operation succeeded' });
     }
   }
 }

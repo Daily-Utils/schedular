@@ -1,16 +1,19 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { logger, RollbarLogger } from 'nestjs-rollbar';
+import { HttpAdapterHost } from '@nestjs/core';
+import { RollbarLogger } from 'nestjs-rollbar';
 import { AllExceptionsFilter } from './exceptions/all.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  logger.log('App is running on port: ' + app.get(ConfigService).get('port'));
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('port') || 3000;
   const httpAdapter = app.get(HttpAdapterHost);
-
   const rollbarLogger = app.get(RollbarLogger);
+
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter, rollbarLogger));
-  await app.listen(parseInt(app.get(ConfigService).get('port')));
+  await app.listen(port);
+  console.log(`App is running on port: ${port}`);
 }
 bootstrap();

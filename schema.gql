@@ -18,12 +18,18 @@ type Query {
 }
 
 type Mutation {
-  register: UserGraphQL!
   login(login: LoginInput!): AuthResponse!
+  register(register: RegisterInput!): UserGraphQL!
   protectedRoute: String!
 }
 
 input LoginInput {
   username: String!
+  password: String!
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
   password: String!
 }

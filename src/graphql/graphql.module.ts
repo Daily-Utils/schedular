@@ -13,6 +13,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       playground: false, // Disable the default playground
       autoSchemaFile: 'schema.gql',
       plugins: [ApolloServerPluginLandingPageLocalDefault()], // Use only this plugin for the landing page
+      context: ({ req }) => ({ req }),
     }),
     AuthModule,
     UsersModule,
