@@ -50,6 +50,7 @@ const connectionOptions: DataSourceOptions = {
   entities: [`${__dirname}/../**/*.entity.{js,ts}`],
   migrations: [`${__dirname}/../migrations/*.{js,ts}`],
   ssl: false,
+  
 };
 
 export const typeOrmConfig = new DataSource({ ...connectionOptions });

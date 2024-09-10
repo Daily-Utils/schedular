@@ -13,7 +13,7 @@ export class Roles {
   appointment_permission: string[];
 
   @Column('text', { array: true })
-  patient_details_permission: string[];
+  support_tickets_permissions: string[];
 
   @Column('text', { array: true })
   feedback_permission: string[];

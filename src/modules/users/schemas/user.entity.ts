@@ -1,5 +1,5 @@
 // user.entity.ts
-import { Roles } from 'src/modules/roles/roles.entity';
+import { Roles } from '../../roles/roles.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'users' })

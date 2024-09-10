@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import { RollbarLogger } from 'nestjs-rollbar';
 import { AllExceptionsFilter } from './exceptions/all.exception';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 async function bootstrap() {
@@ -18,6 +18,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector)));
   await app.listen(port);
-  console.log(`App is running on port: ${port}`);
+  Logger.log(`App is running on port: ${port}`);
 }
 bootstrap();
