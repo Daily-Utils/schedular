@@ -12,23 +12,23 @@ export class RoleInput {
 @ObjectType()
 export class RoleOutput {
   @Field()
-  role_name: 'admin' | 'patient' | 'guest';
+  roles_name: 'admin' | 'patient' | 'guest';
 
-    @Field(() => [String])
-    appointment_permission: string[];
+  @Field(() => [String])
+  appointment_permission: string[];
 
-    @Field(() => [String])
-    feedback_permission: string[];
+  @Field(() => [String])
+  feedback_permission: string[];
 
-    @Field(() => [String])
-    support_tickets_permissions: string[];
+  @Field(() => [String])
+  support_tickets_permissions: string[];
 }
 
 @ObjectType()
 export class RoleOutputForModification {
-    @Field()
-    status: number;
+  @Field()
+  status: number;
 
-    @Field()
-    message: string;
+  @Field()
+  message: string;
 }

@@ -22,6 +22,11 @@ type RoleOutput {
   support_tickets_permissions: [String!]!
 }
 
+type RoleOutputForModification {
+  status: Float!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
@@ -41,6 +46,8 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
+  addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
 
 input LoginInput {
