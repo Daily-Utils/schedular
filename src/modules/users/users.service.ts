@@ -5,7 +5,6 @@ import { User } from './schemas/user.entity';
 import { RegisterInput } from '../auth/dtos/register.dto';
 import { LoginInput } from '../auth/dtos/login.dto';
 import * as bcrypt from 'bcrypt';
-import { UserInterface } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {

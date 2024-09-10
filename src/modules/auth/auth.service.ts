@@ -14,7 +14,7 @@ export class AuthService {
 
   async register(registerDto: RegisterInput): Promise<User> {
     const newUser = await this.userService.createUser(registerDto);
-    return newUser; // Return only the user object
+    return newUser;
   }
 
   async login(loginDto: LoginInput) {
@@ -22,7 +22,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = { username: user.username, sub: user.id };
+    const payload = { username: user.username, userId: user.id };
     return { access_token: this.jwtService.sign(payload) };
   }
 }
