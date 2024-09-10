@@ -15,13 +15,39 @@ type AuthResponse {
   access_token: String!
 }
 
+type RoleOutput {
+  role_name: String!
+  appointment_permission: [String!]!
+  feedback_permission: [String!]!
+  support_tickets_permissions: [String!]!
+}
+
+type RoleOutputForModification {
+  status: Float!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
+  findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
+  checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+}
+
+input RoleInput {
+  role_name: String!
+}
+
+input RolePermissionVerificationInput {
+  role_name: String!
+  permission: String!
+  category: String!
 }
 
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
+  addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
 
 input LoginInput {
