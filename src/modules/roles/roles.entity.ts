@@ -1,7 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, PrimaryColumn } from 'typeorm';
-import { Patient } from '../Patient/patient.entity';
-import { Timings } from '../timings/timings.entity';
-import { SupportTickets } from '../SupportTickets/supporttickets.entity';
 import { User } from '../users/schemas/user.entity';
 
 @Entity('roles')

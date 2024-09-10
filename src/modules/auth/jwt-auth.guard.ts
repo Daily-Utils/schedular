@@ -2,7 +2,7 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from './auth.decorator';
+import { IS_CLOSED_FOR_USER, IS_OPEN_FOR_DEVELOPMENT, IS_PUBLIC_KEY } from './auth.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 
@@ -17,7 +17,22 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       IS_PUBLIC_KEY,
       context.getHandler(),
     );
-    if (isPublic) {
+
+    const isOpenForDevelopment = this.reflector.get<boolean>(
+      IS_OPEN_FOR_DEVELOPMENT,
+      context.getHandler(),
+    );
+
+    const isClosedForUser = this.reflector.get<boolean>(
+      IS_CLOSED_FOR_USER,
+      context.getHandler(),
+    );
+
+    if(isClosedForUser) {
+      return false;
+    }
+
+    if (isPublic || isOpenForDevelopment) {
       return true;
     }
 
