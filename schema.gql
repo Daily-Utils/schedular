@@ -14,13 +14,11 @@ type AuthResponse {
 
 type Query {
   findAll: [UserGraphQL!]!
-  dummy: String!
 }
 
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
-  protectedRoute: String!
 }
 
 input LoginInput {
