@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { GraphqlModule } from './graphql/graphql.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { GraphqlModule } from './graphql/graphql.module';
     AuthModule,
     UsersModule,
     GraphqlModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [
