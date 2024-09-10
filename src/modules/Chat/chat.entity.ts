@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+} from 'typeorm';
 import { Doctor } from '../doctor/doctor.entity';
 import { Patient } from '../Patient/patient.entity';
 
@@ -13,7 +21,6 @@ export class Chat {
   @Column()
   doctor_id: number;
 
-
   @Column({ type: 'varchar' })
   type: string;
 
@@ -27,8 +34,10 @@ export class Chat {
   updated_at: Date;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.chat)
+  @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 
   @ManyToOne(() => Patient, (patient) => patient.chat)
+  @JoinColumn({ name: 'patient_id' })
   patient: Patient;
 }
