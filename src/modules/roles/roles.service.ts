@@ -62,4 +62,38 @@ export class RolesService {
         message: 'Permission added successfully',
     }
   }
+
+    async removePermissionFromRole(
+        role: string,
+        permission: string,
+        category: string,
+    ) {
+        if(role === 'admin') {
+            return {
+                status: 401,
+                message: 'Admin role cannot be modified',
+            }
+        }
+    
+        const roleEntity = await this.getPermisionsForRole(role);
+        if (!roleEntity) {
+        return null;
+        }
+    
+        if(roleEntity[category].includes(permission)) {
+            roleEntity[category] = roleEntity[category].filter((perm) => perm !== permission);
+        } else {
+            return {
+                status: 201,
+                message: 'Permission does not exist',
+            }
+        }
+    
+        
+        await this.rolesRepository.save(roleEntity);
+        return {
+            status: 200,
+            message: 'Permission removed successfully',
+        }
+    }
 }

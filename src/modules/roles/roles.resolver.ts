@@ -42,4 +42,17 @@ export class RolesResolver {
         inputDto.category,
         );
     }
+
+    @OpenForDevelopment()
+    @Mutation(() => RoleOutputForModification)
+    async removePermissionFromRole(
+        @Args('rolePermissionInput') inputDto: RolePermissionVerificationInput,
+        @Context() context: any,
+    ) {
+        return this.rolesService.removePermissionFromRole(
+        inputDto.role_name,
+        inputDto.permission,
+        inputDto.category,
+        );
+    }
 }
