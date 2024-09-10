@@ -1,6 +1,6 @@
 // user.entity.ts
 import { Roles } from 'src/modules/roles/roles.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -8,7 +8,7 @@ export class User {
   id: number;
 
   @Column({ type: 'varchar' })
-  role: string;  
+  role: string;
 
   @Column({ unique: true })
   username: string;
@@ -20,10 +20,10 @@ export class User {
   password: string; // Password will be hashed
 
   @Column({ type: 'varchar' })
-  sex: string;  
+  sex: string;
 
   @Column({ type: 'int' })
-  age: number; 
+  age: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -32,7 +32,6 @@ export class User {
   updated_at: Date;
 
   @ManyToOne(() => Roles, (roles) => roles.users)
-  roles: Roles;  
-
-
+  @JoinColumn({ name: 'role', referencedColumnName: 'roles_name' })
+  roleEntity: Roles
 }

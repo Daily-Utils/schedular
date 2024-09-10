@@ -7,7 +7,6 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [UserGraphQL])
-  @UseGuards()
   async findAll() {
     return this.usersService.findAll();
   }

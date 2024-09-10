@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Roles } from '../roles/roles.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Doctor } from '../doctor/doctor.entity';
 
 @Entity('Timings')
 export class Timings {
@@ -15,6 +15,6 @@ export class Timings {
   @Column({ type: 'time' })
   to: string;
 
-  @ManyToOne(() => Roles, (roles) => roles.timings)
-  roles: Roles;
+  @ManyToOne(() => Doctor, (doctor) => doctor.timings)
+  doctor: Doctor;
 }

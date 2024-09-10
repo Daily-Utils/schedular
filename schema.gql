@@ -6,6 +6,9 @@ type UserGraphQL {
   id: ID!
   username: String!
   email: String!
+  role: String!
+  sex: String!
+  age: Int!
 }
 
 type AuthResponse {
@@ -30,4 +33,7 @@ input RegisterInput {
   username: String!
   email: String!
   password: String!
+  sex: String!
+  age: Float!
+  role: String!
 }

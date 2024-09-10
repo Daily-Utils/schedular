@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
+import { Timings } from '../timings/timings.entity';
 
 
 @Entity('Doctor')
@@ -14,10 +15,7 @@ export class Doctor {
   @Column({ type: 'text', array: true })
   speciality: string[];
 
-  @Column({ type: 'int' })
-  timing_id: number;
-
-  @Column({ type: 'double' })
+  @Column({ type: 'decimal' })
   default_fee: number;
 
   @Column({ type: 'time' })
@@ -32,11 +30,12 @@ export class Doctor {
   @Column({ type: 'varchar' })
   facility_location: string;
 
- 
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Appointment[];
 
   @OneToMany(() => Chat, (chat) => chat.doctor)
   chat: Chat[];
 
+  @OneToMany(() => Timings, (timings) => timings.doctor)
+  timings: Timings[];
 }

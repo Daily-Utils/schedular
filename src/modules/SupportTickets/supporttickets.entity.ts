@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Roles } from '../roles/roles.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Patient } from '../Patient/patient.entity';
 
 @Entity('SupportTickets')
 export class SupportTickets {
@@ -15,6 +15,7 @@ export class SupportTickets {
   @Column()
   patient_id: number;
 
-  @ManyToOne(() => Roles, (roles) => roles.supportTickets)
-  roles: Roles;
+  @ManyToOne(() => Patient, (patient) => patient.supportTickets)
+  @JoinColumn({ name: 'patient_id' })
+  patient: Patient;
 }

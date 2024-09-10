@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
 
 @Entity('Feedbacks')
@@ -27,8 +33,7 @@ export class Feedback {
   @Column({ type: 'date' })
   updated_at: Date;
 
- 
   @ManyToOne(() => Patient, (patient) => patient.feedbacks)
+  @JoinColumn({ name: 'patient_id' })
   patient: Patient;
 }
-

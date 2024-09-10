@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+} from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
 import { Doctor } from '../doctor/doctor.entity';
 
@@ -37,10 +45,11 @@ export class Appointment {
   @UpdateDateColumn()
   updated_at: Date;
 
- 
   @ManyToOne(() => Patient, (patient) => patient.appointments)
+  @JoinColumn({ name: 'patient_id' })
   patient: Patient;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments)
+  @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 }

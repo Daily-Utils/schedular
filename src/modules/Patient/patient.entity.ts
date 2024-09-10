@@ -3,12 +3,12 @@ import { Roles } from '../roles/roles.entity';
 import { Feedback } from '../feedback/feedbacks.entity';
 import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
+import { SupportTickets } from '../SupportTickets/supporttickets.entity';
 
 @Entity('Patient')
 export class Patient {
   @PrimaryGeneratedColumn()
   id: number;
-
 
   @Column('int', { array: true })
   family_member: number[];
@@ -19,19 +19,15 @@ export class Patient {
   @Column('text', { array: true })
   health_issue: string[];
 
-
-  @ManyToOne(() => Roles, (role) => role.patients)
-  role: Roles;
-
-
   @OneToMany(() => Feedback, (feedback) => feedback.patient)
   feedbacks: Feedback[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.patient)
   appointments: Appointment[];
 
-
   @OneToMany(() => Chat, (chat) => chat.patient)
   chat: Chat[];
 
+  @OneToMany(() => SupportTickets, (supportTickets) => supportTickets.patient)
+  supportTickets: SupportTickets[];
 }
