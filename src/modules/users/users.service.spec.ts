@@ -51,26 +51,37 @@ describe('UsersService', () => {
   });
 
   describe('createUser', () => {
-    it('should create a new user', async () => {
+    it('should create a new user and populate doctor or patient based on role', async () => {
       const registerDto = {
         username: 'user1',
         email: 'user1@example.com',
         password: 'password123',
+        role: 'doctor', // or 'patient'
       };
+  
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
       const newUser = {
         id: 1,
         ...registerDto,
         password: hashedPassword,
       };
+  
       jest.spyOn(userRepository, 'create').mockReturnValue(newUser);
       jest.spyOn(userRepository, 'save').mockResolvedValue(newUser);
-
+      jest.spyOn(doctorRepository, 'create').mockReturnValue({});
+      jest.spyOn(patientRepository, 'create').mockReturnValue({});
+  
       const result = await service.createUser(registerDto);
-
+  
       expect(result).toEqual(newUser);
+      if (registerDto.role === 'doctor') {
+        expect(doctorRepository.create).toHaveBeenCalled();
+      } else if (registerDto.role === 'patient') {
+        expect(patientRepository.create).toHaveBeenCalled();
+      }
     });
   });
+  
 
   describe('validateUser', () => {
     it('should validate user credentials', async () => {
