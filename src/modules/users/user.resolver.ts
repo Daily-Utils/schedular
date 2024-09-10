@@ -2,12 +2,15 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { UserGraphQL } from './schemas/user.model';
 import { UserInterface } from './interfaces/user.interface';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver()
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [UserGraphQL])
+  @UseGuards()
   async findAll() {
     return this.usersService.findAll();
   }

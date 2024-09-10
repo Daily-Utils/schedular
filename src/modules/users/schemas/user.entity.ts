@@ -1,10 +1,14 @@
 // user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Roles } from 'src/modules/roles/roles.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'varchar' })
+  role: string;  
 
   @Column({ unique: true })
   username: string;
@@ -14,4 +18,21 @@ export class User {
 
   @Column()
   password: string; // Password will be hashed
+
+  @Column({ type: 'varchar' })
+  sex: string;  
+
+  @Column({ type: 'int' })
+  age: number; 
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @ManyToOne(() => Roles, (roles) => roles.users)
+  roles: Roles;  
+
+
 }
