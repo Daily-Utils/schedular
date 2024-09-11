@@ -21,7 +21,7 @@ export class User {
   email: string;
 
   @Column({ unique: true })
-  phone: number;
+  phone: string; // Ensure this is of type string
 
   @Column()
   password: string; // Password will be hashed

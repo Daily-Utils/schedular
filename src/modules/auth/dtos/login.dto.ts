@@ -1,5 +1,5 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
-import { IsNumber, IsString } from 'class-validator';
+import { InputType, Field } from '@nestjs/graphql';
+import {  IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class LoginInput {
@@ -11,7 +11,7 @@ export class LoginInput {
   @IsString()
   password: string;
 
-  @Field(() => Int, { nullable: true })
-  @IsNumber()
-  phone: number;
+  @Field({ nullable: true })
+  @IsOptional()
+  phone: string;
 }

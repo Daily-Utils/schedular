@@ -9,6 +9,7 @@ type UserGraphQL {
   role: String!
   sex: String!
   age: Int!
+  phone: String!
 }
 
 type AuthResponse {
@@ -53,6 +54,7 @@ type Mutation {
 input LoginInput {
   username: String!
   password: String!
+  phone: String
 }
 
 input RegisterInput {
@@ -62,6 +64,7 @@ input RegisterInput {
   sex: String!
   age: Float!
   role: String!
+  phone: String!
   services: [String!]
   speciality: [String!]
   default_fee: Float
@@ -69,7 +72,7 @@ input RegisterInput {
   facility_name: String
   facility_type: String
   facility_location: String
-  family_member: [Float!]
+  family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
 }

@@ -64,7 +64,7 @@ describe('UsersService', () => {
           role: 'doctor',
           age: 30,
           sex: 'male',
-          phone: 9657972133,
+          phone: "9657972133",
           created_at: new Date(),
           updated_at: new Date(),
           roleEntity: {
@@ -93,7 +93,7 @@ describe('UsersService', () => {
         role: 'doctor', // or 'patient'
         age: 30,
         sex: 'male',
-        phone: 9657972133,
+        phone: "9657972133",
       };
 
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -105,7 +105,7 @@ describe('UsersService', () => {
         sex: 'male',
         role: 'doctor', // or 'patient'
         password: hashedPassword,
-        phone: 9657972133,
+        phone: "9657972133",
         created_at: new Date(),
         updated_at: new Date(),
         roleEntity: {
@@ -130,7 +130,7 @@ describe('UsersService', () => {
 
   describe('validateUser', () => {
     it('should validate user credentials', async () => {
-      const loginDto = { username: 'user1', password: 'password123', phone: 9657972133 };
+      const loginDto = { username: 'user1', password: 'password123', phone: "9657972133" };
       const user = {
         id: 1,
         username: 'user1',
@@ -139,7 +139,7 @@ describe('UsersService', () => {
         age: 30,
         sex: 'male',
         role: 'doctor', // or 'patient'
-        phone: 9657972133,
+        phone: "9657972133",
         created_at: new Date(),
         updated_at: new Date(),
         roleEntity: {
@@ -158,7 +158,7 @@ describe('UsersService', () => {
     });
 
     it('should return null if user is not found', async () => {
-      const loginDto = { username: 'user1', password: 'password123' , phone: 9657972133 };
+      const loginDto = { username: 'user1', password: 'password123' , phone: "9657972133" };
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       const result = await service.validateUser(loginDto);
@@ -167,7 +167,7 @@ describe('UsersService', () => {
     });
 
     it('should return null if password is incorrect', async () => {
-      const loginDto = { username: 'user1', password: 'wrongpassword', phone: 9657972133 };
+      const loginDto = { username: 'user1', password: 'wrongpassword', phone: "9657972133" };
       const user = {
         id: 1,
         username: 'user1',
@@ -176,7 +176,7 @@ describe('UsersService', () => {
         age: 30,
         sex: 'male',
         role: 'doctor', // or 'patient'
-        phone: 9657972133,
+        phone: "9657972133",
         created_at: new Date(),
         updated_at: new Date(),
         roleEntity: {

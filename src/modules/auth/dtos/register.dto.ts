@@ -44,11 +44,10 @@ export class RegisterInput {
   @IsNotEmpty()
   role: string;
 
-  @Field(() => Int)
-  @IsNumber()
+  @Field()
+  @IsString()
   @IsNotEmpty()
-  @Min(10)
-  phone: number;
+  phone: string;
 
   // Doctor-specific fields
   @Field(() => [String], { nullable: true })
