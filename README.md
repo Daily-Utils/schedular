@@ -32,3 +32,11 @@ Make sure local development database is on
 ```
 yarn run start
 ```
+
+### Add Roles to database
+
+After devloping database and starting server please run this
+
+```sh
+npx ts-node scripts/addRoles.ts
+```

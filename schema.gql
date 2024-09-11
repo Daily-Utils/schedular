@@ -6,28 +6,73 @@ type UserGraphQL {
   id: ID!
   username: String!
   email: String!
+  role: String!
+  sex: String!
+  age: Int!
+  phone: String!
 }
 
 type AuthResponse {
   access_token: String!
 }
 
+type RoleOutput {
+  roles_name: String!
+  appointment_permission: [String!]!
+  feedback_permission: [String!]!
+  support_tickets_permissions: [String!]!
+}
+
+type RoleOutputForModification {
+  status: Float!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
+  findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
+  checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+}
+
+input RoleInput {
+  role_name: String!
+}
+
+input RolePermissionVerificationInput {
+  role_name: String!
+  permission: String!
+  category: String!
 }
 
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
+  addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
 
 input LoginInput {
   username: String!
   password: String!
+  phone: String
 }
 
 input RegisterInput {
   username: String!
   email: String!
   password: String!
+  sex: String!
+  age: Float!
+  role: String!
+  phone: String!
+  services: [String!]
+  speciality: [String!]
+  default_fee: Float
+  average_consulting_time: String
+  facility_name: String
+  facility_type: String
+  facility_location: String
+  family_member: [Int!]
+  relation: [String!]
+  health_issues: [String!]
 }

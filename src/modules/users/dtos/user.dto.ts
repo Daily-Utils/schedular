@@ -10,4 +10,16 @@ export class UserGraphQL {
 
   @Field()
   email: string;
+
+  @Field()
+  role: string;
+
+  @Field()
+  sex: string;
+
+  @Field(() => Int)
+  age: number;
+
+  @Field()
+  phone: string;
 }

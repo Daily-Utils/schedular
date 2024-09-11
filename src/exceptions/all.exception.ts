@@ -49,8 +49,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const gqlContext = gqlHost.getContext();
       const request = gqlContext.req;
 
-      console.log('GraphQL Request:', request);
-
       const httpStatus =
         exception instanceof HttpException
           ? exception.getStatus()
