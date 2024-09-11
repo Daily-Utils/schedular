@@ -22,17 +22,13 @@ export class UsersService {
 
   async findAll() {
     return await this.userRepository.find({
-      select: ['id', 'username', 'email'],
+      select: ['id', 'username', 'email', 'role', 'age', 'sex'], 
     });
   }
 
   async createUser(registerDto: RegisterInput): Promise<User> {
     const { username, email, password, sex, age, role } = registerDto;
-  
-   
     const hashedPassword = await bcrypt.hash(password, 10);
-  
- 
     const newUser = this.userRepository.create({
       username,
       email,
@@ -43,34 +39,7 @@ export class UsersService {
       created_at: new Date(),
       updated_at: new Date(),
     });
-  
-    
     const savedUser = await this.userRepository.save(newUser);
-  
-   
-    if (role === 'doctor') {
-      const doctor = this.doctorRepository.create({
-        user: savedUser, 
-        services: registerDto.services, 
-        speciality: registerDto.speciality,
-        timingId: registerDto.timingId,
-        defaultFee: registerDto.defaultFee,
-        averageConsultingTime: registerDto.averageConsultingTime,
-        facilityName: registerDto.facilityName,
-        facilityType: registerDto.facilityType,
-        facilityLocation: registerDto.facilityLocation,
-      });
-      await this.doctorRepository.save(doctor);
-    } else if (role === 'patient') {
-      const patient = this.patientRepository.create({
-        user: savedUser, 
-        familyMember: registerDto.familyMember, 
-        relation: registerDto.relation,
-        healthIssue: registerDto.healthIssue,
-      });
-      await this.patientRepository.save(patient);
-    }
-  
     return savedUser;
   }
   

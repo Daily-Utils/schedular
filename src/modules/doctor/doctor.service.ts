@@ -10,7 +10,7 @@ import { CreateDoctorDto } from './dtos/doctor.dto';
 export class DoctorService {
   constructor(@InjectRepository(Doctor) private doctorRepository: Repository<Doctor>) {}
 
-  async createDoctorForUser(userId: number, createDoctorDto: CreateDoctorDto): Promise<Doctor> {
+  async createDoctorForUser(createDoctorDto: CreateDoctorDto) {
     const doctor = this.doctorRepository.create({
       ...createDoctorDto,
     });

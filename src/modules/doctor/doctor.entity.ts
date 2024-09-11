@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
 import { Timings } from '../timings/timings.entity';
@@ -6,7 +6,7 @@ import { Timings } from '../timings/timings.entity';
 
 @Entity('Doctor')
 export class Doctor {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @Column({ type: 'text', array: true })

@@ -16,7 +16,7 @@ type AuthResponse {
 }
 
 type RoleOutput {
-  role_name: String!
+  roles_name: String!
   appointment_permission: [String!]!
   feedback_permission: [String!]!
   support_tickets_permissions: [String!]!
@@ -62,4 +62,14 @@ input RegisterInput {
   sex: String!
   age: Float!
   role: String!
+  services: [String!]
+  speciality: [String!]
+  default_fee: Float
+  average_consulting_time: String
+  facility_name: String
+  facility_type: String
+  facility_location: String
+  family_member: [Float!]
+  relation: [String!]
+  health_issues: [String!]
 }

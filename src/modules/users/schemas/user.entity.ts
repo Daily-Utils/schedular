@@ -10,11 +10,18 @@ export class User {
   @Column({ type: 'varchar' })
   role: string;
 
+  @ManyToOne(() => Roles, (roles) => roles.users)
+  @JoinColumn({ name: 'role', referencedColumnName: 'roles_name' })
+  roleEntity: Roles;
+
   @Column({ unique: true })
   username: string;
 
   @Column({ unique: true })
   email: string;
+
+  @Column({ unique: true })
+  phone: number;
 
   @Column()
   password: string; // Password will be hashed
@@ -30,8 +37,4 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @ManyToOne(() => Roles, (roles) => roles.users)
-  @JoinColumn({ name: 'roles_name', referencedColumnName: 'roles_name' })
-  roleEntity: Roles;
 }

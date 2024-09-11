@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsArray, IsOptional, IsString, IsNumber } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsArray,
+  IsOptional,
+  IsString,
+  IsNumber,
+} from 'class-validator';
 
 export class CreateDoctorDto {
   @IsArray()
@@ -13,26 +19,21 @@ export class CreateDoctorDto {
 
   @IsNumber()
   @IsNotEmpty()
-  readonly timingId: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  readonly defaultFee: number;
+  readonly default_fee: number;
 
   @IsString()
   @IsNotEmpty()
-  readonly averageConsultingTime: string;
+  readonly average_consulting_time: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly facilityName: string;
+  readonly facility_name: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly facilityType: string;
+  readonly facility_type: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly facilityLocation: string;
+  readonly facility_location: string;
 }
-

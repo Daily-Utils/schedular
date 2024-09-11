@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import {
   IsEmail,
   IsNumber,
@@ -15,7 +15,6 @@ export class RegisterInput {
   @Field()
   @IsString()
   @IsNotEmpty()
-  @Min(3)
   username: string;
 
   @Field()
@@ -45,6 +44,11 @@ export class RegisterInput {
   @IsNotEmpty()
   role: string;
 
+  @Field(() => Int)
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(10)
+  phone: number;
 
   // Doctor-specific fields
   @Field(() => [String], { nullable: true })
@@ -61,39 +65,33 @@ export class RegisterInput {
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
   @IsNumber()
-  timingId?: number;
+  default_fee?: number;
 
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
-  @IsNumber()
-  defaultFee?: number;
+  average_consulting_time?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
-  averageConsultingTime?: string;
+  facility_name?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
-  facilityName?: string;
+  facility_type?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
-  facilityType?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @ValidateIf((o) => o.role === 'doctor')
-  facilityLocation?: string;
+  facility_location?: string;
 
   // Patient-specific fields
-  @Field(() => [Number], { nullable: true })
+  @Field(() => [Int], { nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'patient')
-  familyMember?: number[];
+  family_member?: number[];
 
   @Field(() => [String], { nullable: true })
   @IsOptional()
@@ -103,5 +101,5 @@ export class RegisterInput {
   @Field(() => [String], { nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'patient')
-  healthIssue?: string[];
+  health_issues?: string[];
 }

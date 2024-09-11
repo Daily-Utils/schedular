@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Roles } from '../roles/roles.entity';
 import { Feedback } from '../feedback/feedbacks.entity';
 import { Appointment } from '../appointment/appointment.entity';
@@ -7,7 +7,7 @@ import { SupportTickets } from '../SupportTickets/supporttickets.entity';
 
 @Entity('Patient')
 export class Patient {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @Column('int', { array: true })
@@ -17,7 +17,7 @@ export class Patient {
   relation: string[];
 
   @Column('text', { array: true })
-  health_issue: string[];
+  health_issues: string[];
 
   @OneToMany(() => Feedback, (feedback) => feedback.patient)
   feedbacks: Feedback[];

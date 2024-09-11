@@ -1,55 +1,48 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { Roles } from '../roles/roles.entity'; 
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { RegisterInput } from './dtos/register.dto'; 
 import { User } from '../users/schemas/user.entity'; 
 import { LoginInput } from './dtos/login.dto';
+import { DoctorService } from '../doctor/doctor.service';
+import { PatientService } from '../Patient/patient.service';
 
 @Injectable()
 export class AuthService {
   userRepository: any;
-  doctorService: any;
-  patientService: any;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
-    @InjectRepository(Roles)
-    private readonly rolesRepository: Repository<Roles>,
+    private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
   ) {}
 
   async register(registerDto: RegisterInput): Promise<User> {
-    const { username, email, password, role, sex, age } = registerDto;
-    
-    // Find the role entity by name (e.g., 'doctor' or 'patient')
-    const roleEntity = await this.rolesRepository.findOne({ where: { roles_name: role } });
-    
-    if (!roleEntity) {
-      throw new Error('Role not found');
-    }
-  
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = this.userRepository.create({
-      username,
-      email,
-      password: hashedPassword,
-      sex,
-      age,
-      roleEntity,
-    });
-  
-    const savedUser = await this.userRepository.save(newUser);
-  
-    
+    const { role } = registerDto;
+    const savedUser = await this.userService.createUser(registerDto);
     if (role === 'doctor') {
-      await this.doctorService.createDoctorForUser(savedUser.id);
+      const doctorDTO = {
+        id: savedUser.id,
+        services: registerDto.services,
+        speciality: registerDto.speciality,
+        default_fee: registerDto.default_fee,
+        average_consulting_time: registerDto.average_consulting_time,
+        facility_name: registerDto.facility_name,
+        facility_type: registerDto.facility_type,
+        facility_location: registerDto.facility_location,
+      };
+      await this.doctorService.createDoctorForUser(doctorDTO);
     } else if (role === 'patient') {
-      await this.patientService.createPatientForUser(savedUser.id);
+      const patientDTO = {
+        id: savedUser.id,
+        health_issues: registerDto.health_issues,
+        relation: registerDto.relation,
+        family_member: registerDto.family_member,
+      };
+      await this.patientService.createPatientForUser(patientDTO);
     }
-  
     return savedUser;
   }
   

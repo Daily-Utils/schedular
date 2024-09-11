@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { AuthResolver } from './auth.resolver';
+import { PatientModule } from '../Patient/patient.module';
+import { DoctorModule } from '../doctor/doctor.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { AuthResolver } from './auth.resolver';
       signOptions: { expiresIn: '1h' },
     }),
     UsersModule,
+    PatientModule,
+    DoctorModule,
   ],
   controllers: [],
   providers: [AuthService, JwtStrategy, AuthResolver],
