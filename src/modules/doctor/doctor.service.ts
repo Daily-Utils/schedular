@@ -10,6 +10,7 @@ import {
 } from './dtos/output.dto';
 import { UsersService } from '../users/users.service';
 import { DataSource } from 'typeorm';
+import { searchDTO } from './dtos/search.dto';
 
 @Injectable()
 export class DoctorService {
@@ -89,5 +90,41 @@ export class DoctorService {
     await this.dataSource.transaction(async (manager) => {
       await this.userService.deleteUser(id, manager);
     });
+  }
+
+  async searchDoctors(searchData: searchDTO){
+    const queryBuilder = this.doctorRepository
+      .createQueryBuilder('doctor')
+      .leftJoinAndSelect('doctor.user', 'user')
+      .select(['doctor.id', 'user.username', 'user.id']);
+
+    if (searchData.services) {
+      queryBuilder.andWhere('doctor.services = :services', {
+        services: searchData.services,
+      });
+    }
+
+    if (searchData.speciality) {
+      queryBuilder.andWhere('doctor.speciality = :speciality', {
+        speciality: searchData.speciality,
+      });
+    }
+
+    if (searchData.facility_name) {
+      queryBuilder.andWhere('doctor.facility_name = :facility_name', {
+        facility_name: searchData.facility_name,
+      });
+    }
+
+    const doctors = await queryBuilder.getMany();
+
+    const mappedDoctors = doctors.map((doctor) => ({
+      id: doctor.user.id,
+      username: doctor.user.username,
+    }));
+
+    return {
+      doctors: mappedDoctors || [],
+    };
   }
 }

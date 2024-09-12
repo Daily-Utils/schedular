@@ -34,4 +34,5 @@ export class searchDTO {
     @Field()
     @IsOptional()
     facility_type: string;
+  default_fee: any;
 }
