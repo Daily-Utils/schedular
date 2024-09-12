@@ -92,20 +92,30 @@ export class DoctorService {
     });
   }
 
-  async searchDoctors(searchData: searchDTO){
+  async searchDoctors(searchData: searchDTO) {
     const queryBuilder = this.doctorRepository
       .createQueryBuilder('doctor')
       .leftJoinAndSelect('doctor.user', 'user')
-      .select(['doctor.id', 'user.username', 'user.id']);
+      .select([
+        'doctor.user_id',
+        'user.username',
+        'doctor.services',
+        'doctor.speciality',
+        'doctor.facility_name',
+        'doctor.facility_location',
+        'doctor.facility_type',
+        'doctor.default_fee',
+        'doctor.average_consulting_time',
+      ]);
 
-    if (searchData.services) {
-      queryBuilder.andWhere('doctor.services = :services', {
+    if (searchData.services && searchData.services.length > 0) {
+      queryBuilder.andWhere('doctor.services && ARRAY[:...services]', {
         services: searchData.services,
       });
     }
 
-    if (searchData.speciality) {
-      queryBuilder.andWhere('doctor.speciality = :speciality', {
+    if (searchData.speciality && searchData.speciality.length > 0) {
+      queryBuilder.andWhere('doctor.speciality && ARRAY[:...speciality]', {
         speciality: searchData.speciality,
       });
     }
@@ -119,12 +129,19 @@ export class DoctorService {
     const doctors = await queryBuilder.getMany();
 
     const mappedDoctors = doctors.map((doctor) => ({
-      id: doctor.user.id,
+      id: doctor.user_id,
       username: doctor.user.username,
+      services: doctor.services,
+      speciality: doctor.speciality,
+      facility_name: doctor.facility_name,
+      facility_location: doctor.facility_location,
+      facility_type: doctor.facility_type,
+      default_fee: doctor.default_fee,
+      average_consulting_time: doctor.average_consulting_time,
     }));
 
-    return {
-      doctors: mappedDoctors || [],
-    };
+    console.log(mappedDoctors);
+
+    return mappedDoctors;
   }
 }

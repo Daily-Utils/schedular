@@ -11,6 +11,7 @@ import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { searchDTO, singleSearchResponse } from './dtos/search.dto';
 
 @Resolver()
 export class DoctorResolver {
@@ -86,5 +87,18 @@ export class DoctorResolver {
         message: 'Doctor not deleted successfully',
       };
     }
+  }
+
+  @Roles([Role.Admin, Role.Doctor, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Query(() => [singleSearchResponse])
+  async searchDoctor(
+    @Args('searchTerm') searchDTO: searchDTO,
+    @Context() context: any,
+  ) {
+    return await this.doctorService.searchDoctors(searchDTO);
   }
 }

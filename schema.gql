@@ -45,6 +45,18 @@ type DoctorResponseDto {
   timings: [TimingDto!]!
 }
 
+type singleSearchResponse {
+  id: Float!
+  username: String!
+  services: [String!]!
+  speciality: [String!]!
+  average_consulting_time: String!
+  facility_name: String!
+  facility_type: String!
+  facility_location: String!
+  default_fee: Float!
+}
+
 type AuthResponse {
   access_token: String!
 }
@@ -65,8 +77,21 @@ type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
+  searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+}
+
+input searchDTO {
+  phone_number: String
+  email: String
+  username: String
+  speciality: [String!]
+  services: [String!]
+  facility_name: String
+  facility_location: String
+  facility_type: String
+  default_fee: Float
 }
 
 input RoleInput {

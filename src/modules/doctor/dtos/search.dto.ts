@@ -1,38 +1,81 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class searchDTO {
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  phone_number?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  username?: string;
+
+  @Field(() => [String], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  speciality?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  services?: string[];
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  facility_name?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  facility_location?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  facility_type?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  default_fee?: number;
+}
+
+
+@ObjectType()
+export class singleSearchResponse{
     @Field()
-    @IsOptional()
-    phone_number: string;
+    id: number;
 
     @Field()
-    @IsOptional()
-    email: string;
-
-    @Field()
-    @IsOptional()
     username: string;
 
-    @Field(() => [String], { nullable: true })
-    @IsOptional()
-    speciality: [string];
+    @Field(() => [String])
+    services: string[];
 
-    @Field(() => [String], { nullable: true })
-    @IsOptional()
-    services: [string];
+    @Field(() => [String])
+    speciality: string[];
 
     @Field()
-    @IsOptional()
+    average_consulting_time: string;
+
+    @Field()
     facility_name: string;
 
     @Field()
-    @IsOptional()
+    facility_type: string;
+
+    @Field()
     facility_location: string;
 
     @Field()
-    @IsOptional()
-    facility_type: string;
-  default_fee: any;
+    default_fee: number;
 }
