@@ -87,14 +87,7 @@ export class DoctorService {
 
   async deleteDoctorById(id: number) {
     await this.dataSource.transaction(async (manager) => {
-      // Delete the doctor record first
-      // await manager.delete(Doctor, { user_id: id });
-
-      // Then delete the user record
       await this.userService.deleteUser(id, manager);
     });
   }
-
-  // TODO: Implement searchDoctors method
-  async searchDoctors() {}
 }

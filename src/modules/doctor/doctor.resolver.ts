@@ -9,24 +9,38 @@ import {
 } from './dtos/output.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { Logger } from '@nestjs/common';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class DoctorResolver {
   constructor(private readonly doctorService: DoctorService) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => responseForAllDoctorsFindArray)
   async findAllDoctors(@Context() context: any) {
     return await this.doctorService.getDoctors();
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => DoctorResponseDto)
   async findDoctorById(@Args('id') id: number, @Context() context: any) {
     return await this.doctorService.getSingleDoctorById(id);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => responseForModificationDTO)
   async modifyDoctorById(
     @Args('id') id: number,
@@ -50,7 +64,11 @@ export class DoctorResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => responseForModificationDTO)
   async deleteDoctorById(@Args('id') id: number, @Context() context: any) {
     try {
@@ -69,6 +87,4 @@ export class DoctorResolver {
       };
     }
   }
-
-  // TODO: Implement searchDoctors method
 }
