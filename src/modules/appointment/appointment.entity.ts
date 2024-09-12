@@ -16,10 +16,10 @@ export class Appointment {
   id: number;
 
   @Column()
-  patient_id: number;
+  patient_user_id: number;
 
   @Column()
-  doctor_id: number;
+  doctor_user_id: number;
 
   @Column({ type: 'decimal' })
   fees: number;

@@ -1,12 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
 import { Timings } from '../timings/timings.entity';
-
+import { User } from '../users/schemas/user.entity';
 
 @Entity('Doctor')
 export class Doctor {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'text', array: true })
@@ -38,4 +45,11 @@ export class Doctor {
 
   @OneToMany(() => Timings, (timings) => timings.doctor)
   timings: Timings[];
+
+  @Column({ nullable: true })
+  user_id: number | null;
+
+  @OneToOne(() => User, (user) => user.doctor, { nullable: true })
+  @JoinColumn({ name: 'user_id' }) // Foreign key 'id' to link to User
+  user: User | null;
 }

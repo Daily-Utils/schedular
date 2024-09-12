@@ -1,14 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import { Roles } from '../roles/roles.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+  PrimaryColumn,
+} from 'typeorm';
 import { Feedback } from '../feedback/feedbacks.entity';
 import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
 import { SupportTickets } from '../SupportTickets/supporttickets.entity';
+import { User } from '../users/schemas/user.entity';
 
 @Entity('Patient')
 export class Patient {
-  @PrimaryColumn()
-  id: number;
+  @PrimaryGeneratedColumn()
+  id: number; // This id is the primary key and also a foreign key to the 'User' table.
 
   @Column('int', { array: true })
   family_member: number[];
@@ -30,4 +38,11 @@ export class Patient {
 
   @OneToMany(() => SupportTickets, (supportTickets) => supportTickets.patient)
   supportTickets: SupportTickets[];
+
+  @Column({ nullable: true })
+  user_id: number | null;
+
+  @OneToOne(() => User, (user) => user.patient, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User | null;
 }

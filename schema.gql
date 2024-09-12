@@ -12,6 +12,35 @@ type UserGraphQL {
   phone: String!
 }
 
+type responseForModificationDTO {
+  status: String!
+  message: String!
+}
+
+type responseForAllDoctorsFind {
+  id: Float!
+  username: String!
+}
+
+type TimingDto {
+  day: String!
+  to: String!
+  from: String!
+}
+
+type DoctorResponseDto {
+  id: Float!
+  username: String!
+  services: String!
+  speciality: String!
+  default_fee: Float!
+  average_consulting_time: Float!
+  facility_name: String!
+  facility_type: String!
+  facility_location: String!
+  timings: [TimingDto!]!
+}
+
 type AuthResponse {
   access_token: String!
 }
@@ -30,6 +59,8 @@ type RoleOutputForModification {
 
 type Query {
   findAll: [UserGraphQL!]!
+  findAllDoctors: responseForAllDoctorsFind!
+  findDoctorById(id: Float!): DoctorResponseDto!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
 }
@@ -47,6 +78,8 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
+  modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
+  deleteDoctorById(id: Float!): responseForModificationDTO!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
@@ -75,4 +108,15 @@ input RegisterInput {
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
+}
+
+input UpdateDoctorDto {
+  services: [String!]
+  speciality: [String!]
+  default_fee: Float
+  average_consulting_time: String
+  facility_name: String
+  facility_type: String
+  facility_location: String
+  user_id: Float
 }
