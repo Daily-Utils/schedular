@@ -3,26 +3,33 @@ import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @ObjectType()
 export class responseForModificationDTO {
-    @Field()
-    @IsNumber()
-    status: string;
-    
-    @Field()
-    @IsNotEmpty()
-    @IsString()
-    message: string;
+  @Field()
+  @IsNumber()
+  status: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  message: string;
 }
 
 @ObjectType()
 export class responseForAllDoctorsFind {
-    @Field()
-    @IsNumber()
-    id: number;
+  @Field()
+  @IsNumber()
+  id: number;
 
-    @Field()
-    @IsString()
-    @IsNotEmpty()
-    username: string;
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+}
+
+@ObjectType()
+export class responseForAllDoctorsFindArray {
+  @Field(() => [responseForAllDoctorsFind])
+  @IsArray()
+  doctors: responseForAllDoctorsFind[];
 }
 
 @ObjectType()
@@ -51,40 +58,34 @@ export class DoctorResponseDto {
 
   @Field()
   @IsString()
-  @IsNotEmpty()
   username: string;
 
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  services: string;
+  @Field(() => [String])
+  @IsArray()
+  services: string[];
 
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  speciality: string;
+  @Field(() => [String])
+  @IsArray()
+  speciality: string[];
 
   @Field()
   @IsNumber()
   default_fee: number;
 
   @Field()
-  @IsNumber()
-  average_consulting_time: number;
+  @IsString()
+  average_consulting_time: string;
 
   @Field()
   @IsString()
-  @IsNotEmpty()
   facility_name: string;
 
   @Field()
   @IsString()
-  @IsNotEmpty()
   facility_type: string;
 
   @Field()
   @IsString()
-  @IsNotEmpty()
   facility_location: string;
 
   @Field(() => [TimingDto])

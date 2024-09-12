@@ -7,7 +7,10 @@ import { DoctorResolver } from "./doctor.resolver";
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Doctor]), forwardRef(() => UsersModule)],
+  imports: [
+    TypeOrmModule.forFeature([Doctor]),
+    forwardRef(() => UsersModule)
+  ],
   controllers: [],
   providers: [DoctorService, DoctorResolver],
   exports: [DoctorService],

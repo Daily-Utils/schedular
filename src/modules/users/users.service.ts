@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from './schemas/user.entity';
 import { RegisterInput } from '../auth/dtos/register.dto';
 import { LoginInput } from '../auth/dtos/login.dto';
@@ -89,5 +89,13 @@ export class UsersService {
       return user;
     }
     return null;
+  }
+
+  async deleteUser(id: number, manager?: EntityManager) {
+    if (manager) {
+      await manager.delete(User, id);
+    } else {
+      await this.userRepository.delete(id);
+    }
   }
 }

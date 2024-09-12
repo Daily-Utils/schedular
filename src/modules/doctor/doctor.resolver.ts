@@ -2,8 +2,9 @@ import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import { DoctorService } from './doctor.service';
 import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
-    DoctorResponseDto,
+  DoctorResponseDto,
   responseForAllDoctorsFind,
+  responseForAllDoctorsFindArray,
   responseForModificationDTO,
 } from './dtos/output.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
@@ -14,15 +15,15 @@ export class DoctorResolver {
   constructor(private readonly doctorService: DoctorService) {}
 
   @OpenForDevelopment()
-  @Query(() => responseForAllDoctorsFind)
+  @Query(() => responseForAllDoctorsFindArray)
   async findAllDoctors(@Context() context: any) {
-    return this.doctorService.getDoctors();
+    return await this.doctorService.getDoctors();
   }
 
   @OpenForDevelopment()
   @Query(() => DoctorResponseDto)
   async findDoctorById(@Args('id') id: number, @Context() context: any) {
-    return this.doctorService.getSingleDoctorById(id);
+    return await this.doctorService.getSingleDoctorById(id);
   }
 
   @OpenForDevelopment()

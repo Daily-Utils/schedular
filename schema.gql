@@ -22,6 +22,10 @@ type responseForAllDoctorsFind {
   username: String!
 }
 
+type responseForAllDoctorsFindArray {
+  doctors: [responseForAllDoctorsFind!]!
+}
+
 type TimingDto {
   day: String!
   to: String!
@@ -31,10 +35,10 @@ type TimingDto {
 type DoctorResponseDto {
   id: Float!
   username: String!
-  services: String!
-  speciality: String!
+  services: [String!]!
+  speciality: [String!]!
   default_fee: Float!
-  average_consulting_time: Float!
+  average_consulting_time: String!
   facility_name: String!
   facility_type: String!
   facility_location: String!
@@ -59,7 +63,7 @@ type RoleOutputForModification {
 
 type Query {
   findAll: [UserGraphQL!]!
-  findAllDoctors: responseForAllDoctorsFind!
+  findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
