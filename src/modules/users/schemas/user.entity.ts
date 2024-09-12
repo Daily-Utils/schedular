@@ -54,11 +54,19 @@ export class User {
   @Column({ nullable: true })
   patient_id: number | null;
 
-  @OneToOne(() => Doctor, (doctor) => doctor.user, { nullable: true })
+  @OneToOne(() => Doctor, (doctor) => doctor.user, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE', // This will delete the doctor when the user is deleted
+  })
   @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor | null;
 
-  @OneToOne(() => Patient, (patient) => patient.user, { nullable: true })
+  @OneToOne(() => Patient, (patient) => patient.user, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE', // This will delete the doctor when the user is deleted
+  })
   @JoinColumn({ name: 'patient_id' })
   patient: Patient | null;
 }

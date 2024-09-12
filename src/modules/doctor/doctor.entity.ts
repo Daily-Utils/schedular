@@ -40,16 +40,23 @@ export class Doctor {
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Appointment[];
 
-  @OneToMany(() => Chat, (chat) => chat.doctor)
+  @OneToMany(() => Chat, (chat) => chat.doctor, {
+    cascade: true,
+  })
   chat: Chat[];
 
-  @OneToMany(() => Timings, (timings) => timings.doctor)
+  @OneToMany(() => Timings, (timings) => timings.doctor, {
+    cascade: true,
+  })
   timings: Timings[];
 
   @Column({ nullable: true })
   user_id: number | null;
 
-  @OneToOne(() => User, (user) => user.doctor, { nullable: true })
+  @OneToOne(() => User, (user) => user.doctor, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' }) // Foreign key 'id' to link to User
   user: User | null;
 }

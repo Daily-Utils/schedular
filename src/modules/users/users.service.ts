@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { User } from './schemas/user.entity';
@@ -92,10 +92,15 @@ export class UsersService {
   }
 
   async deleteUser(id: number, manager?: EntityManager) {
-    if (manager) {
-      await manager.delete(User, id);
-    } else {
-      await this.userRepository.delete(id);
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['doctor', 'patient'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
+
+    await this.userRepository.remove(user);
   }
 }

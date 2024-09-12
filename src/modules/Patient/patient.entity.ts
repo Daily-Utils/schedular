@@ -27,22 +27,30 @@ export class Patient {
   @Column('text', { array: true })
   health_issues: string[];
 
-  @OneToMany(() => Feedback, (feedback) => feedback.patient)
+  @OneToMany(() => Feedback, (feedback) => feedback.patient, {
+    cascade: true,
+  })
   feedbacks: Feedback[];
 
-  @OneToMany(() => Appointment, (appointment) => appointment.patient)
+  @OneToMany(() => Appointment, (appointment) => appointment.patient, {
+    cascade: true,
+  })
   appointments: Appointment[];
 
-  @OneToMany(() => Chat, (chat) => chat.patient)
+  @OneToMany(() => Chat, (chat) => chat.patient, {
+    cascade: true,
+  })
   chat: Chat[];
 
-  @OneToMany(() => SupportTickets, (supportTickets) => supportTickets.patient)
+  @OneToMany(() => SupportTickets, (supportTickets) => supportTickets.patient, {
+    cascade: true,
+  })
   supportTickets: SupportTickets[];
 
   @Column({ nullable: true })
   user_id: number | null;
 
-  @OneToOne(() => User, (user) => user.patient, { nullable: true })
+  @OneToOne(() => User, (user) => user.patient, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User | null;
 }
