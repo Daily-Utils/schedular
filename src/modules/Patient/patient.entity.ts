@@ -21,6 +21,12 @@ export class Patient {
   @Column('int', { array: true })
   family_member: number[];
 
+  @Column()
+  blood_group: string;
+
+  @Column()
+  weight: number;
+
   @Column('text', { array: true })
   relation: string[];
 

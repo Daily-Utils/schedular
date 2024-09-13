@@ -37,7 +37,7 @@ export class Appointment {
   patient_complaint: string;
 
   @Column({ type: 'decimal', nullable: true })
-  patient_weight: number;
+  patient_current_weight: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -46,10 +46,10 @@ export class Appointment {
   updated_at: Date;
 
   @ManyToOne(() => Patient, (patient) => patient.appointments)
-  @JoinColumn({ name: 'patient_id' })
+  @JoinColumn({ name: 'patient_user_id' })
   patient: Patient;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments)
-  @JoinColumn({ name: 'doctor_id' })
+  @JoinColumn({ name: 'doctor_user_id' })
   doctor: Doctor;
 }

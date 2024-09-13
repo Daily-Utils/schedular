@@ -57,6 +57,20 @@ type singleSearchResponse {
   default_fee: Float!
 }
 
+type PatientOutput {
+  id: Float!
+  username: String!
+  age: Float!
+  blood_group: String!
+  health_issues: [String!]!
+  weight: Float!
+}
+
+type responseForModificationDTOPaitent {
+  status: String!
+  message: String!
+}
+
 type AuthResponse {
   access_token: String!
 }
@@ -78,6 +92,8 @@ type Query {
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
+  getAllPatientDetails: [PatientOutput!]!
+  getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
 }
@@ -109,6 +125,8 @@ type Mutation {
   register(register: RegisterInput!): UserGraphQL!
   modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
   deleteDoctorById(id: Float!): responseForModificationDTO!
+  modifyPatientDetails(user_id: Float!, updatePatientDetails: UpdatePatientDto!): responseForModificationDTOPaitent!
+  deletePatient(user_id: Float!): responseForModificationDTOPaitent!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
@@ -137,6 +155,8 @@ input RegisterInput {
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
+  blood_group: String
+  weight: Float
 }
 
 input UpdateDoctorDto {
@@ -148,4 +168,12 @@ input UpdateDoctorDto {
   facility_type: String
   facility_location: String
   user_id: Float
+}
+
+input UpdatePatientDto {
+  blood_group: String
+  weight: Float
+  relation: [String!]
+  family_member: [Float!]
+  health_issues: [String!]
 }

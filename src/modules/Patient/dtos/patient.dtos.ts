@@ -23,4 +23,12 @@ export class CreatePatientDto {
   @IsNumber()
   @IsNotEmpty()
   readonly user_id: number;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly blood_group: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly weight: number;
 }

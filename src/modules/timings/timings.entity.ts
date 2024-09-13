@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, PrimaryColumn, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Doctor } from '../doctor/doctor.entity';
 
 @Entity('Timings')
@@ -16,9 +16,9 @@ export class Timings {
   to: string;
 
   @Column()
-  doctor_id: number;
+  doctor_user_id: number;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.timings)
-  @JoinColumn({ name: 'doctor_id' })
+  @JoinColumn({ name: 'doctor_user_id' })
   doctor: Doctor;
 }

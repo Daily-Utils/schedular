@@ -101,4 +101,14 @@ export class RegisterInput {
   @IsOptional()
   @ValidateIf((o) => o.role === 'patient')
   health_issues?: string[];
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @ValidateIf((o) => o.role === 'patient')
+  blood_group?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @ValidateIf((o) => o.role === 'patient')
+  weight?: number;
 }
