@@ -8,6 +8,8 @@ import {
 } from './dtos/output.dto';
 import { UpdateTimingDto } from './dtos/update_timing.dto';
 import { createTimingDto } from './dtos/create_timing.dto';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class TimingsResolver {
@@ -16,13 +18,21 @@ export class TimingsResolver {
     private readonly timingsService: TimingsService,
   ) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [getAllTimingsForADoctorOutputDTO])
   async getTimingsForAllDoctor(@Args('doctor_id') doctor_user_id: number) {
     return this.timingsService.getAllTimingsForADoctor(doctor_user_id);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => timingsOutputs)
   async updateTimingDetails(
     @Args('doctor_id') doctor_id: number,
@@ -44,7 +54,11 @@ export class TimingsResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => timingsOutputs)
   async deleteSingleTiming(
     @Args('doctor_id') doctor_id: number,
@@ -65,7 +79,11 @@ export class TimingsResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => timingsOutputs)
   async addTiming(@Args('createTimingDTO') createTimingDTO: createTimingDto) {
     try {
