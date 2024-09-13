@@ -1,39 +1,52 @@
+import { Field, InputType } from '@nestjs/graphql';
 import {
   IsNotEmpty,
   IsArray,
-  IsOptional,
   IsString,
   IsNumber,
+  ArrayNotEmpty,
 } from 'class-validator';
 
+@InputType()
 export class CreateDoctorDto {
+  @Field(() => [String], { nullable: true })
   @IsArray()
-  @IsNotEmpty()
+  @ArrayNotEmpty()
   @IsString({ each: true })
-  readonly services: string[];
+  services: string[];
 
+  @Field(() => [String], { nullable: true })
   @IsArray()
-  @IsNotEmpty()
+  @ArrayNotEmpty()
   @IsString({ each: true })
-  readonly speciality: string[];
+  speciality: string[];
 
+  @Field()
   @IsNumber()
   @IsNotEmpty()
-  readonly default_fee: number;
+  default_fee: number;
 
+  @Field()
   @IsString()
   @IsNotEmpty()
-  readonly average_consulting_time: string;
+  average_consulting_time: string;
 
+  @Field()
   @IsString()
   @IsNotEmpty()
-  readonly facility_name: string;
+  facility_name: string;
 
+  @Field()
   @IsString()
   @IsNotEmpty()
-  readonly facility_type: string;
+  facility_type: string;
 
+  @Field()
   @IsString()
   @IsNotEmpty()
-  readonly facility_location: string;
+  facility_location: string;
+
+  @Field()
+  @IsNumber()
+  user_id: number;
 }

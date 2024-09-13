@@ -1,15 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from './schemas/user.entity';
+import { DoctorService } from '../doctor/doctor.service';
+import { PatientService } from '../Patient/patient.service';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Appointment } from '../appointment/appointment.entity';
+import { Doctor } from '../doctor/doctor.entity';
 
 describe('UsersService', () => {
   let service: UsersService;
   let userRepository: Repository<User>;
-  let doctorRepository: any;
-  let patientRepository: any;
+  let doctorService: DoctorService;
+  let patientService: PatientService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,23 +21,18 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
+          useClass: Repository,
+        },
+        {
+          provide: DoctorService,
           useValue: {
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+            createDoctorForUser: jest.fn(),
           },
         },
         {
-          provide: 'DoctorRepository',
+          provide: PatientService,
           useValue: {
-            create: jest.fn(),
-          },
-        },
-        {
-          provide: 'PatientRepository',
-          useValue: {
-            create: jest.fn(),
+            createPatientForUser: jest.fn(),
           },
         },
       ],
@@ -41,157 +40,113 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    doctorRepository = module.get('DoctorRepository');
-    patientRepository = module.get('PatientRepository');
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
+    doctorService = module.get<DoctorService>(DoctorService);
+    patientService = module.get<PatientService>(PatientService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
+  describe('findByUsername', () => {
+    it('should return a user by username', async () => {
+      const username = 'testuser';
+      const user = new User();
+      user.username = username;
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
+
+      expect(await service.findByUsername(username)).toEqual(user);
+    });
+  });
+
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const users = [
-        {
-          id: 1,
-          username: 'user1',
-          email: 'user1@example.com',
-          password: 'password123',
-          role: 'doctor',
-          age: 30,
-          sex: 'male',
-          phone: "9657972133",
-          created_at: new Date(),
-          updated_at: new Date(),
-          roleEntity: {
-            roles_name: 'doctor',
-            appointment_permission: [],
-            support_tickets_permissions: [],
-            feedback_permission: [],
-            users: [], // Assuming users is an array, adjust as necessary
-          },
-        },
-      ];
+      const users = [new User(), new User()];
       jest.spyOn(userRepository, 'find').mockResolvedValue(users);
 
-      const result = await service.findAll();
-
-      expect(result).toEqual(users);
+      expect(await service.findAll()).toEqual(users);
     });
   });
 
   describe('createUser', () => {
-    it('should create a new user and populate doctor or patient based on role', async () => {
+    it('should create a new user and return it', async () => {
       const registerDto = {
-        username: 'user1',
-        email: 'user1@example.com',
-        password: 'password123',
-        role: 'doctor', // or 'patient'
-        age: 30,
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password',
         sex: 'male',
-        phone: "9657972133",
+        age: 30,
+        role: 'doctor',
+        phone: '1234567890',
+        services: ['General'],
+        speciality: ['General'],
+        default_fee: 100,
+        average_consulting_time: "30",
+        facility_name: 'Test Facility',
+        facility_type: 'Clinic',
+        facility_location: 'Test Location',
       };
-
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-      const newUser = {
+      const savedUser = new User();
+      savedUser.id = 1;
+      savedUser.username = registerDto.username;
+      savedUser.email = registerDto.email;
+      savedUser.password = hashedPassword;
+      savedUser.sex = registerDto.sex;
+      savedUser.age = registerDto.age;
+      savedUser.role = registerDto.role;
+      savedUser.phone = registerDto.phone;
+
+      jest.spyOn(userRepository, 'create').mockReturnValue(savedUser);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(savedUser);
+      jest.spyOn(userRepository, 'update').mockResolvedValue(undefined);
+
+      const doctor: Doctor = {
         id: 1,
-        username: 'user1',
-        email: 'user1@example.com',
-        age: 30,
-        sex: 'male',
-        role: 'doctor', // or 'patient'
-        password: hashedPassword,
-        phone: "9657972133",
-        created_at: new Date(),
-        updated_at: new Date(),
-        roleEntity: {
-          roles_name: 'doctor',
-          appointment_permission: [],
-          support_tickets_permissions: [],
-          feedback_permission: [],
-          users: [], // Assuming users is an array, adjust as necessary
-        }, // Assuming roleEntity is an object, adjust as necessary
+        services: ['General'],
+        speciality: ['General'],
+        default_fee: 100,
+        average_consulting_time: '30',
+        facility_name: 'Test Facility',
+        facility_type: 'Clinic',
+        user: savedUser,
+        facility_location: 'Test Location',
+        appointments: [],
+        chat: [],
+        timings: [],
+        user_id: 0
       };
 
-      jest.spyOn(userRepository, 'create').mockReturnValue(newUser);
-      jest.spyOn(userRepository, 'save').mockResolvedValue(newUser);
-      jest.spyOn(doctorRepository, 'create').mockReturnValue({});
-      jest.spyOn(patientRepository, 'create').mockReturnValue({});
-
+      jest
+        .spyOn(doctorService, 'createDoctorForUser')
+        .mockResolvedValue(doctor);
+      
       const result = await service.createUser(registerDto);
-
-      expect(result).toEqual(newUser);
+      
+      expect(result).toEqual(savedUser);
+      expect(doctorService.createDoctorForUser).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('validateUser', () => {
-    it('should validate user credentials', async () => {
-      const loginDto = { username: 'user1', password: 'password123', phone: "9657972133" };
-      const user = {
-        id: 1,
-        username: 'user1',
-        email: 'user1@example.com',
-        password: await bcrypt.hash('password123', 10),
-        age: 30,
-        sex: 'male',
-        role: 'doctor', // or 'patient'
-        phone: "9657972133",
-        created_at: new Date(),
-        updated_at: new Date(),
-        roleEntity: {
-          roles_name: 'doctor',
-          appointment_permission: [],
-          support_tickets_permissions: [],
-          feedback_permission: [],
-          users: [], // Assuming users is an array, adjust as necessary
-        },
-      };
+    it('should return a user if credentials are valid', async () => {
+      const loginDto = { username: 'testuser', password: 'password', phone: '1234567890' };
+      const user = new User();
+      user.username = loginDto.username;
+      user.password = await bcrypt.hash(loginDto.password, 10);
+
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
+      jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
 
-      const result = await service.validateUser(loginDto);
-
-      expect(result).toEqual(user);
+      expect(await service.validateUser(loginDto)).toEqual(user);
     });
 
-    it('should return null if user is not found', async () => {
-      const loginDto = { username: 'user1', password: 'password123' , phone: "9657972133" };
+    it('should return null if credentials are invalid', async () => {
+      const loginDto = { username: 'testuser', password: 'password', phone: '1234567890' };
+
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
-      const result = await service.validateUser(loginDto);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null if password is incorrect', async () => {
-      const loginDto = { username: 'user1', password: 'wrongpassword', phone: "9657972133" };
-      const user = {
-        id: 1,
-        username: 'user1',
-        email: 'user1@example.com',
-        password: await bcrypt.hash('password123', 10),
-        age: 30,
-        sex: 'male',
-        role: 'doctor', // or 'patient'
-        phone: "9657972133",
-        created_at: new Date(),
-        updated_at: new Date(),
-        roleEntity: {
-          roles_name: 'doctor',
-          appointment_permission: [],
-          support_tickets_permissions: [],
-          feedback_permission: [],
-          users: [], // Assuming users is an array, adjust as necessary
-        },
-      };
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
-
-      const result = await service.validateUser(loginDto);
-
-      expect(result).toBeNull();
+      expect(await service.validateUser(loginDto)).toBeNull();
     });
   });
 });
