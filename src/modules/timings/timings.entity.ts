@@ -15,6 +15,12 @@ export class Timings {
   @Column({ type: 'time' })
   to: string;
 
+  @Column({ type: 'time' })
+  break_from: string;
+
+  @Column({ type: 'time' })
+  break_to: string;
+
   @Column()
   doctor_user_id: number;
 

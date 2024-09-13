@@ -87,6 +87,20 @@ type RoleOutputForModification {
   message: String!
 }
 
+type getAllTimingsForADoctorOutputDTO {
+  id: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
+}
+
+type timingsOutputs {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -96,6 +110,7 @@ type Query {
   getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+  getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
 }
 
 input searchDTO {
@@ -129,6 +144,9 @@ type Mutation {
   deletePatient(user_id: Float!): responseForModificationDTOPaitent!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
+  deleteSingleTiming(doctor_id: Float!, day: String!): timingsOutputs!
+  addTiming(createTimingDTO: createTimingDto!): timingsOutputs!
 }
 
 input LoginInput {
@@ -176,4 +194,20 @@ input UpdatePatientDto {
   relation: [String!]
   family_member: [Float!]
   health_issues: [String!]
+}
+
+input UpdateTimingDto {
+  to: String
+  from: String
+  break_from: String
+  break_to: String
+}
+
+input createTimingDto {
+  doctor_user_id: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
 }

@@ -14,6 +14,7 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { GraphqlModule } from './graphql/graphql.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { PatientModule } from './modules/Patient/patient.module';
+import { TimingModule } from './modules/timings/timings.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PatientModule } from './modules/Patient/patient.module';
     GraphqlModule,
     RolesModule,
     PatientModule,
+    TimingModule,
     JwtModule.register({
       secret: 'x&92Kv^Zc7b9@JN5Q',
       signOptions: { expiresIn: '1h' },
