@@ -45,11 +45,11 @@ export class DoctorService {
         'doctor.facility_location',
         'timings',
       ])
-      .where('doctor.id = :id', { id })
+      .where('doctor.user_id = :id', { id })
       .getOne();
 
     const mappedDoctor: DoctorResponseDto = {
-      id: doctor.id,
+      id: doctor.user_id,
       username: doctor.user.username,
       services: doctor.services,
       speciality: doctor.speciality,
@@ -68,12 +68,11 @@ export class DoctorService {
     const doctors = await this.doctorRepository
       .createQueryBuilder('doctor')
       .leftJoinAndSelect('doctor.user', 'user')
-      .select(['doctor.id', 'user.username', 'user.id'])
+      .select(['doctor.user_id', 'user.username', 'user.id'])
       .getMany();
 
     const mappedDoctors = doctors.map((doctor) => ({
-      id: doctor.user.id,
-
+      id: doctor.user_id,
       username: doctor.user.username,
     }));
 
