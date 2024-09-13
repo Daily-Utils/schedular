@@ -8,6 +8,8 @@ import {
   responseForModificationDTOPaitent,
 } from './dtos/output.dto';
 import { UpdatePatientDto } from './dtos/update_patient.dto';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class PatientResolver {
@@ -16,19 +18,31 @@ export class PatientResolver {
     private readonly patientService: PatientService,
   ) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [PatientOutput])
   async getAllPatientDetails() {
     return this.patientService.getAllPatients();
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => PatientOutput)
   async getPatientByUserId(@Args('user_id') user_id: number) {
     return this.patientService.getPatientByUserId(user_id);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => responseForModificationDTOPaitent)
   async modifyPatientDetails(
     @Args('user_id') user_id: number,
@@ -49,7 +63,11 @@ export class PatientResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => responseForModificationDTOPaitent)
   async deletePatient(@Args('user_id') user_id: number) {
     try {
