@@ -74,6 +74,11 @@ export class RegisterInput {
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'doctor')
+  experience?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @ValidateIf((o) => o.role === 'doctor')
   facility_name?: string;
 
   @Field({ nullable: true })

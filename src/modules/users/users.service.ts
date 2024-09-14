@@ -55,6 +55,7 @@ export class UsersService {
         services: registerDto.services,
         speciality: registerDto.speciality,
         default_fee: registerDto.default_fee,
+        experience: registerDto.experience || 0,
         average_consulting_time: registerDto.average_consulting_time,
         facility_name: registerDto.facility_name,
         facility_type: registerDto.facility_type,

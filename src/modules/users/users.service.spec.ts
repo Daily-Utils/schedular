@@ -106,6 +106,7 @@ describe('UsersService', () => {
         services: ['General'],
         speciality: ['General'],
         default_fee: 100,
+        experience: 0,
         average_consulting_time: '30',
         facility_name: 'Test Facility',
         facility_type: 'Clinic',
