@@ -2,7 +2,6 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SupportTicketsService } from './supporttickets.service';
 import { Inject, Logger } from '@nestjs/common';
 import { SupportOutputDTO, supportTicketCreateOutputDTO } from './dtos/output.dto';
-import { OpenForDevelopment } from '../auth/auth.decorator';
 import { CreateSupportTicketDto } from './dtos/createSupportTicket,dto';
 import { UpdateSupportDTO } from './dtos/updateSupportDTO';
 import { Roles } from '../roles/roles.decorator';
