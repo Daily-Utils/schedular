@@ -5,6 +5,8 @@ import { SupportOutputDTO, supportTicketCreateOutputDTO } from './dtos/output.dt
 import { OpenForDevelopment } from '../auth/auth.decorator';
 import { CreateSupportTicketDto } from './dtos/createSupportTicket,dto';
 import { UpdateSupportDTO } from './dtos/updateSupportDTO';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class SupportTicketsResolver {
@@ -13,7 +15,11 @@ export class SupportTicketsResolver {
     private supportTicketsService: SupportTicketsService,
   ) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [supportTicketCreateOutputDTO])
   async getAllSupportTickets(@Args('patient_user_id') patient_user_id: number) {
     return await this.supportTicketsService.getAllSupportTickets(
@@ -21,7 +27,11 @@ export class SupportTicketsResolver {
     );
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => supportTicketCreateOutputDTO)
   async createSupportTicket(
     @Args('createSupportTicket') createSupportTicket: CreateSupportTicketDto,
@@ -31,7 +41,11 @@ export class SupportTicketsResolver {
     );
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => SupportOutputDTO)
   async updateSupportTicket(
     @Args('updateSupportTicket') updateSupportTicket: UpdateSupportDTO,
@@ -53,7 +67,11 @@ export class SupportTicketsResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => SupportOutputDTO)
   async deleteSupportTicket(@Args('id') id: number) {
     try {
