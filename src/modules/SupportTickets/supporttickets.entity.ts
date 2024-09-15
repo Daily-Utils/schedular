@@ -16,6 +16,6 @@ export class SupportTickets {
   patient_user_id: number;
 
   @ManyToOne(() => Patient, (patient) => patient.supportTickets)
-  @JoinColumn({ name: 'patient_user_id' })
+  @JoinColumn({ name: 'patient_user_id', referencedColumnName: 'user_id' })
   patient: Patient;
 }

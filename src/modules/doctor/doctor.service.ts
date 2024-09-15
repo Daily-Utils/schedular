@@ -34,7 +34,7 @@ export class DoctorService {
       .leftJoinAndSelect('doctor.user', 'user')
       .leftJoinAndSelect('doctor.timings', 'timings')
       .select([
-        'doctor.id',
+        'doctor.user_id',
         'user.username',
         'doctor.services',
         'doctor.speciality',
