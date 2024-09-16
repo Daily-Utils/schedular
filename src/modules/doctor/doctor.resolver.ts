@@ -34,7 +34,8 @@ export class DoctorResolver {
   })
   @Query(() => DoctorResponseDto)
   async findDoctorById(@Args('id') id: number, @Context() context: any) {
-    return await this.doctorService.getSingleDoctorById(id);
+    const doctors = await this.doctorService.getSingleDoctorById(id);
+    return doctors;
   }
 
   @Roles([Role.Admin, Role.Doctor], {

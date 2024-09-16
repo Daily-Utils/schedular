@@ -21,6 +21,11 @@ export class CreateDoctorDto {
   @IsString({ each: true })
   speciality: string[];
 
+  @Field(() => Number, { nullable: true })
+  @IsNumber()
+  @IsNotEmpty()
+  experience?: number;
+
   @Field()
   @IsNumber()
   @IsNotEmpty()

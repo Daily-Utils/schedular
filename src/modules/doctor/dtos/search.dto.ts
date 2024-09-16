@@ -65,6 +65,9 @@ export class singleSearchResponse{
     speciality: string[];
 
     @Field()
+    experience: number;
+
+    @Field()
     average_consulting_time: string;
 
     @Field()

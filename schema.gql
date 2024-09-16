@@ -37,6 +37,7 @@ type DoctorResponseDto {
   username: String!
   services: [String!]!
   speciality: [String!]!
+  experience: Float!
   default_fee: Float!
   average_consulting_time: String!
   facility_name: String!
@@ -50,6 +51,7 @@ type singleSearchResponse {
   username: String!
   services: [String!]!
   speciality: [String!]!
+  experience: Float!
   average_consulting_time: String!
   facility_name: String!
   facility_type: String!
@@ -101,6 +103,18 @@ type timingsOutputs {
   message: String!
 }
 
+type SupportOutputDTO {
+  status: String!
+  message: String!
+}
+
+type supportTicketCreateOutputDTO {
+  id: Float!
+  status: String!
+  message: String!
+  patient_user_id: Float!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -111,6 +125,7 @@ type Query {
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
+  getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
 }
 
 input searchDTO {
@@ -147,6 +162,9 @@ type Mutation {
   updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
   deleteSingleTiming(doctor_id: Float!, day: String!): timingsOutputs!
   addTiming(createTimingDTO: createTimingDto!): timingsOutputs!
+  createSupportTicket(createSupportTicket: CreateSupportTicketDto!): supportTicketCreateOutputDTO!
+  updateSupportTicket(updateSupportTicket: UpdateSupportDTO!): SupportOutputDTO!
+  deleteSupportTicket(id: Float!): SupportOutputDTO!
 }
 
 input LoginInput {
@@ -167,6 +185,7 @@ input RegisterInput {
   speciality: [String!]
   default_fee: Float
   average_consulting_time: String
+  experience: Float
   facility_name: String
   facility_type: String
   facility_location: String
@@ -180,6 +199,7 @@ input RegisterInput {
 input UpdateDoctorDto {
   services: [String!]
   speciality: [String!]
+  experience: Float
   default_fee: Float
   average_consulting_time: String
   facility_name: String
@@ -210,4 +230,17 @@ input createTimingDto {
   to: String!
   break_from: String!
   break_to: String!
+}
+
+input CreateSupportTicketDto {
+  patient_user_id: Float!
+  message: String!
+  status: String!
+}
+
+input UpdateSupportDTO {
+  id: Float!
+  message: String!
+  status: String!
+  patient_user_id: Float!
 }

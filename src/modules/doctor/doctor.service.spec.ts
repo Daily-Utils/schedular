@@ -9,6 +9,7 @@ import { CreateDoctorDto } from './dtos/doctor.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { searchDTO } from './dtos/search.dto';
 
+
 describe('DoctorService', () => {
   let service: DoctorService;
   let doctorRepository: Repository<Doctor>;
@@ -59,6 +60,7 @@ describe('DoctorService', () => {
         default_fee: 100,
         average_consulting_time: '30',
         facility_name: 'Clinic',
+        experience: 1,
         facility_type: 'clinic',
         facility_location: 'Location',
       };
@@ -74,7 +76,7 @@ describe('DoctorService', () => {
     });
   });
 
-  describe('getSingleDoctorById', () => {
+  describe.only('getSingleDoctorById', () => {
     it('should return a single doctor by id', async () => {
       const doctor = {
         id: 1,
@@ -82,6 +84,7 @@ describe('DoctorService', () => {
         user: { username: 'user1' },
         services: ['consulting'],
         speciality: ['cardiology'],
+        experience: 1,
         default_fee: 100,
         average_consulting_time: '30',
         facility_name: 'Clinic',
@@ -102,6 +105,7 @@ describe('DoctorService', () => {
         username: doctor.user.username,
         services: doctor.services,
         speciality: doctor.speciality,
+        experience: doctor.experience, // Ensure experience is included
         default_fee: doctor.default_fee,
         average_consulting_time: doctor.average_consulting_time,
         facility_name: doctor.facility_name,

@@ -70,6 +70,10 @@ export class DoctorResponseDto {
 
   @Field()
   @IsNumber()
+  experience: number;
+
+  @Field()
+  @IsNumber()
   default_fee: number;
 
   @Field()

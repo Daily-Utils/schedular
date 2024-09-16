@@ -6,6 +6,7 @@ import {
   OneToOne,
   JoinColumn,
   PrimaryColumn,
+  Unique,
 } from 'typeorm';
 import { Feedback } from '../feedback/feedbacks.entity';
 import { Appointment } from '../appointment/appointment.entity';
@@ -38,23 +39,27 @@ export class Patient {
   })
   feedbacks: Feedback[];
 
+  @Unique(['user_id'])
+  @Column({ nullable: true })
+  user_id: number | null;
+
   @OneToMany(() => Appointment, (appointment) => appointment.patient, {
     cascade: true,
   })
+  @JoinColumn({ name: 'user_id' })
   appointments: Appointment[];
 
   @OneToMany(() => Chat, (chat) => chat.patient, {
     cascade: true,
   })
+  @JoinColumn({ name: 'user_id' })
   chat: Chat[];
 
   @OneToMany(() => SupportTickets, (supportTickets) => supportTickets.patient, {
     cascade: true,
   })
+  @JoinColumn({ name: 'user_id' })
   supportTickets: SupportTickets[];
-
-  @Column({ nullable: true })
-  user_id: number | null;
 
   @OneToOne(() => User, (user) => user.patient, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

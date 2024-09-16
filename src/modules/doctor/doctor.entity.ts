@@ -23,6 +23,9 @@ export class Doctor {
   speciality: string[];
 
   @Column({ type: 'decimal' })
+  experience: number;
+
+  @Column({ type: 'decimal' })
   default_fee: number;
 
   @Column({ type: 'time' })
