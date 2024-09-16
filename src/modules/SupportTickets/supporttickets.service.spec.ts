@@ -73,6 +73,8 @@ describe('SupportTicketsService', () => {
       const updateSupportDTO: UpdateSupportDTO = {
         id: 1,
         patient_user_id: 1,
+        message: 'Test message',
+        status: 'Test status',
         // Add necessary properties here
       };
       const updateResult = { affected: 1 };
@@ -83,8 +85,11 @@ describe('SupportTicketsService', () => {
         updateResult,
       );
       expect(repository.update).toHaveBeenCalledWith(
-        updateSupportDTO.patient_user_id,
-        updateSupportDTO,
+        { id: updateSupportDTO.id },
+        {
+          message: updateSupportDTO.message,
+          status: updateSupportDTO.status,
+        },
       );
     });
   });
