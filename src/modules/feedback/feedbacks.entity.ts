@@ -4,8 +4,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
+import { ObjectType } from '@nestjs/graphql';
+
 
 @Entity('Feedbacks')
 export class Feedback {
@@ -15,22 +19,20 @@ export class Feedback {
   @Column()
   patient_id: number;
 
-  @Column({ type: 'date' })
-  time: Date;
-
-  @Column({ type: 'double precision' })
+  
+  @Column({ type: 'decimal' })
   consulting_feedback: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'decimal' })
   clinic_feedback: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'decimal' })
   waiting_time: number;
 
-  @Column({ type: 'date' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'date' })
+  @UpdateDateColumn()
   updated_at: Date;
 
   @ManyToOne(() => Patient, (patient) => patient.feedbacks)

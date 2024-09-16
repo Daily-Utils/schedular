@@ -13,6 +13,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { GraphqlModule } from './graphql/graphql.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
+import { SupportTicketModule } from './modules/SupportTickets/supporttickets.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { RolesModule } from './modules/roles/roles.module';
     UsersModule,
     GraphqlModule,
     RolesModule,
+    FeedbackModule,
+    SupportTicketModule,
     JwtModule.register({
       secret: 'x&92Kv^Zc7b9@JN5Q',
       signOptions: { expiresIn: '1h' },

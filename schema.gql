@@ -12,6 +12,13 @@ type UserGraphQL {
   phone: String!
 }
 
+type SupportTickets {
+  id: Float!
+  message: String!
+  status: String!
+  patient_id: Float!
+}
+
 type AuthResponse {
   access_token: String!
 }
@@ -28,8 +35,17 @@ type RoleOutputForModification {
   message: String!
 }
 
+type FeedbackOutput {
+  id: Float!
+  patient_id: Float!
+  consulting_feedback: Float!
+  clinic_feedback: Float!
+  waiting_time: Float!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
+  getSupportTicket(id: Float!): SupportTickets
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
 }
@@ -47,6 +63,9 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
+  createFeedback(feedbackData: CreateFeedbackInput!): FeedbackOutput!
+  createSupportTicket(createSupportTicketInput: CreateSupportTicketInput!): SupportTickets!
+  updateSupportTicket(id: Float!, updateSupportTicketInput: UpdateSupportTicketInput!): SupportTickets!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
 }
@@ -75,4 +94,21 @@ input RegisterInput {
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
+}
+
+input CreateFeedbackInput {
+  patient_id: Float!
+  consulting_feedback: Float!
+  clinic_feedback: Float!
+  waiting_time: Float!
+}
+
+input CreateSupportTicketInput {
+  message: String!
+  status: String
+  patient_id: Float!
+}
+
+input UpdateSupportTicketInput {
+  status: String!
 }
