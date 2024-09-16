@@ -71,6 +71,7 @@ describe('SupportTicketsService', () => {
   describe('updateSupportTicketStatus', () => {
     it('should update the status of a support ticket', async () => {
       const updateSupportDTO: UpdateSupportDTO = {
+        id: 1,
         patient_user_id: 1,
         // Add necessary properties here
       };

@@ -239,6 +239,7 @@ input CreateSupportTicketDto {
 }
 
 input UpdateSupportDTO {
+  id: Float!
   message: String!
   status: String!
   patient_user_id: Float!

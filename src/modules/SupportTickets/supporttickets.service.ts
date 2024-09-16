@@ -25,8 +25,11 @@ export class SupportTicketsService {
 
   async updateSupportTicketStatus(updateSupportDTO: UpdateSupportDTO) {
     return await this.supportTicketsRepository.update(
-      updateSupportDTO.patient_user_id,
-      updateSupportDTO,
+      { id: updateSupportDTO.id },
+      {
+        status: updateSupportDTO.status,
+        message: updateSupportDTO.message,
+      },
     );
   }
 
