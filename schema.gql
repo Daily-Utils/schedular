@@ -57,6 +57,20 @@ type singleSearchResponse {
   default_fee: Float!
 }
 
+type PatientOutput {
+  id: Float!
+  username: String!
+  age: Float!
+  blood_group: String!
+  health_issues: [String!]!
+  weight: Float!
+}
+
+type responseForModificationDTOPaitent {
+  status: String!
+  message: String!
+}
+
 type AuthResponse {
   access_token: String!
 }
@@ -73,13 +87,30 @@ type RoleOutputForModification {
   message: String!
 }
 
+type getAllTimingsForADoctorOutputDTO {
+  id: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
+}
+
+type timingsOutputs {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
+  getAllPatientDetails: [PatientOutput!]!
+  getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+  getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
 }
 
 input searchDTO {
@@ -109,8 +140,13 @@ type Mutation {
   register(register: RegisterInput!): UserGraphQL!
   modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
   deleteDoctorById(id: Float!): responseForModificationDTO!
+  modifyPatientDetails(user_id: Float!, updatePatientDetails: UpdatePatientDto!): responseForModificationDTOPaitent!
+  deletePatient(user_id: Float!): responseForModificationDTOPaitent!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
+  deleteSingleTiming(doctor_id: Float!, day: String!): timingsOutputs!
+  addTiming(createTimingDTO: createTimingDto!): timingsOutputs!
 }
 
 input LoginInput {
@@ -137,6 +173,8 @@ input RegisterInput {
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
+  blood_group: String
+  weight: Float
 }
 
 input UpdateDoctorDto {
@@ -148,4 +186,28 @@ input UpdateDoctorDto {
   facility_type: String
   facility_location: String
   user_id: Float
+}
+
+input UpdatePatientDto {
+  blood_group: String
+  weight: Float
+  relation: [String!]
+  family_member: [Float!]
+  health_issues: [String!]
+}
+
+input UpdateTimingDto {
+  to: String
+  from: String
+  break_from: String
+  break_to: String
+}
+
+input createTimingDto {
+  doctor_user_id: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
 }

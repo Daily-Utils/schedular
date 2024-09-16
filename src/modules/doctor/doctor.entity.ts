@@ -47,6 +47,7 @@ export class Doctor {
 
   @OneToMany(() => Timings, (timings) => timings.doctor, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   timings: Timings[];
 

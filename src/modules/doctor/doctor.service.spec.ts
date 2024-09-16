@@ -78,6 +78,7 @@ describe('DoctorService', () => {
     it('should return a single doctor by id', async () => {
       const doctor = {
         id: 1,
+        user_id: 1,
         user: { username: 'user1' },
         services: ['consulting'],
         speciality: ['cardiology'],
@@ -97,7 +98,7 @@ describe('DoctorService', () => {
       } as any);
 
       expect(await service.getSingleDoctorById(1)).toEqual({
-        id: doctor.id,
+        id: doctor.user_id,
         username: doctor.user.username,
         services: doctor.services,
         speciality: doctor.speciality,
@@ -116,6 +117,7 @@ describe('DoctorService', () => {
       const doctors = [
         {
           id: 1,
+          user_id: 1,
           user: { id: 1, username: 'user1' },
         },
       ];
@@ -129,7 +131,7 @@ describe('DoctorService', () => {
       expect(await service.getDoctors()).toEqual({
         doctors: [
           {
-            id: doctors[0].user.id,
+            id: doctors[0].user_id,
             username: doctors[0].user.username,
           },
         ],

@@ -69,6 +69,8 @@ export class UsersService {
         relation: registerDto.relation,
         family_member: registerDto.family_member,
         user_id: savedUser.id,
+        blood_group: registerDto.blood_group || '',
+        weight: registerDto.weight || 0,
       };
       const patient =
         await this.patientService.createPatientForUser(patientDTO);
