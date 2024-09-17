@@ -115,6 +115,7 @@ describe('UsersService', () => {
         appointments: [],
         chat: [],
         timings: [],
+        feedbacks: [],
         user_id: 0
       };
 
