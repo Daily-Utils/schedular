@@ -3,14 +3,19 @@ import { FeedbackService } from './feedback.service';
 import { Feedback } from './feedbacks.entity';
 import { CreateFeedbackInput, UpdateFeedbackInput } from './dto/feedback.dto';
 import { FeedbackCreateOutput, FeedbackUpdateDeleteOutput } from './dto/feedbackoutput.dto';
-import { OpenForDevelopment } from '../auth/auth.decorator';
 import { Logger } from '@nestjs/common';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class FeedbackResolver {
   constructor(private readonly feedbackService: FeedbackService) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [FeedbackCreateOutput])
   async getFeedbacksForAPaitent(
     @Args('patient_user_id') patient_user_id: number,
@@ -18,7 +23,11 @@ export class FeedbackResolver {
     return this.feedbackService.getFeedbacksForAPaitent(patient_user_id);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => FeedbackCreateOutput)
   async createFeedback(
     @Args('feedbackData') feedbackData: CreateFeedbackInput,
@@ -26,25 +35,33 @@ export class FeedbackResolver {
     return this.feedbackService.createFeedback(feedbackData);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => FeedbackUpdateDeleteOutput)
   async deleteFeedback(@Args('id') id: number) {
-    try{
+    try {
       await this.feedbackService.deleteFeedback(id);
       return {
         status: 'Success',
         message: 'Feedback deleted successfully',
       };
-    }catch(e){
-        Logger.error(e);
-        return {
-          status: 'Failure',
-          message: 'Failed to delete feedback'
-        };
+    } catch (e) {
+      Logger.error(e);
+      return {
+        status: 'Failure',
+        message: 'Failed to delete feedback',
+      };
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => FeedbackUpdateDeleteOutput)
   async updateFeedback(
     @Args('feedbackUpdateData') feedbackData: UpdateFeedbackInput,
