@@ -21,6 +21,9 @@ export class Appointment {
   @Column()
   doctor_user_id: number;
 
+  @Column({ type: 'datetime' })
+  appointment_date_time: Date;
+
   @Column({ type: 'decimal' })
   fees: number;
 
