@@ -1,5 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 @InputType()
 export class createAppointmentDTO {
@@ -12,12 +18,19 @@ export class createAppointmentDTO {
   doctor_user_id: number;
 
   @Field()
+  @IsDate()
+  appointment_date_time: Date;
+
+  @Field()
+  @IsString()
+  status: string
+
+  @Field()
   @IsNumber()
   fees: number;
 
   @Field()
   @IsString()
-  @IsEmpty()
   visit_type: string;
 
   @Field()
@@ -26,7 +39,6 @@ export class createAppointmentDTO {
 
   @Field()
   @IsString()
-  @IsEmpty()
   patient_complaint: string;
 
   @Field()
@@ -37,30 +49,34 @@ export class createAppointmentDTO {
 @InputType()
 export class updateAppointmentDTO {
   @Field()
-  @IsNumber()
-  id: number;
-
-  @Field()
   @IsOptional()
-  fees: number;
+  id?: number;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
-  visit_type: string;
+  fees?: number;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
-  ivr_app_id: string;
+  appointment_date_time?: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
-  patient_complaint: string;
+  visit_type?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
-  patient_current_weight: number;
+  ivr_app_id?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
-  status: string;
+  patient_complaint?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  patient_current_weight?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  status?: string;
 }

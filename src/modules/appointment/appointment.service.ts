@@ -37,12 +37,12 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentDTO: updateAppointmentDTO) {
     const updateData = Object.fromEntries(
       Object.entries(updateAppointmentDTO).filter(
-        ([_, v]) => v !== undefined || v !== null,
+        ([_, v]) => v !== undefined && v !== null,
       ),
     );
 
     delete updateData.id;
-    
+
     return await this.appointmentRepository.update(
       updateAppointmentDTO.id,
       updateData,
