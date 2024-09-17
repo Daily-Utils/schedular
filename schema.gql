@@ -12,11 +12,67 @@ type UserGraphQL {
   phone: String!
 }
 
-type SupportTickets {
-  id: Float!
-  message: String!
+
+type responseForModificationDTO {
   status: String!
-  patient_id: Float!
+  message: String!
+}
+
+type responseForAllDoctorsFind {
+  id: Float!
+  username: String!
+}
+
+type responseForAllDoctorsFindArray {
+  doctors: [responseForAllDoctorsFind!]!
+}
+
+type TimingDto {
+  day: String!
+  to: String!
+  from: String!
+}
+
+type DoctorResponseDto {
+  id: Float!
+  username: String!
+  services: [String!]!
+  speciality: [String!]!
+  experience: Float!
+  default_fee: Float!
+  average_consulting_time: String!
+  facility_name: String!
+  facility_type: String!
+  facility_location: String!
+  timings: [TimingDto!]!
+}
+
+type singleSearchResponse {
+  id: Float!
+  username: String!
+  services: [String!]!
+  speciality: [String!]!
+  experience: Float!
+  average_consulting_time: String!
+  facility_name: String!
+  facility_type: String!
+  facility_location: String!
+  default_fee: Float!
+}
+
+type PatientOutput {
+  id: Float!
+  username: String!
+  age: Float!
+  blood_group: String!
+  health_issues: [String!]!
+  weight: Float!
+}
+
+type responseForModificationDTOPaitent {
+  status: String!
+  message: String!
+
 }
 
 type AuthResponse {
@@ -35,19 +91,59 @@ type RoleOutputForModification {
   message: String!
 }
 
-type FeedbackOutput {
+
+type getAllTimingsForADoctorOutputDTO {
   id: Float!
-  patient_id: Float!
-  consulting_feedback: Float!
-  clinic_feedback: Float!
-  waiting_time: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
+}
+
+type timingsOutputs {
+  status: String!
+  message: String!
+}
+
+type SupportOutputDTO {
+  status: String!
+  message: String!
+}
+
+type supportTicketCreateOutputDTO {
+  id: Float!
+  status: String!
+  message: String!
+  patient_user_id: Float!
+
 }
 
 type Query {
   findAll: [UserGraphQL!]!
-  getSupportTicket(id: Float!): SupportTickets
+
+  findAllDoctors: responseForAllDoctorsFindArray!
+  findDoctorById(id: Float!): DoctorResponseDto!
+  searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
+  getAllPatientDetails: [PatientOutput!]!
+  getPatientByUserId(user_id: Float!): PatientOutput!
+
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
+  getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
+  getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
+}
+
+input searchDTO {
+  phone_number: String
+  email: String
+  username: String
+  speciality: [String!]
+  services: [String!]
+  facility_name: String
+  facility_location: String
+  facility_type: String
+  default_fee: Float
 }
 
 input RoleInput {
@@ -63,11 +159,20 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
-  createFeedback(feedbackData: CreateFeedbackInput!): FeedbackOutput!
-  createSupportTicket(createSupportTicketInput: CreateSupportTicketInput!): SupportTickets!
-  updateSupportTicket(id: Float!, updateSupportTicketInput: UpdateSupportTicketInput!): SupportTickets!
+
+  modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
+  deleteDoctorById(id: Float!): responseForModificationDTO!
+  modifyPatientDetails(user_id: Float!, updatePatientDetails: UpdatePatientDto!): responseForModificationDTOPaitent!
+  deletePatient(user_id: Float!): responseForModificationDTOPaitent!
+
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
+  updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
+  deleteSingleTiming(doctor_id: Float!, day: String!): timingsOutputs!
+  addTiming(createTimingDTO: createTimingDto!): timingsOutputs!
+  createSupportTicket(createSupportTicket: CreateSupportTicketDto!): supportTicketCreateOutputDTO!
+  updateSupportTicket(updateSupportTicket: UpdateSupportDTO!): SupportOutputDTO!
+  deleteSupportTicket(id: Float!): SupportOutputDTO!
 }
 
 input LoginInput {
@@ -88,27 +193,64 @@ input RegisterInput {
   speciality: [String!]
   default_fee: Float
   average_consulting_time: String
+  experience: Float
   facility_name: String
   facility_type: String
   facility_location: String
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
+
+  blood_group: String
+  weight: Float
 }
 
-input CreateFeedbackInput {
-  patient_id: Float!
-  consulting_feedback: Float!
-  clinic_feedback: Float!
-  waiting_time: Float!
+input UpdateDoctorDto {
+  services: [String!]
+  speciality: [String!]
+  experience: Float
+  default_fee: Float
+  average_consulting_time: String
+  facility_name: String
+  facility_type: String
+  facility_location: String
+  user_id: Float
 }
 
-input CreateSupportTicketInput {
+input UpdatePatientDto {
+  blood_group: String
+  weight: Float
+  relation: [String!]
+  family_member: [Float!]
+  health_issues: [String!]
+}
+
+input UpdateTimingDto {
+  to: String
+  from: String
+  break_from: String
+  break_to: String
+}
+
+input createTimingDto {
+  doctor_user_id: Float!
+  day: String!
+  from: String!
+  to: String!
+  break_from: String!
+  break_to: String!
+}
+
+input CreateSupportTicketDto {
+  patient_user_id: Float!
   message: String!
-  status: String
-  patient_id: Float!
+  status: String!
 }
 
-input UpdateSupportTicketInput {
+input UpdateSupportDTO {
+  id: Float!
+  message: String!
   status: String!
+  patient_user_id: Float!
+
 }

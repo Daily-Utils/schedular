@@ -1,33 +1,94 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
-import { SupportTicketService } from './supporttickets.service';
-import { SupportTickets } from './supporttickets.entity';
-import { CreateSupportTicketInput } from './dtos/supporttickets.dto';
-import { UpdateSupportTicketInput } from './dtos/updatesupporttickets.dto';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { SupportTicketsService } from './supporttickets.service';
+import { Inject, Logger } from '@nestjs/common';
+import {
+  SupportOutputDTO,
+  supportTicketCreateOutputDTO,
+} from './dtos/output.dto';
+import { CreateSupportTicketDto } from './dtos/createSupportTicket.dto';
+import { UpdateSupportDTO } from './dtos/updateSupportDTO';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
-@Resolver(() => SupportTickets)
-export class SupportTicketResolver {
-  constructor(private readonly supportTicketService: SupportTicketService) {}
+@Resolver()
+export class SupportTicketsResolver {
+  constructor(
+    @Inject(SupportTicketsService)
+    private supportTicketsService: SupportTicketsService,
+  ) {}
 
-  // Mutation to create a new support ticket
-  @Mutation(() => SupportTickets)
-  createSupportTicket(
-    @Args('createSupportTicketInput') createSupportTicketInput: CreateSupportTicketInput,
-  ): Promise<SupportTickets> {
-    return this.supportTicketService.createSupportTicket(createSupportTicketInput);
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Query(() => [supportTicketCreateOutputDTO])
+  async getAllSupportTickets(@Args('patient_user_id') patient_user_id: number) {
+    return await this.supportTicketsService.getAllSupportTickets(
+      patient_user_id,
+    );
   }
 
-  // Mutation to update a support ticket status
-  @Mutation(() => SupportTickets)
-  updateSupportTicket(
-    @Args('id') id: number,
-    @Args('updateSupportTicketInput') updateSupportTicketInput: UpdateSupportTicketInput,
-  ): Promise<SupportTickets> {
-    return this.supportTicketService.updateSupportTicket(id, updateSupportTicketInput);
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Mutation(() => supportTicketCreateOutputDTO)
+  async createSupportTicket(
+    @Args('createSupportTicket') createSupportTicket: CreateSupportTicketDto,
+  ) {
+    return await this.supportTicketsService.createSupportTicket(
+      createSupportTicket,
+    );
   }
 
-  // Query to find a support ticket by ID
-  @Query(() => SupportTickets, { nullable: true })
-  getSupportTicket(@Args('id') id: number): Promise<SupportTickets> {
-    return this.supportTicketService.findOne(id);
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Mutation(() => SupportOutputDTO)
+  async updateSupportTicket(
+    @Args('updateSupportTicket') updateSupportTicket: UpdateSupportDTO,
+  ) {
+    try {
+      await this.supportTicketsService.updateSupportTicketStatus(
+        updateSupportTicket,
+      );
+      return {
+        status: 'Success',
+        message: 'Support Ticket Updated',
+      };
+    } catch (error) {
+      Logger.log(error);
+      return {
+        status: 'Failed',
+        message: 'Support Ticket Update Failed',
+      };
+    }
+  }
+
+  @Roles([Role.Admin], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Mutation(() => SupportOutputDTO)
+  async deleteSupportTicket(@Args('id') id: number) {
+    try {
+      await this.supportTicketsService.deleteSupportTicket(id);
+      return {
+        status: 'Success',
+        message: 'Support Ticket Deleted',
+      };
+    } catch (error) {
+      Logger.log(error);
+      return {
+        status: 'Failed',
+        message: 'Support Ticket Delete Failed',
+      };
+    }
+
   }
 }

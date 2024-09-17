@@ -1,13 +1,17 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SupportTicketService } from './supporttickets.service';
-import { SupportTicketResolver } from './supporttickets.resolver';
-import { SupportTickets } from './supporttickets.entity';
-import { PatientModule } from '../Patient/patient.module';
+import { Module } from "@nestjs/common";
+import { SupportTicketsService } from "./supporttickets.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { SupportTickets } from "./supporttickets.entity";
+import { SupportTicketsResolver } from "./supporttickets.resolver";
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SupportTickets]), PatientModule],
-  providers: [SupportTicketService, SupportTicketResolver],
-  exports: [SupportTicketService],
+    imports: [
+        TypeOrmModule.forFeature([SupportTickets]),
+    ],
+    providers: [SupportTicketsService, SupportTicketsResolver],
+    controllers: [],
+    exports: []
 })
-export class SupportTicketModule {}
+export class SupportTicketsModule {}
+

@@ -1,6 +1,16 @@
-// user.entity.ts
+import { Doctor } from '../../doctor/doctor.entity';
 import { Roles } from '../../roles/roles.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
+import { Patient } from '../../Patient/patient.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -21,10 +31,10 @@ export class User {
   email: string;
 
   @Column({ unique: true })
-  phone: string; // Ensure this is of type string
+  phone: string;
 
   @Column()
-  password: string; // Password will be hashed
+  password: string;
 
   @Column({ type: 'varchar' })
   sex: string;
@@ -37,4 +47,26 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ nullable: true })
+  doctor_id: number | null;
+
+  @Column({ nullable: true })
+  patient_id: number | null;
+
+  @OneToOne(() => Doctor, (doctor) => doctor.user, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE', // This will delete the doctor when the user is deleted
+  })
+  @JoinColumn({ name: 'doctor_id' })
+  doctor: Doctor | null;
+
+  @OneToOne(() => Patient, (patient) => patient.user, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE', // This will delete the doctor when the user is deleted
+  })
+  @JoinColumn({ name: 'patient_id' })
+  patient: Patient | null;
 }

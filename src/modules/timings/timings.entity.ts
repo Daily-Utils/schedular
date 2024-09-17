@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, PrimaryColumn, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Doctor } from '../doctor/doctor.entity';
 
 @Entity('Timings')
@@ -15,10 +15,16 @@ export class Timings {
   @Column({ type: 'time' })
   to: string;
 
-  @Column()
-  doctor_id: number;
+  @Column({ type: 'time' })
+  break_from: string;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.timings)
-  @JoinColumn({ name: 'doctor_id' })
+  @Column({ type: 'time' })
+  break_to: string;
+
+  @Column()
+  doctor_user_id: number;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.timings, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'doctor_user_id' })
   doctor: Doctor;
 }
