@@ -16,7 +16,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { PatientModule } from './modules/Patient/patient.module';
 import { TimingModule } from './modules/timings/timings.module';
 import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.module';
-
+import { FeedbackModule } from './modules/feedback/feedback.module';
 
 @Module({
   imports: [
@@ -43,6 +43,7 @@ import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.mo
     PatientModule,
     TimingModule,
     SupportTicketsModule,
+    FeedbackModule,
     JwtModule.register({
       secret: 'x&92Kv^Zc7b9@JN5Q',
       signOptions: { expiresIn: '1h' },

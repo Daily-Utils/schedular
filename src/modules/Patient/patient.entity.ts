@@ -37,6 +37,7 @@ export class Patient {
   @OneToMany(() => Feedback, (feedback) => feedback.patient, {
     cascade: true,
   })
+  @JoinColumn({ name: 'user_id' })
   feedbacks: Feedback[];
 
   @Unique(['user_id'])

@@ -24,12 +24,7 @@ import { RolesModule } from '../roles/roles.module';
     forwardRef(() => RolesModule),
   ],
   controllers: [],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    AuthResolver,
-    PermissionsService
-  ],
+  providers: [AuthService, JwtStrategy, AuthResolver, PermissionsService],
   exports: [AuthService, PermissionsService],
 })
 export class AuthModule {}

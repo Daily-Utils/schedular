@@ -4,8 +4,13 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
+import { ObjectType } from '@nestjs/graphql';
+import { Doctor } from '../doctor/doctor.entity';
+
 
 @Entity('Feedbacks')
 export class Feedback {
@@ -13,27 +18,31 @@ export class Feedback {
   id: number;
 
   @Column()
-  patient_id: number;
+  patient_user_id: number;
 
-  @Column({ type: 'date' })
-  time: Date;
+  @Column()
+  doctor_user_id: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'decimal' })
   consulting_feedback: number;
 
-  @Column({ type: 'double precision' })
-  clinic_feedback: number;
+  @Column({ type: 'decimal' })
+  clinic_or_hospital_feedback: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'decimal' })
   waiting_time: number;
 
-  @Column({ type: 'date' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'date' })
+  @UpdateDateColumn()
   updated_at: Date;
 
   @ManyToOne(() => Patient, (patient) => patient.feedbacks)
-  @JoinColumn({ name: 'patient_id' })
+  @JoinColumn({ name: 'patient_user_id', referencedColumnName: 'user_id' })
   patient: Patient;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.feedbacks)
+  @JoinColumn({ name: 'doctor_user_id', referencedColumnName: 'user_id' })
+  doctor: Doctor;
 }

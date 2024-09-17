@@ -10,6 +10,7 @@ import { Appointment } from '../appointment/appointment.entity';
 import { Chat } from '../Chat/chat.entity';
 import { Timings } from '../timings/timings.entity';
 import { User } from '../users/schemas/user.entity';
+import { Feedback } from '../feedback/feedbacks.entity';
 
 @Entity('Doctor')
 export class Doctor {
@@ -53,6 +54,12 @@ export class Doctor {
     onDelete: 'CASCADE',
   })
   timings: Timings[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.doctor, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  feedbacks: Feedback[];
 
   @Column({ nullable: true })
   user_id: number | null;

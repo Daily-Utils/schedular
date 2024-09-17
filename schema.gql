@@ -115,6 +115,19 @@ type supportTicketCreateOutputDTO {
   patient_user_id: Float!
 }
 
+type FeedbackCreateOutput {
+  id: Float!
+  patient_user_id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
+}
+
+type FeedbackUpdateDeleteOutput {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -126,6 +139,7 @@ type Query {
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
   getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
+  getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
 }
 
 input searchDTO {
@@ -165,6 +179,9 @@ type Mutation {
   createSupportTicket(createSupportTicket: CreateSupportTicketDto!): supportTicketCreateOutputDTO!
   updateSupportTicket(updateSupportTicket: UpdateSupportDTO!): SupportOutputDTO!
   deleteSupportTicket(id: Float!): SupportOutputDTO!
+  createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
+  deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
+  updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
 }
 
 input LoginInput {
@@ -243,4 +260,19 @@ input UpdateSupportDTO {
   message: String!
   status: String!
   patient_user_id: Float!
+}
+
+input CreateFeedbackInput {
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
+}
+
+input UpdateFeedbackInput {
+  id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
 }
