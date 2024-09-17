@@ -10,9 +10,6 @@ import { PatientModule } from '../Patient/patient.module';
 import { DoctorModule } from '../doctor/doctor.module';
 import { PermissionsService } from './permission.service';
 import { RolesModule } from '../roles/roles.module';
-import { FeedbackModule } from '../feedback/feedback.module';
-import { PatientService } from '../Patient/patient.service';
-import { SupportTicketModule } from '../SupportTickets/supporttickets.module';
 
 @Module({
   imports: [
@@ -24,18 +21,10 @@ import { SupportTicketModule } from '../SupportTickets/supporttickets.module';
     UsersModule,
     PatientModule,
     DoctorModule,
-    FeedbackModule,
-    SupportTicketModule,
     forwardRef(() => RolesModule),
   ],
   controllers: [],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    AuthResolver,
-    PermissionsService,
-    PatientService
-  ],
+  providers: [AuthService, JwtStrategy, AuthResolver, PermissionsService],
   exports: [AuthService, PermissionsService],
 })
 export class AuthModule {}

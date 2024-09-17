@@ -1,4 +1,3 @@
-
 import { forwardRef, Module } from '@nestjs/common';
 import { Patient } from './patient.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';

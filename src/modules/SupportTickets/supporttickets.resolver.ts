@@ -17,7 +17,7 @@ export class SupportTicketsResolver {
     private supportTicketsService: SupportTicketsService,
   ) {}
 
-  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+  @Roles([Role.Admin, Role.Patient], {
     check_permission: false,
     permission_category: '',
     permission_type: '',
@@ -43,7 +43,7 @@ export class SupportTicketsResolver {
     );
   }
 
-  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+  @Roles([Role.Admin, Role.Patient], {
     check_permission: false,
     permission_category: '',
     permission_type: '',
@@ -89,6 +89,5 @@ export class SupportTicketsResolver {
         message: 'Support Ticket Delete Failed',
       };
     }
-
   }
 }

@@ -37,4 +37,3 @@ export class SupportTicketsService {
     return await this.supportTicketsRepository.delete(id);
   }
 }
-

@@ -13,11 +13,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { GraphqlModule } from './graphql/graphql.module';
 import { RolesModule } from './modules/roles/roles.module';
-import { FeedbackModule } from './modules/feedback/feedback.module';
-import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.module';
 import { PatientModule } from './modules/Patient/patient.module';
 import { TimingModule } from './modules/timings/timings.module';
-
+import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
 
 @Module({
   imports: [
@@ -41,10 +40,10 @@ import { TimingModule } from './modules/timings/timings.module';
     UsersModule,
     GraphqlModule,
     RolesModule,
-    FeedbackModule,
-    SupportTicketsModule,
     PatientModule,
     TimingModule,
+    SupportTicketsModule,
+    FeedbackModule,
     JwtModule.register({
       secret: 'x&92Kv^Zc7b9@JN5Q',
       signOptions: { expiresIn: '1h' },

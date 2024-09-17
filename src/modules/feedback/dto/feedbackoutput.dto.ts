@@ -1,22 +1,31 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { IsString } from 'class-validator';
 
 @ObjectType()
-export class FeedbackOutput {
+export class FeedbackCreateOutput {
   @Field()
   id: number;
 
   @Field()
-  patient_id: number;
-
+  patient_user_id: number;
 
   @Field()
   consulting_feedback: number;
 
   @Field()
-  clinic_feedback: number;
+  clinic_or_hospital_feedback: number;
 
   @Field()
   waiting_time: number;
+}
 
- 
+@ObjectType()
+export class FeedbackUpdateDeleteOutput {
+  @Field()
+  @IsString()
+  status: string;
+
+  @Field()
+  @IsString()
+  message: string;
 }

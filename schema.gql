@@ -12,7 +12,6 @@ type UserGraphQL {
   phone: String!
 }
 
-
 type responseForModificationDTO {
   status: String!
   message: String!
@@ -72,7 +71,6 @@ type PatientOutput {
 type responseForModificationDTOPaitent {
   status: String!
   message: String!
-
 }
 
 type AuthResponse {
@@ -90,7 +88,6 @@ type RoleOutputForModification {
   status: Float!
   message: String!
 }
-
 
 type getAllTimingsForADoctorOutputDTO {
   id: Float!
@@ -116,22 +113,33 @@ type supportTicketCreateOutputDTO {
   status: String!
   message: String!
   patient_user_id: Float!
+}
 
+type FeedbackCreateOutput {
+  id: Float!
+  patient_user_id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
+}
+
+type FeedbackUpdateDeleteOutput {
+  status: String!
+  message: String!
 }
 
 type Query {
   findAll: [UserGraphQL!]!
-
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
   getAllPatientDetails: [PatientOutput!]!
   getPatientByUserId(user_id: Float!): PatientOutput!
-
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
   checkWhetherPermissionExists(rolePermissionInput: RolePermissionVerificationInput!): Boolean!
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
   getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
+  getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
 }
 
 input searchDTO {
@@ -159,12 +167,10 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
-
   modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
   deleteDoctorById(id: Float!): responseForModificationDTO!
   modifyPatientDetails(user_id: Float!, updatePatientDetails: UpdatePatientDto!): responseForModificationDTOPaitent!
   deletePatient(user_id: Float!): responseForModificationDTOPaitent!
-
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
@@ -173,6 +179,9 @@ type Mutation {
   createSupportTicket(createSupportTicket: CreateSupportTicketDto!): supportTicketCreateOutputDTO!
   updateSupportTicket(updateSupportTicket: UpdateSupportDTO!): SupportOutputDTO!
   deleteSupportTicket(id: Float!): SupportOutputDTO!
+  createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
+  deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
+  updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
 }
 
 input LoginInput {
@@ -200,7 +209,6 @@ input RegisterInput {
   family_member: [Int!]
   relation: [String!]
   health_issues: [String!]
-
   blood_group: String
   weight: Float
 }
@@ -252,5 +260,19 @@ input UpdateSupportDTO {
   message: String!
   status: String!
   patient_user_id: Float!
+}
 
+input CreateFeedbackInput {
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
+}
+
+input UpdateFeedbackInput {
+  id: Float!
+  consulting_feedback: Float!
+  clinic_or_hospital_feedback: Float!
+  waiting_time: Float!
 }

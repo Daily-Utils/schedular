@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
 import { ObjectType } from '@nestjs/graphql';
+import { Doctor } from '../doctor/doctor.entity';
 
 
 @Entity('Feedbacks')
@@ -17,14 +18,16 @@ export class Feedback {
   id: number;
 
   @Column()
-  patient_id: number;
+  patient_user_id: number;
 
-  
+  @Column()
+  doctor_user_id: number;
+
   @Column({ type: 'decimal' })
   consulting_feedback: number;
 
   @Column({ type: 'decimal' })
-  clinic_feedback: number;
+  clinic_or_hospital_feedback: number;
 
   @Column({ type: 'decimal' })
   waiting_time: number;
@@ -36,6 +39,10 @@ export class Feedback {
   updated_at: Date;
 
   @ManyToOne(() => Patient, (patient) => patient.feedbacks)
-  @JoinColumn({ name: 'patient_id' })
+  @JoinColumn({ name: 'patient_user_id', referencedColumnName: 'user_id' })
   patient: Patient;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.feedbacks)
+  @JoinColumn({ name: 'doctor_user_id', referencedColumnName: 'user_id' })
+  doctor: Doctor;
 }

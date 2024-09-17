@@ -14,4 +14,3 @@ import { SupportTicketsResolver } from "./supporttickets.resolver";
     exports: []
 })
 export class SupportTicketsModule {}
-
