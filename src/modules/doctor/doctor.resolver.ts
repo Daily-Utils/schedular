@@ -104,12 +104,19 @@ export class DoctorResolver {
     return await this.doctorService.searchDoctors(searchDTO);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => DoctorAvailableSlots)
   async getAvaliableSlotsForAppointmentsWithADoctor(
     @Args('doctorId') doctorId: number,
     @Args('date') date: string,
   ) {
-    return await this.doctorService.getAvailableTimeSlotsForADoctor(doctorId, date);
+    return await this.doctorService.getAvailableTimeSlotsForADoctor(
+      doctorId,
+      date,
+    );
   }
 }
