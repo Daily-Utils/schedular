@@ -41,7 +41,11 @@ export class Doctor {
   @Column({ type: 'varchar' })
   facility_location: string;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.doctor)
+  @OneToMany(() => Appointment, (appointment) => appointment.doctor, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
   appointments: Appointment[];
 
   @OneToMany(() => Chat, (chat) => chat.doctor, {
@@ -53,12 +57,14 @@ export class Doctor {
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   timings: Timings[];
 
   @OneToMany(() => Feedback, (feedback) => feedback.doctor, {
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   feedbacks: Feedback[];
 
   @Column({ nullable: true })

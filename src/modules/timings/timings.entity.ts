@@ -25,6 +25,6 @@ export class Timings {
   doctor_user_id: number;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.timings, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'doctor_user_id' })
+  @JoinColumn({ name: 'doctor_user_id', referencedColumnName: 'user_id' })
   doctor: Doctor;
 }
