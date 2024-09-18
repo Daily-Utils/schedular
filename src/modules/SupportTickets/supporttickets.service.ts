@@ -24,6 +24,12 @@ export class SupportTicketsService {
   }
 
   async updateSupportTicketStatus(updateSupportDTO: UpdateSupportDTO) {
+    const updateData = Object.fromEntries(
+      Object.entries(updateSupportDTO).filter(([_, v]) => v !== undefined || v !== null),
+    );
+
+    delete updateData.id;
+
     return await this.supportTicketsRepository.update(
       { id: updateSupportDTO.id },
       {

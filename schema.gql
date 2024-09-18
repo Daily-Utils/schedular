@@ -128,6 +128,27 @@ type FeedbackUpdateDeleteOutput {
   message: String!
 }
 
+type outputAppointment {
+  id: Float!
+  fees: Float!
+  appointment_date_time: DateTime!
+  visit_type: String!
+  ivr_app_id: String!
+  patient_complaint: String!
+  patient_current_weight: Float!
+  status: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type outputForAppointment {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -140,6 +161,8 @@ type Query {
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
   getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
   getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
+  getAppointmentsForDoctor(doctor_user_id: Float!): [outputAppointment!]!
+  getAppointmentsForPatients(patient_user_id: Float!): [outputAppointment!]!
 }
 
 input searchDTO {
@@ -182,6 +205,10 @@ type Mutation {
   createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
   deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
   updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
+  createAppointment(appointment: createAppointmentDTO!): outputAppointment!
+  getAppointmentById(id: Float!): outputAppointment!
+  updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): outputForAppointment!
+  deleteAppointment(id: Float!): outputForAppointment!
 }
 
 input LoginInput {
@@ -275,4 +302,27 @@ input UpdateFeedbackInput {
   consulting_feedback: Float!
   clinic_or_hospital_feedback: Float!
   waiting_time: Float!
+}
+
+input createAppointmentDTO {
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  appointment_date_time: DateTime!
+  status: String!
+  fees: Float!
+  visit_type: String!
+  ivr_app_id: String!
+  patient_complaint: String!
+  patient_current_weight: Float!
+}
+
+input updateAppointmentDTO {
+  id: Float!
+  fees: Float
+  appointment_date_time: DateTime
+  visit_type: String
+  ivr_app_id: String
+  patient_complaint: String
+  patient_current_weight: Float
+  status: String
 }

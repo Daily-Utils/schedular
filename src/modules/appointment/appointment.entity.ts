@@ -21,6 +21,9 @@ export class Appointment {
   @Column()
   doctor_user_id: number;
 
+  @Column({ type: 'timestamp' })
+  appointment_date_time: Date;
+
   @Column({ type: 'decimal' })
   fees: number;
 
@@ -46,10 +49,10 @@ export class Appointment {
   updated_at: Date;
 
   @ManyToOne(() => Patient, (patient) => patient.appointments)
-  @JoinColumn({ name: 'patient_user_id' })
+  @JoinColumn({ name: 'patient_user_id', referencedColumnName: 'user_id' })
   patient: Patient;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments)
-  @JoinColumn({ name: 'doctor_user_id' })
+  @JoinColumn({ name: 'doctor_user_id', referencedColumnName: 'user_id' })
   doctor: Doctor;
 }

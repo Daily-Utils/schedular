@@ -11,6 +11,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { DataSource } from 'typeorm';
 import { searchDTO } from './dtos/search.dto';
+import { DayOfWeek } from './dtos/day-of-week.enum';
 
 @Injectable()
 export class DoctorService {
@@ -20,6 +21,30 @@ export class DoctorService {
     private userService: UsersService,
     private dataSource: DataSource,
   ) {}
+
+  private getDayName(dayIndex: number): DayOfWeek {
+    const days = [
+      DayOfWeek.Sunday,
+      DayOfWeek.Monday,
+      DayOfWeek.Tuesday,
+      DayOfWeek.Wednesday,
+      DayOfWeek.Thursday,
+      DayOfWeek.Friday,
+      DayOfWeek.Saturday,
+    ];
+    return days[dayIndex];
+  }
+
+  private parseTimeString(timeString: string): Date {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, seconds, 0);
+    return date;
+  }
+
+  private formatTimeString(date: Date): string {
+    return date.toTimeString().split(' ')[0];
+  }
 
   async createDoctorForUser(createDoctorDto: CreateDoctorDto) {
     const doctor = this.doctorRepository.create({
@@ -93,6 +118,63 @@ export class DoctorService {
     });
   }
 
+  async getAvailableTimeSlotsForADoctor(doctor_user_id: number, date: string) {
+    const doctor = await this.doctorRepository.findOne({
+      where: { user_id: doctor_user_id },
+      relations: ['timings', 'appointments'],
+    });
+
+    if (!doctor) {
+      throw new Error('Doctor not found');
+    }
+
+    const dayIndex = new Date(date).getDay();
+    const dayName = this.getDayName(dayIndex);
+
+    const dayTimings = doctor.timings.find((timing) => timing.day === dayName);
+
+    if (!dayTimings) {
+      throw new Error(`No timings found for the day: ${dayName}`);
+    }
+
+    const to = dayTimings.to;
+    const from = dayTimings.from;
+    const doctor_avg_time = this.parseTimeString(
+      doctor.average_consulting_time,
+    ).getMinutes();
+
+    const slots: string[] = [];
+
+    let current = this.parseTimeString(from);
+    const end = this.parseTimeString(to);
+
+    while (current < end) {
+      slots.push(this.formatTimeString(current));
+      current = new Date(current.getTime() + doctor_avg_time * 60000);
+    }
+
+    const bookedSlots = doctor.appointments
+      .filter(
+        (appointment) =>
+          appointment.appointment_date_time.toISOString().split('T')[0] ===
+            date &&
+          (appointment.status === 'scheduled' ||
+            appointment.status === 'rescheduled' ||
+            appointment.status === 'rescheduled' ||
+            appointment.status === 'in-process' ||
+            appointment.status === ' on-hold'
+          ),
+      )
+      .map(
+        (appointment) =>
+          appointment.appointment_date_time.toTimeString().split(' ')[0],
+      );
+
+    const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
+
+    return availableSlots;
+  }
+
   async searchDoctors(searchData: searchDTO) {
     const queryBuilder = this.doctorRepository
       .createQueryBuilder('doctor')
@@ -142,8 +224,6 @@ export class DoctorService {
       default_fee: doctor.default_fee,
       average_consulting_time: doctor.average_consulting_time,
     }));
-
-    console.log(mappedDoctors);
 
     return mappedDoctors;
   }
