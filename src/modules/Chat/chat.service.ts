@@ -5,7 +5,6 @@ import { Chat } from './chat.entity'; // Assuming you have a chat entity defined
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
 import { ChatMessageOutput } from './dtos/outputchat.dto';
-import { DeleteChat } from './dtos/chatdelete.dto';
 
 @Injectable()
 export class ChatService {

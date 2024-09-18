@@ -5,7 +5,6 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 @ObjectType()
 @InputType()
 export class UpdateChatMessageInput {
- 
   @Field()
   @IsString()
   @IsNotEmpty()

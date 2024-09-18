@@ -1,14 +1,11 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
-import { Chat } from './chat.entity'; 
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
-import { ChatMessageOutput } from './dtos/outputchat.dto';
-import { Logger, UseGuards } from '@nestjs/common';
+import { ChatMessageOutput, DeleteUpdateChat } from './dtos/outputchat.dto';
+import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { DeleteChat } from './dtos/chatdelete.dto';
 
 @Resolver()
 export class ChatResolver {
@@ -26,7 +23,10 @@ export class ChatResolver {
     @Args('doctor_user_id') doctor_user_id: number,
   ): Promise<ChatMessageOutput[]> {
     try {
-      return await this.chatService.getChatMessages(patient_user_id, doctor_user_id);
+      return await this.chatService.getChatMessages(
+        patient_user_id,
+        doctor_user_id,
+      );
     } catch (e) {
       Logger.error(e);
       throw new Error('Failed to retrieve chat messages');
@@ -42,7 +42,8 @@ export class ChatResolver {
   })
   @Mutation(() => ChatMessageOutput) // Use ChatMessageOutput, not CreateChatMessageInput
   async createChatMessage(
-    @Args('createChatMessageInput') createChatMessageInput: CreateChatMessageInput,
+    @Args('createChatMessageInput')
+    createChatMessageInput: CreateChatMessageInput,
   ) {
     try {
       return await this.chatService.createChatMessage(createChatMessageInput);
@@ -51,7 +52,6 @@ export class ChatResolver {
       throw new Error('Failed to create chat message');
     }
   }
-  
 
   // Mutation to update a chat message
   @Roles([Role.Admin, Role.Patient, Role.Doctor], {
@@ -59,40 +59,48 @@ export class ChatResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => ChatMessageOutput)  // Return the correct output type
+  @Mutation(() => DeleteUpdateChat) // Return the correct output type
   async updateChatMessage(
     @Args('id') id: number,
-    @Args('updateChatMessageInput') updateChatMessageInput: UpdateChatMessageInput,
+    @Args('updateChatMessageInput')
+    updateChatMessageInput: UpdateChatMessageInput,
   ) {
     try {
-      return await this.chatService.updateChatMessage(id, updateChatMessageInput);
+      await this.chatService.updateChatMessage(id, updateChatMessageInput);
+      return {
+        status: 'success',
+        message: 'Chat message updated successfully',
+      }
     } catch (e) {
       Logger.error(e);
-      throw new Error('Failed to update chat message');
+      return {
+        status: 'failure',
+        message: `Failed to update chat message: ${e.message}`,
+      }
     }
   }
-
 
   @Roles([Role.Admin, Role.Patient, Role.Doctor], {
     check_permission: false,
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => DeleteChat)
+  @Mutation(() => DeleteUpdateChat)
   async deleteChat(@Args('chat_id') chat_id: number) {
     try {
       await this.chatService.deleteChat(chat_id);
       return {
+        status: 'success',
         message: 'Chat deleted successfully',
       };
     } catch (e) {
       Logger.error(e);
       return {
-        message: 'Failed to delete chat',
+        status: 'failure',
+        message: `Failed to delete chat: ${e.message}`,
       };
     }
   }
-
 }
 
 

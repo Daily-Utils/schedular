@@ -136,7 +136,8 @@ type ChatMessageOutput {
   message: String!
 }
 
-type DeleteChat {
+type DeleteUpdateChat {
+  status: String!
   message: String!
 }
 
@@ -196,8 +197,8 @@ type Mutation {
   deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
   updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
   createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
-  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): ChatMessageOutput!
-  deleteChat(chat_id: Float!): DeleteChat!
+  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): DeleteUpdateChat!
+  deleteChat(chat_id: Float!): DeleteUpdateChat!
 }
 
 input LoginInput {
@@ -301,6 +302,5 @@ input CreateChatMessageInput {
 }
 
 input UpdateChatMessageInput {
-  chat_id: Float!
   message: String!
 }
