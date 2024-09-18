@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Appointment } from './appointment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -30,12 +30,17 @@ export class AppointmentService {
   }
 
   async createAppointment(appointment: createAppointmentDTO) {
-    const date_seleced = new Date(appointment.appointment_date_time).toISOString().split('T')[0];
+    const date_seleced = new Date(appointment.appointment_date_time)
+      .toISOString()
+      .split('T')[0];
 
-    const availableSlots = await this.doctorService.getAvailableTimeSlotsForADoctor(
-      appointment.doctor_user_id,
-      date_seleced,
-    );
+    Logger.log(date_seleced);
+
+    const availableSlots =
+      await this.doctorService.getAvailableTimeSlotsForADoctor(
+        appointment.doctor_user_id,
+        date_seleced,
+      );
 
     const isSlotAvailable = availableSlots.slots.find(
       (slot) =>
@@ -70,21 +75,25 @@ export class AppointmentService {
       throw new Error('Appointment not found');
     }
 
-    if(appointment.status === 'completed') {
+    if (appointment.status === 'completed') {
       throw new Error('Appointment already completed');
     }
-    
-    if(updateData.appointment_date_time) {
-      const date_selected = new Date(updateData.appointment_date_time).toISOString().split('T')[0];
 
-      const availableSlots = await this.doctorService.getAvailableTimeSlotsForADoctor(
-        appointment.doctor_user_id,
-        date_selected,
-      );
+    if (updateData.appointment_date_time) {
+      const date_selected = new Date(updateData.appointment_date_time)
+        .toISOString()
+        .split('T')[0];
+
+      const availableSlots =
+        await this.doctorService.getAvailableTimeSlotsForADoctor(
+          appointment.doctor_user_id,
+          date_selected,
+        );
 
       const isSlotAvailable = availableSlots.slots.find(
         (slot) =>
-          slot === updateData.appointment_date_time.toTimeString().split(' ')[0],
+          slot ===
+          updateData.appointment_date_time.toTimeString().split(' ')[0],
       );
 
       if (!isSlotAvailable) {
