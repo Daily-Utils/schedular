@@ -154,6 +154,19 @@ type outputForAppointment {
   message: String!
 }
 
+type ChatMessageOutput {
+  chat_id: Float!
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  type: String!
+  message: String!
+}
+
+type DeleteUpdateChat {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -167,8 +180,7 @@ type Query {
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
   getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
   getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
-  getAppointmentsForDoctor(doctor_user_id: Float!): [outputAppointment!]!
-  getAppointmentsForPatients(patient_user_id: Float!): [outputAppointment!]!
+  getChatMessages(patient_user_id: Float!, doctor_user_id: Float!): [ChatMessageOutput!]!
 }
 
 input searchDTO {
@@ -209,10 +221,9 @@ type Mutation {
   createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
   deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
   updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
-  createAppointment(appointment: createAppointmentDTO!): outputAppointment!
-  getAppointmentById(id: Float!): outputAppointment!
-  updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): outputForAppointment!
-  deleteAppointment(id: Float!): outputForAppointment!
+  createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
+  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): DeleteUpdateChat!
+  deleteChat(chat_id: Float!): DeleteUpdateChat!
 }
 
 input LoginInput {
@@ -308,25 +319,13 @@ input UpdateFeedbackInput {
   waiting_time: Float!
 }
 
-input createAppointmentDTO {
+input CreateChatMessageInput {
   patient_user_id: Float!
   doctor_user_id: Float!
-  appointment_date_time: DateTime!
-  status: String!
-  fees: Float!
-  visit_type: String!
-  ivr_app_id: String!
-  patient_complaint: String!
-  patient_current_weight: Float!
+  type: String!
+  message: String!
 }
 
-input updateAppointmentDTO {
-  id: Float!
-  fees: Float
-  appointment_date_time: DateTime
-  visit_type: String
-  ivr_app_id: String
-  patient_complaint: String
-  patient_current_weight: Float
-  status: String
+input UpdateChatMessageInput {
+  message: String!
 }

@@ -9,17 +9,19 @@ import {
 } from 'typeorm';
 import { Doctor } from '../doctor/doctor.entity';
 import { Patient } from '../Patient/patient.entity';
+import { ObjectType } from '@nestjs/graphql';
 
+@ObjectType() // GraphQL object type decorator
 @Entity('chat')
 export class Chat {
   @PrimaryGeneratedColumn()
-  id: number;
+  chat_id: number;
 
   @Column()
-  patient_id: number;
+  patient_user_id: number;
 
   @Column()
-  doctor_id: number;
+  doctor_user_id: number;
 
   @Column({ type: 'varchar' })
   type: string;
@@ -33,11 +35,11 @@ export class Chat {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.chat)
-  @JoinColumn({ name: 'doctor_id' })
-  doctor: Doctor;
-
   @ManyToOne(() => Patient, (patient) => patient.chat)
-  @JoinColumn({ name: 'patient_id' })
+  @JoinColumn({ name: 'patient_user_id', referencedColumnName: 'user_id' })
   patient: Patient;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.chat)
+  @JoinColumn({ name: 'doctor_user_id', referencedColumnName: 'user_id' })
+  doctor: Doctor;
 }
