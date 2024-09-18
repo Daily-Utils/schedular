@@ -6,12 +6,15 @@ import {
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
+import { DoctorService } from '../doctor/doctor.service';
 
 @Injectable()
 export class AppointmentService {
   constructor(
     @InjectRepository(Appointment)
     private readonly appointmentRepository: Repository<Appointment>,
+
+    private readonly doctorService: DoctorService,
   ) {}
 
   async getAllAppointmentsForDoctor(doctorId: number) {
@@ -27,6 +30,22 @@ export class AppointmentService {
   }
 
   async createAppointment(appointment: createAppointmentDTO) {
+    const date_seleced = new Date(appointment.appointment_date_time).toISOString().split('T')[0];
+
+    const availableSlots = await this.doctorService.getAvailableTimeSlotsForADoctor(
+      appointment.doctor_user_id,
+      date_seleced,
+    );
+
+    const isSlotAvailable = availableSlots.slots.find(
+      (slot) =>
+        slot === appointment.appointment_date_time.toTimeString().split(' ')[0],
+    );
+
+    if (!isSlotAvailable) {
+      throw new Error('Slot not available');
+    }
+
     return await this.appointmentRepository.save(appointment);
   }
 
@@ -42,6 +61,36 @@ export class AppointmentService {
     );
 
     delete updateData.id;
+
+    const appointment = await this.appointmentRepository.findOne({
+      where: { id: updateAppointmentDTO.id },
+    });
+
+    if (!appointment) {
+      throw new Error('Appointment not found');
+    }
+
+    if(appointment.status === 'completed') {
+      throw new Error('Appointment already completed');
+    }
+    
+    if(updateData.appointment_date_time) {
+      const date_selected = new Date(updateData.appointment_date_time).toISOString().split('T')[0];
+
+      const availableSlots = await this.doctorService.getAvailableTimeSlotsForADoctor(
+        appointment.doctor_user_id,
+        date_selected,
+      );
+
+      const isSlotAvailable = availableSlots.slots.find(
+        (slot) =>
+          slot === updateData.appointment_date_time.toTimeString().split(' ')[0],
+      );
+
+      if (!isSlotAvailable) {
+        throw new Error('Slot not available');
+      }
+    }
 
     return await this.appointmentRepository.update(
       updateAppointmentDTO.id,

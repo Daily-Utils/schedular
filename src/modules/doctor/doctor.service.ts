@@ -161,8 +161,6 @@ export class DoctorService {
       current = new Date(current.getTime() + doctor_avg_time * 60000);
     }
 
-    Logger.log('appointments: ', JSON.stringify(doctor.appointments));
-
     const bookedSlots = doctor.appointments
       .filter(
         (appointment) =>
@@ -179,15 +177,15 @@ export class DoctorService {
           this.formatTimeString(appointment.appointment_date_time),
       );
 
-    Logger.log('bookslots: ', JSON.stringify(bookedSlots));
 
     const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
-
-    Logger.log('available: ', JSON.stringify(availableSlots));
-
+    const availableActualTime = actualDateTime.filter(
+      (actualTime) => !bookedSlots.includes(this.formatTimeString(actualTime)),
+    );
+  
     return {
       slots: availableSlots,
-      actualTimings: actualDateTime,
+      actualTimings: availableActualTime,
     };
   }
 

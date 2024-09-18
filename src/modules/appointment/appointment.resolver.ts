@@ -63,7 +63,7 @@ export class AppointmentResolver {
       Logger.error(error);
       return {
         status: 'error',
-        message: 'Appointment not updated',
+        message: `Appointment not updated: ${error.message}`,
       };
     }
   }
@@ -81,7 +81,7 @@ export class AppointmentResolver {
       Logger.error(error);
       return {
         status: 'error',
-        message: 'Appointment not deleted',
+        message: `Appointment not deleted: ${error.message}`,
       };
     }
   }
