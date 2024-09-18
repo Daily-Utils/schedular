@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -162,8 +162,7 @@ export class DoctorService {
             appointment.status === 'rescheduled' ||
             appointment.status === 'rescheduled' ||
             appointment.status === 'in-process' ||
-            appointment.status === ' on-hold'
-          ),
+            appointment.status === ' on-hold'),
       )
       .map(
         (appointment) =>
@@ -192,22 +191,59 @@ export class DoctorService {
         'doctor.average_consulting_time',
       ]);
 
-    if (searchData.services && searchData.services.length > 0) {
+    let ignoreFuther = false;
+    if (searchData.username && searchData.username.trim() !== '') {
+      queryBuilder.andWhere('user.username ILIKE :username', {
+        username: `%${searchData.username}%`,
+      });
+      ignoreFuther = true;
+    }
+
+    if (searchData.default_fee != null && !ignoreFuther) {
+      queryBuilder.andWhere('doctor.default_fee >= :default_fee', {
+        default_fee: searchData.default_fee,
+      });
+    }
+
+    if (searchData.services && searchData.services.length > 0 && !ignoreFuther) {
       queryBuilder.andWhere('doctor.services && ARRAY[:...services]', {
         services: searchData.services,
       });
     }
 
-    if (searchData.speciality && searchData.speciality.length > 0) {
+    if (
+      searchData.speciality &&
+      searchData.speciality.length > 0 &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.speciality && ARRAY[:...speciality]', {
         speciality: searchData.speciality,
       });
     }
 
-    if (searchData.facility_name) {
-      queryBuilder.andWhere('doctor.facility_name = :facility_name', {
-        facility_name: searchData.facility_name,
+    if (searchData.facility_name && searchData.facility_name.trim() !== '' && !ignoreFuther) {
+      queryBuilder.andWhere('doctor.facility_name ILIKE :facility_name', {
+        facility_name: `%${searchData.facility_name}%`,
       });
+    }
+
+    if (searchData.facility_type && searchData.facility_type.trim() !== '' && !ignoreFuther) {
+      queryBuilder.andWhere('doctor.facility_type ILIKE :facility_type', {
+        facility_type: `%${searchData.facility_type}%`,
+      });
+    }
+
+    if (
+      searchData.facility_location &&
+      searchData.facility_location.trim() !== '' &&
+      !ignoreFuther
+    ) {
+      queryBuilder.andWhere(
+        'doctor.facility_location ILIKE :facility_location',
+        {
+          facility_location: `%${searchData.facility_location}%`,
+        },
+      );
     }
 
     const doctors = await queryBuilder.getMany();

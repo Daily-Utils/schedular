@@ -46,6 +46,10 @@ type DoctorResponseDto {
   timings: [TimingDto!]!
 }
 
+type DoctorAvailableSlots {
+  slots: [String!]!
+}
+
 type singleSearchResponse {
   id: Float!
   username: String!
@@ -154,6 +158,7 @@ type Query {
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
+  getAvaliableSlotsForAppointmentsWithADoctor(doctorId: Float!, date: String!): DoctorAvailableSlots!
   getAllPatientDetails: [PatientOutput!]!
   getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
@@ -166,8 +171,6 @@ type Query {
 }
 
 input searchDTO {
-  phone_number: String
-  email: String
   username: String
   speciality: [String!]
   services: [String!]

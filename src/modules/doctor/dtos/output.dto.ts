@@ -96,3 +96,10 @@ export class DoctorResponseDto {
   @IsArray()
   timings: TimingDto[];
 }
+
+@ObjectType()
+export class DoctorAvailableSlots{
+  @Field(() => [String])
+  @IsArray()
+  slots: string[];
+}
