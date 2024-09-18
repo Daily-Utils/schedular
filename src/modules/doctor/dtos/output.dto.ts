@@ -102,4 +102,8 @@ export class DoctorAvailableSlots{
   @Field(() => [String])
   @IsArray()
   slots: string[];
+
+  @Field(() => [String])
+  @IsArray()
+  actualTimings: string[];
 }

@@ -48,6 +48,7 @@ type DoctorResponseDto {
 
 type DoctorAvailableSlots {
   slots: [String!]!
+  actualTimings: [String!]!
 }
 
 type singleSearchResponse {

@@ -131,7 +131,9 @@ export class DoctorService {
     const dayIndex = new Date(date).getDay();
     const dayName = this.getDayName(dayIndex);
 
-    const dayTimings = doctor.timings.find((timing) => timing.day === dayName);
+    const dayTimings = doctor.timings.find(
+      (timing) => timing.day.toLowerCase() === dayName.toLowerCase(),
+    );
 
     if (!dayTimings) {
       throw new Error(`No timings found for the day: ${dayName}`);
@@ -144,14 +146,22 @@ export class DoctorService {
     ).getMinutes();
 
     const slots: string[] = [];
-
+    const actualDateTime: Date[] = [];
     let current = this.parseTimeString(from);
     const end = this.parseTimeString(to);
 
+    const break_to = this.parseTimeString(dayTimings.break_to);
+    const break_from = this.parseTimeString(dayTimings.break_from);
+
     while (current < end) {
-      slots.push(this.formatTimeString(current));
+      if (current < break_from || current > break_to) {
+        actualDateTime.push(current);
+        slots.push(this.formatTimeString(current));
+      }
       current = new Date(current.getTime() + doctor_avg_time * 60000);
     }
+
+    Logger.log('appointments: ', JSON.stringify(doctor.appointments));
 
     const bookedSlots = doctor.appointments
       .filter(
@@ -166,12 +176,19 @@ export class DoctorService {
       )
       .map(
         (appointment) =>
-          appointment.appointment_date_time.toTimeString().split(' ')[0],
+          this.formatTimeString(appointment.appointment_date_time),
       );
+
+    Logger.log('bookslots: ', JSON.stringify(bookedSlots));
 
     const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
 
-    return availableSlots;
+    Logger.log('available: ', JSON.stringify(availableSlots));
+
+    return {
+      slots: availableSlots,
+      actualTimings: actualDateTime,
+    };
   }
 
   async searchDoctors(searchData: searchDTO) {
@@ -205,7 +222,11 @@ export class DoctorService {
       });
     }
 
-    if (searchData.services && searchData.services.length > 0 && !ignoreFuther) {
+    if (
+      searchData.services &&
+      searchData.services.length > 0 &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.services && ARRAY[:...services]', {
         services: searchData.services,
       });
@@ -221,13 +242,21 @@ export class DoctorService {
       });
     }
 
-    if (searchData.facility_name && searchData.facility_name.trim() !== '' && !ignoreFuther) {
+    if (
+      searchData.facility_name &&
+      searchData.facility_name.trim() !== '' &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.facility_name ILIKE :facility_name', {
         facility_name: `%${searchData.facility_name}%`,
       });
     }
 
-    if (searchData.facility_type && searchData.facility_type.trim() !== '' && !ignoreFuther) {
+    if (
+      searchData.facility_type &&
+      searchData.facility_type.trim() !== '' &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.facility_type ILIKE :facility_type', {
         facility_type: `%${searchData.facility_type}%`,
       });
