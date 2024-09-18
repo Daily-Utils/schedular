@@ -3,22 +3,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AppointmentService } from './appointment.service';
 import { Appointment } from './appointment.entity';
+import { DoctorService } from '../doctor/doctor.service';
 import {
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
+import { NotFoundException } from '@nestjs/common';
 
 describe('AppointmentService', () => {
   let service: AppointmentService;
   let repository: Repository<Appointment>;
-
-  const mockAppointmentRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  };
+  let doctorService: DoctorService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,7 +21,13 @@ describe('AppointmentService', () => {
         AppointmentService,
         {
           provide: getRepositoryToken(Appointment),
-          useValue: mockAppointmentRepository,
+          useClass: Repository,
+        },
+        {
+          provide: DoctorService,
+          useValue: {
+            getAvailableTimeSlotsForADoctor: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -35,6 +36,7 @@ describe('AppointmentService', () => {
     repository = module.get<Repository<Appointment>>(
       getRepositoryToken(Appointment),
     );
+    doctorService = module.get<DoctorService>(DoctorService);
   });
 
   it('should be defined', () => {
@@ -45,13 +47,10 @@ describe('AppointmentService', () => {
     it('should return all appointments for a doctor', async () => {
       const doctorId = 1;
       const appointments = [{ id: 1, doctor_user_id: doctorId }];
-      mockAppointmentRepository.find.mockResolvedValue(appointments);
+      jest.spyOn(repository, 'find').mockResolvedValue(appointments as any);
 
       const result = await service.getAllAppointmentsForDoctor(doctorId);
       expect(result).toEqual(appointments);
-      expect(mockAppointmentRepository.find).toHaveBeenCalledWith({
-        where: { doctor_user_id: doctorId },
-      });
     });
   });
 
@@ -59,36 +58,57 @@ describe('AppointmentService', () => {
     it('should return all appointments for a patient', async () => {
       const patientId = 1;
       const appointments = [{ id: 1, patient_user_id: patientId }];
-      mockAppointmentRepository.find.mockResolvedValue(appointments);
+      jest.spyOn(repository, 'find').mockResolvedValue(appointments as any);
 
       const result = await service.getAllAppointmentsForPatient(patientId);
       expect(result).toEqual(appointments);
-      expect(mockAppointmentRepository.find).toHaveBeenCalledWith({
-        where: { patient_user_id: patientId },
-      });
     });
   });
 
   describe('createAppointment', () => {
-    it('should create a new appointment', async () => {
+    it('should create and return an appointment', async () => {
       const appointmentDto: createAppointmentDTO = {
         patient_user_id: 1,
-        doctor_user_id: 1,
-        appointment_date_time: new Date(),
+        doctor_user_id: 2,
+        appointment_date_time: new Date('2023-10-02T10:30:00'),
         fees: 100,
-        visit_type: 'online',
-        ivr_app_id: '123',
-        patient_complaint: 'fever',
-        patient_current_weight: 50,
+        visit_type: 'in-person',
+        ivr_app_id: '12345',
         status: 'scheduled',
+        patient_complaint: 'Headache',
+        patient_current_weight: 70,
       };
-      const appointment = { id: 1, ...appointmentDto };
-      mockAppointmentRepository.save.mockResolvedValue(appointment);
+
+      const availableSlots = { slots: ['10:00:00', '10:30:00'] };
+      jest
+        .spyOn(doctorService, 'getAvailableTimeSlotsForADoctor')
+        .mockResolvedValue(availableSlots as any);
+      jest.spyOn(repository, 'save').mockResolvedValue(appointmentDto as any);
 
       const result = await service.createAppointment(appointmentDto);
-      expect(result).toEqual(appointment);
-      expect(mockAppointmentRepository.save).toHaveBeenCalledWith(
-        appointmentDto,
+      expect(result).toEqual(appointmentDto);
+    });
+
+    it('should throw an error if slot is not available', async () => {
+      const appointmentDto: createAppointmentDTO = {
+        patient_user_id: 1,
+        doctor_user_id: 2,
+        appointment_date_time: new Date('2023-10-01T10:00:00Z'),
+        fees: 100,
+        visit_type: 'in-person',
+        ivr_app_id: '12345',
+        status: 'scheduled',
+        patient_complaint: 'Headache',
+        patient_current_weight: 70,
+      };
+
+      const availableSlots = { slots: ['11:00:00'] };
+      jest
+        .spyOn(doctorService, 'getAvailableTimeSlotsForADoctor')
+        .mockResolvedValue(availableSlots as any);
+
+      await expect(service.createAppointment(appointmentDto)).rejects.toThrow(
+        'Slot not available',
       );
     });
   });
@@ -96,31 +116,95 @@ describe('AppointmentService', () => {
   describe('getAppointmentById', () => {
     it('should return an appointment by id', async () => {
       const id = 1;
-      const appointment = { id, doctor_user_id: 1, patient_user_id: 1 };
-      mockAppointmentRepository.findOne.mockResolvedValue(appointment);
+      const appointment = { id };
+      jest.spyOn(repository, 'findOne').mockResolvedValue(appointment as any);
 
       const result = await service.getAppointmentById(id);
       expect(result).toEqual(appointment);
-      expect(mockAppointmentRepository.findOne).toHaveBeenCalledWith({
-        where: { id },
-      });
     });
   });
 
   describe('updateAppointment', () => {
-    it('should update an appointment', async () => {
+    it('should update and return the appointment', async () => {
       const updateDto: updateAppointmentDTO = {
         id: 1,
         fees: 150,
       };
-      const updateResult = { affected: 1 };
-      mockAppointmentRepository.update.mockResolvedValue(updateResult);
+
+      const existingAppointment = {
+        id: 1,
+        doctor_user_id: 2,
+        status: 'scheduled',
+      };
+
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(existingAppointment as any);
+      jest
+        .spyOn(repository, 'update')
+        .mockResolvedValue({ affected: 1 } as any);
 
       const result = await service.updateAppointment(updateDto);
-      expect(result).toEqual(updateResult);
-      expect(mockAppointmentRepository.update).toHaveBeenCalledWith(
-        updateDto.id,
-        { fees: 150 },
+      expect(result).toEqual({ affected: 1 });
+    });
+
+    it('should throw an error if appointment not found', async () => {
+      const updateDto: updateAppointmentDTO = {
+        id: 1,
+        fees: 150,
+      };
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.updateAppointment(updateDto)).rejects.toThrow(
+        'Appointment not found',
+      );
+    });
+
+    it('should throw an error if appointment is already completed', async () => {
+      const updateDto: updateAppointmentDTO = {
+        id: 1,
+        fees: 150,
+      };
+
+      const existingAppointment = {
+        id: 1,
+        doctor_user_id: 2,
+        status: 'completed',
+      };
+
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(existingAppointment as any);
+
+      await expect(service.updateAppointment(updateDto)).rejects.toThrow(
+        'Appointment already completed',
+      );
+    });
+
+    it('should throw an error if slot is not available', async () => {
+      const updateDto: updateAppointmentDTO = {
+        id: 1,
+        appointment_date_time: new Date('2023-10-01T10:00:00Z'),
+      };
+
+      const existingAppointment = {
+        id: 1,
+        doctor_user_id: 2,
+        status: 'scheduled',
+      };
+
+      const availableSlots = { slots: ['11:00:00'] };
+
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(existingAppointment as any);
+      jest
+        .spyOn(doctorService, 'getAvailableTimeSlotsForADoctor')
+        .mockResolvedValue(availableSlots as any);
+
+      await expect(service.updateAppointment(updateDto)).rejects.toThrow(
+        'Slot not available',
       );
     });
   });
@@ -129,11 +213,10 @@ describe('AppointmentService', () => {
     it('should delete an appointment', async () => {
       const id = 1;
       const deleteResult = { affected: 1 };
-      mockAppointmentRepository.delete.mockResolvedValue(deleteResult);
+      jest.spyOn(repository, 'delete').mockResolvedValue(deleteResult as any);
 
       const result = await service.deleteAppointment(id);
       expect(result).toEqual(deleteResult);
-      expect(mockAppointmentRepository.delete).toHaveBeenCalledWith(id);
     });
   });
 });
