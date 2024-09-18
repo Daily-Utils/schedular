@@ -128,6 +128,18 @@ type FeedbackUpdateDeleteOutput {
   message: String!
 }
 
+type ChatMessageOutput {
+  chat_id: Float!
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  type: String!
+  message: String!
+}
+
+type DeleteChat {
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -140,6 +152,7 @@ type Query {
   getTimingsForAllDoctor(doctor_id: Float!): [getAllTimingsForADoctorOutputDTO!]!
   getAllSupportTickets(patient_user_id: Float!): [supportTicketCreateOutputDTO!]!
   getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
+  getChatMessages(patient_user_id: Float!, doctor_user_id: Float!): [ChatMessageOutput!]!
 }
 
 input searchDTO {
@@ -182,6 +195,9 @@ type Mutation {
   createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
   deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
   updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
+  createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
+  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): ChatMessageOutput!
+  deleteChat(chat_id: Float!): DeleteChat!
 }
 
 input LoginInput {
@@ -275,4 +291,16 @@ input UpdateFeedbackInput {
   consulting_feedback: Float!
   clinic_or_hospital_feedback: Float!
   waiting_time: Float!
+}
+
+input CreateChatMessageInput {
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  type: String!
+  message: String!
+}
+
+input UpdateChatMessageInput {
+  chat_id: Float!
+  message: String!
 }
