@@ -1,8 +1,15 @@
-// src\modules\auth\jwt-auth.guard.ts
-import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_CLOSED_FOR_USER, IS_OPEN_FOR_DEVELOPMENT, IS_PUBLIC_KEY } from './auth.decorator';
+import {
+  IS_CLOSED_FOR_USER,
+  IS_OPEN_FOR_DEVELOPMENT,
+  IS_PUBLIC_KEY,
+} from './auth.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { JwtService } from '@nestjs/jwt';
@@ -32,37 +39,34 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
     );
 
+    if (isOpenForDevelopment || isPublic) {
+      return true;
+    }
+
     if (isClosedForUser) {
       return false;
     }
 
-    if (isPublic || isOpenForDevelopment) {
-      return true;
+    // Handle WebSocket subscription authentication
+    const ctx = GqlExecutionContext.create(context).getContext();
+    const { req, token } = ctx; // Extract req for HTTP, token for WS
+
+    if (token) {
+      // WebSocket context with JWT token from onConnect
+      this.decodeAndPassJWTInRequest(token, ctx);
+    } else if (req) {
+      // HTTP request context
+      this.decodeAndPassJWTInRequest(this.extractJwtFromRequest(req), req);
+    } else {
+      throw new UnauthorizedException('No authentication token provided');
     }
 
-    const ctx = GqlExecutionContext.create(context).getContext();
-    const { req, connection } = ctx;
-
-    console.log('req::', req);
-    console.log("conon:", connection);
-
-    this.decodeAndPassJWTInRequest(this.extractJwtFromRequest(req, connection), req);
-    console.log('requser::', req.user);
-    return super.canActivate(new ExecutionContextHost([req]));
+    return super.canActivate(new ExecutionContextHost([req || ctx]));
   }
 
-  extractJwtFromRequest(request, connection) {
-    if (request.headers) {
+  extractJwtFromRequest(request) {
+    if (request.headers && request.headers.authorization) {
       return request.headers.authorization.split(' ')[1];
-    }
-
-    console.log(
-      'request.connectionParams',
-      request.connectionParams.Authorization.split(' ')[1],
-    );
-
-    if (request.connectionParams) {
-      return request.connectionParams.Authorization.split(' ')[1];
     }
 
     throw new UnauthorizedException('Authorization token not found');

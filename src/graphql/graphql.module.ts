@@ -5,7 +5,6 @@ import { AuthModule } from 'src/modules/auth/auth.module';
 import { UsersModule } from 'src/modules/users/users.module';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { PubSub } from 'graphql-subscriptions';
-import { Context } from 'graphql-ws';
 
 const pubSub = new PubSub();
 
@@ -13,35 +12,41 @@ const pubSub = new PubSub();
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: false, // Disable the default playground
+      playground: false, // Disable default playground
       autoSchemaFile: 'schema.gql',
+
       subscriptions: {
         'graphql-ws': {
-          onConnect: (context: Context<any>) => {
-            const { connectionParams, extra } = context;
-            Logger.log('Client connected for subscriptions');
-            if (connectionParams.Authorization) {
-              Logger.log(
-                'Authorization header:',
-                connectionParams.Authorization,
-              );
-              // Store the authorization token in the extra field
-              (extra as { authorization?: string }).authorization = connectionParams.Authorization;
-            } else {
-              Logger.warn('No authorization header provided');
-            }
+          path: '/graphql',
+          onConnect: (context: any) => {
+            // Assuming JWT is passed as part of the connectionParams (from headers or WebSocket context)
+            const token = context.connectionParams?.Authorization || '';
+            if (!token) throw new Error('No token provided');
+            return { token };
           },
-          onDisconnect: (context: Context<any>) => {
-            Logger.log('Client disconnected from subscriptions');
+        },
+        'subscriptions-transport-ws': {
+          path: '/graphql',
+          onConnect: (connectionParams) => {
+            // Handling legacy protocol
+            return {
+              req: {
+                headers: { authorization: connectionParams.Authorization },
+              },
+            };
           },
         },
       },
-      plugins: [ApolloServerPluginLandingPageLocalDefault()], // Use only this plugin for the landing page
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      formatError: (error) => {
+        return {
+          message: error.message,
+          code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
+        };
+      },
       context: ({ req, connection }) => {
         if (connection) {
-          // Extract the authorization token from the extra field
-          const authorization = connection.extra.authorization;
-          return { req, pubSub, authorization };
+          return { ...connection.context, pubSub }; // Includes JWT token from onConnect
         }
         return { req, pubSub };
       },

@@ -7,8 +7,6 @@ import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
 import { PubSub } from 'graphql-subscriptions';
-import { OpenForDevelopment } from '../auth/auth.decorator';
-
 const pubSub = new PubSub();
 
 @Resolver()
@@ -68,14 +66,14 @@ export class ChatResolver {
   @Subscription(() => ChatMessageOutput, {
     filter: (payload, variables) => {
       return (
-        payload.newMessage.patient_user_id === variables._patient_user_id && 
-        payload.newMessage.doctor_user_id === variables._doctor_user_id
+        payload.newMessage.patient_user_id === variables.patient_user_id &&
+        payload.newMessage.doctor_user_id === variables.doctor_user_id
       );
     },
   })
   newMessage(
-    @Args('patient_user_id') _patient_user_id: number,
-    @Args('doctor_user_id') _doctor_user_id: number,
+    @Args('patient_user_id') patient_user_id: number,
+    @Args('doctor_user_id') doctor_user_id: number,
   ) {
     return pubSub.asyncIterator('newMessage');
   }
