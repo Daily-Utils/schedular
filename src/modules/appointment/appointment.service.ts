@@ -45,31 +45,31 @@ export class AppointmentService {
         .limit(limit)
         .getMany();
 
-      console.log('twoHoursAheadAppointment', twoHoursAheadAppointment);
-
       const newStatusForOnHold = ['scheduled', 'rescheduled'];
 
       const fiveMinAhead = new Date(currentDate.getTime() + 5 * 60 * 1000);
 
-      const fiveMinsBelowAppointment = await this.appointmentRepository
-        .createQueryBuilder('appointment')
-        .where('appointment.appointment_date_time >= :fiveMinAhead', {
-          fiveMinAhead,
-        })
-        .andWhere('appointment.status IN (:...newStatusForOnHold)', {
-          newStatusForOnHold,
-        })
-        .limit(limit)
-        .getMany();
-
-      console.log('fiveMinsBelowAppointment', fiveMinsBelowAppointment);
-
       const inprogressAppointment = twoHoursAheadAppointment.filter(
         (appointment) => appointment.status === 'on-going',
       );
+      
+      const fiveMinsBelowAppointment: Appointment[] = [];
 
       const otherAppointments = twoHoursAheadAppointment.filter(
-        (appointment) => appointment.status !== 'on-going',
+        (appointment) => {
+          let addToOthers = true;
+
+          if (
+            currentDate <= appointment.appointment_date_time && 
+            appointment.appointment_date_time <= fiveMinAhead &&
+            newStatusForOnHold.includes(appointment.status)
+          ) {
+            addToOthers = false;
+            fiveMinsBelowAppointment.push(appointment);
+          }
+
+          return appointment.status !== 'on-going' && addToOthers;
+        },
       );
 
       this.eventEmitter.emit(
