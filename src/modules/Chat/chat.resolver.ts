@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Subscription } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
@@ -6,6 +6,9 @@ import { ChatMessageOutput, DeleteUpdateChat } from './dtos/outputchat.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver()
 export class ChatResolver {
@@ -34,7 +37,6 @@ export class ChatResolver {
   }
 
   // Mutation to create a new chat message
-  //@UseGuards(JwtAuthGuard)
   @Roles([Role.Admin, Role.Patient, Role.Doctor], {
     check_permission: false,
     permission_category: '',
@@ -46,13 +48,23 @@ export class ChatResolver {
     createChatMessageInput: CreateChatMessageInput,
   ) {
     try {
-      return await this.chatService.createChatMessage(createChatMessageInput);
+      const newMessage = await this.chatService.createChatMessage(createChatMessageInput);
+      await pubSub.publish('newMessage', { newMessage });
+      return newMessage;
     } catch (e) {
       Logger.error(e);
       throw new Error('Failed to create chat message');
     }
   }
 
+  @Subscription(() => ChatMessageOutput, {
+    resolve: (payload) => payload.newMessage,  // Resolve the payload for subscribers
+  })
+  newMessage() {
+    return pubSub.asyncIterator('newMessage');  // Subscribe to the 'newMessage' event
+  }
+
+  
   // Mutation to update a chat message
   @Roles([Role.Admin, Role.Patient, Role.Doctor], {
     check_permission: false,

@@ -358,3 +358,7 @@ input CreateChatMessageInput {
 input UpdateChatMessageInput {
   message: String!
 }
+
+type Subscription {
+  newMessage: ChatMessageOutput!
+}

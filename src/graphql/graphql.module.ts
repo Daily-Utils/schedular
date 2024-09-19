@@ -12,6 +12,9 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       driver: ApolloDriver,
       playground: false, // Disable the default playground
       autoSchemaFile: 'schema.gql',
+      subscriptions: {
+        'graphql-ws': true
+      },
       plugins: [ApolloServerPluginLandingPageLocalDefault()], // Use only this plugin for the landing page
       context: ({ req }) => ({ req }),
     }),
