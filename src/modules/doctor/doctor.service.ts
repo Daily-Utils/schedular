@@ -169,7 +169,6 @@ export class DoctorService {
             date &&
           (appointment.status === 'scheduled' ||
             appointment.status === 'rescheduled' ||
-            appointment.status === 'rescheduled' ||
             appointment.status === 'in-process' ||
             appointment.status === ' on-hold'),
       )
