@@ -10,11 +10,15 @@ import {
 } from './dtos/appointment.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+jest.mock('node-cron', () => ({
+  schedule: jest.fn(),
+}));
+
 describe('AppointmentService', () => {
   let service: AppointmentService;
   let repository: Repository<Appointment>;
   let doctorService: DoctorService;
-
+  let eventEmitter: EventEmitter2;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -36,13 +40,29 @@ describe('AppointmentService', () => {
           },
         },
       ],
-    }).compile();
+    }).overrideProvider(AppointmentService)
+      .useFactory({
+        factory: (
+          appointmentRepository: Repository<Appointment>,
+          doctorService: DoctorService,
+          eventEmitter: EventEmitter2,
+        ) => {
+          return new AppointmentService(appointmentRepository, doctorService, eventEmitter);
+        },
+        inject: [getRepositoryToken(Appointment), DoctorService, EventEmitter2],
+      })
+      .compile();
 
     service = module.get<AppointmentService>(AppointmentService);
     repository = module.get<Repository<Appointment>>(
       getRepositoryToken(Appointment),
     );
     doctorService = module.get<DoctorService>(DoctorService);
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
   });
 
   it('should be defined', () => {
@@ -74,8 +94,6 @@ describe('AppointmentService', () => {
   describe('createAppointment', () => {
     it.only('should create and return an appointment', async () => {
       const currentDate = new Date()
-
-      console.log('Date::', new Date(currentDate.getTime() + 5 * 60 * 60).toISOString());
 
       const appointmentDto: createAppointmentDTO = {
         patient_user_id: 1,
