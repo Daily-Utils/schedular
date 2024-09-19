@@ -35,7 +35,7 @@ export class DoctorService {
     return days[dayIndex];
   }
 
-  private parseTimeString(timeString: string): Date {
+  private parseTimeString(timeString: string, day: string): Date {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     const date = new Date();
     date.setHours(hours, minutes, seconds, 0);
@@ -143,15 +143,16 @@ export class DoctorService {
     const from = dayTimings.from;
     const doctor_avg_time = this.parseTimeString(
       doctor.average_consulting_time,
+      date,
     ).getMinutes();
 
     const slots: string[] = [];
     const actualDateTime: Date[] = [];
-    let current = this.parseTimeString(from);
-    const end = this.parseTimeString(to);
+    let current = this.parseTimeString(from, date);
+    const end = this.parseTimeString(to, date);
 
-    const break_to = this.parseTimeString(dayTimings.break_to);
-    const break_from = this.parseTimeString(dayTimings.break_from);
+    const break_to = this.parseTimeString(dayTimings.break_to, date);
+    const break_from = this.parseTimeString(dayTimings.break_from, date);
 
     while (current < end) {
       if (current < break_from || current > break_to) {
@@ -177,11 +178,11 @@ export class DoctorService {
           this.formatTimeString(appointment.appointment_date_time),
       );
 
-
     const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
     const availableActualTime = actualDateTime.filter(
       (actualTime) => !bookedSlots.includes(this.formatTimeString(actualTime)),
     );
+
   
     return {
       slots: availableSlots,
