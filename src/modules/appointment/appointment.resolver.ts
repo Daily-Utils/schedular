@@ -7,14 +7,18 @@ import {
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../roles/roles.enum';
 
 @Resolver()
 export class AppointmentResolver {
-  constructor(
-    private readonly appointmentService: AppointmentService,
-  ) {}
+  constructor(private readonly appointmentService: AppointmentService) {}
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [outputAppointment])
   async getAppointmentsForDoctor(
     @Args('doctor_user_id') doctor_user_id: number,
@@ -24,7 +28,11 @@ export class AppointmentResolver {
     );
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Query(() => [outputAppointment])
   async getAppointmentsForPatients(
     @Args('patient_user_id') patient_user_id: number,
@@ -34,7 +42,11 @@ export class AppointmentResolver {
     );
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => outputAppointment)
   async createAppointment(
     @Args('appointment') appointment: createAppointmentDTO,
@@ -42,13 +54,21 @@ export class AppointmentResolver {
     return await this.appointmentService.createAppointment(appointment);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => outputAppointment)
   async getAppointmentById(@Args('id') id: number) {
     return await this.appointmentService.getAppointmentById(id);
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => outputForAppointment)
   async updateAppointment(
     @Args('updateAppointmentDTO') updateAppointmentDTO: updateAppointmentDTO,
@@ -63,12 +83,16 @@ export class AppointmentResolver {
       Logger.error(error);
       return {
         status: 'error',
-        message: 'Appointment not updated',
+        message: `Appointment not updated: ${error.message}`,
       };
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => outputForAppointment)
   async deleteAppointment(@Args('id') id: number) {
     try {
@@ -81,7 +105,7 @@ export class AppointmentResolver {
       Logger.error(error);
       return {
         status: 'error',
-        message: 'Appointment not deleted',
+        message: `Appointment not deleted: ${error.message}`,
       };
     }
   }

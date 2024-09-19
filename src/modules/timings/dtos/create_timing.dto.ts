@@ -20,12 +20,11 @@ export class createTimingDto {
   to: string;
 
   @Field()
-  @IsOptional()
   @IsString()
-  break_from?: string;
+  break_from: string;
 
   @Field()
   @IsOptional()
   @IsString()
-  break_to?: string;
+  break_to: string;
 }

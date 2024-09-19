@@ -2,6 +2,7 @@ import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import { DoctorService } from './doctor.service';
 import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
+  DoctorAvailableSlots,
   DoctorResponseDto,
   responseForAllDoctorsFind,
   responseForAllDoctorsFindArray,
@@ -101,5 +102,21 @@ export class DoctorResolver {
     @Context() context: any,
   ) {
     return await this.doctorService.searchDoctors(searchDTO);
+  }
+
+  @Roles([Role.Admin, Role.Doctor, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Query(() => DoctorAvailableSlots)
+  async getAvaliableSlotsForAppointmentsWithADoctor(
+    @Args('doctorId') doctorId: number,
+    @Args('date') date: string,
+  ) {
+    return await this.doctorService.getAvailableTimeSlotsForADoctor(
+      doctorId,
+      date,
+    );
   }
 }

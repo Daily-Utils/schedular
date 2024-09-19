@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -131,7 +131,9 @@ export class DoctorService {
     const dayIndex = new Date(date).getDay();
     const dayName = this.getDayName(dayIndex);
 
-    const dayTimings = doctor.timings.find((timing) => timing.day === dayName);
+    const dayTimings = doctor.timings.find(
+      (timing) => timing.day.toLowerCase() === dayName.toLowerCase(),
+    );
 
     if (!dayTimings) {
       throw new Error(`No timings found for the day: ${dayName}`);
@@ -144,12 +146,18 @@ export class DoctorService {
     ).getMinutes();
 
     const slots: string[] = [];
-
+    const actualDateTime: Date[] = [];
     let current = this.parseTimeString(from);
     const end = this.parseTimeString(to);
 
+    const break_to = this.parseTimeString(dayTimings.break_to);
+    const break_from = this.parseTimeString(dayTimings.break_from);
+
     while (current < end) {
-      slots.push(this.formatTimeString(current));
+      if (current < break_from || current > break_to) {
+        actualDateTime.push(current);
+        slots.push(this.formatTimeString(current));
+      }
       current = new Date(current.getTime() + doctor_avg_time * 60000);
     }
 
@@ -162,17 +170,23 @@ export class DoctorService {
             appointment.status === 'rescheduled' ||
             appointment.status === 'rescheduled' ||
             appointment.status === 'in-process' ||
-            appointment.status === ' on-hold'
-          ),
+            appointment.status === ' on-hold'),
       )
       .map(
         (appointment) =>
-          appointment.appointment_date_time.toTimeString().split(' ')[0],
+          this.formatTimeString(appointment.appointment_date_time),
       );
 
-    const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
 
-    return availableSlots;
+    const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
+    const availableActualTime = actualDateTime.filter(
+      (actualTime) => !bookedSlots.includes(this.formatTimeString(actualTime)),
+    );
+  
+    return {
+      slots: availableSlots,
+      actualTimings: availableActualTime,
+    };
   }
 
   async searchDoctors(searchData: searchDTO) {
@@ -192,22 +206,71 @@ export class DoctorService {
         'doctor.average_consulting_time',
       ]);
 
-    if (searchData.services && searchData.services.length > 0) {
+    let ignoreFuther = false;
+    if (searchData.username && searchData.username.trim() !== '') {
+      queryBuilder.andWhere('user.username ILIKE :username', {
+        username: `%${searchData.username}%`,
+      });
+      ignoreFuther = true;
+    }
+
+    if (searchData.default_fee != null && !ignoreFuther) {
+      queryBuilder.andWhere('doctor.default_fee >= :default_fee', {
+        default_fee: searchData.default_fee,
+      });
+    }
+
+    if (
+      searchData.services &&
+      searchData.services.length > 0 &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.services && ARRAY[:...services]', {
         services: searchData.services,
       });
     }
 
-    if (searchData.speciality && searchData.speciality.length > 0) {
+    if (
+      searchData.speciality &&
+      searchData.speciality.length > 0 &&
+      !ignoreFuther
+    ) {
       queryBuilder.andWhere('doctor.speciality && ARRAY[:...speciality]', {
         speciality: searchData.speciality,
       });
     }
 
-    if (searchData.facility_name) {
-      queryBuilder.andWhere('doctor.facility_name = :facility_name', {
-        facility_name: searchData.facility_name,
+    if (
+      searchData.facility_name &&
+      searchData.facility_name.trim() !== '' &&
+      !ignoreFuther
+    ) {
+      queryBuilder.andWhere('doctor.facility_name ILIKE :facility_name', {
+        facility_name: `%${searchData.facility_name}%`,
       });
+    }
+
+    if (
+      searchData.facility_type &&
+      searchData.facility_type.trim() !== '' &&
+      !ignoreFuther
+    ) {
+      queryBuilder.andWhere('doctor.facility_type ILIKE :facility_type', {
+        facility_type: `%${searchData.facility_type}%`,
+      });
+    }
+
+    if (
+      searchData.facility_location &&
+      searchData.facility_location.trim() !== '' &&
+      !ignoreFuther
+    ) {
+      queryBuilder.andWhere(
+        'doctor.facility_location ILIKE :facility_location',
+        {
+          facility_location: `%${searchData.facility_location}%`,
+        },
+      );
     }
 
     const doctors = await queryBuilder.getMany();

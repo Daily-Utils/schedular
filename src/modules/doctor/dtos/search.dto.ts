@@ -6,16 +6,6 @@ export class searchDTO {
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  phone_number?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsString()
-  email?: string;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  @IsString()
   username?: string;
 
   @Field(() => [String], { nullable: true })

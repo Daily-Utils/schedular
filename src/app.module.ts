@@ -18,6 +18,7 @@ import { TimingModule } from './modules/timings/timings.module';
 import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
+import { ChatModule } from './modules/Chat/chat.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AppointmentModule } from './modules/appointment/appointment.module';
     SupportTicketsModule,
     FeedbackModule,
     AppointmentModule,
+    ChatModule,
     JwtModule.register({
       secret: 'x&92Kv^Zc7b9@JN5Q',
       signOptions: { expiresIn: '1h' },

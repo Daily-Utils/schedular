@@ -46,6 +46,11 @@ type DoctorResponseDto {
   timings: [TimingDto!]!
 }
 
+type DoctorAvailableSlots {
+  slots: [String!]!
+  actualTimings: [String!]!
+}
+
 type singleSearchResponse {
   id: Float!
   username: String!
@@ -149,11 +154,25 @@ type outputForAppointment {
   message: String!
 }
 
+type ChatMessageOutput {
+  chat_id: Float!
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  type: String!
+  message: String!
+}
+
+type DeleteUpdateChat {
+  status: String!
+  message: String!
+}
+
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
+  getAvaliableSlotsForAppointmentsWithADoctor(doctorId: Float!, date: String!): DoctorAvailableSlots!
   getAllPatientDetails: [PatientOutput!]!
   getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
@@ -163,11 +182,10 @@ type Query {
   getFeedbacksForAPaitent(patient_user_id: Float!): [FeedbackCreateOutput!]!
   getAppointmentsForDoctor(doctor_user_id: Float!): [outputAppointment!]!
   getAppointmentsForPatients(patient_user_id: Float!): [outputAppointment!]!
+  getChatMessages(patient_user_id: Float!, doctor_user_id: Float!): [ChatMessageOutput!]!
 }
 
 input searchDTO {
-  phone_number: String
-  email: String
   username: String
   speciality: [String!]
   services: [String!]
@@ -209,6 +227,9 @@ type Mutation {
   getAppointmentById(id: Float!): outputAppointment!
   updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): outputForAppointment!
   deleteAppointment(id: Float!): outputForAppointment!
+  createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
+  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): DeleteUpdateChat!
+  deleteChat(chat_id: Float!): DeleteUpdateChat!
 }
 
 input LoginInput {
@@ -325,4 +346,15 @@ input updateAppointmentDTO {
   patient_complaint: String
   patient_current_weight: Float
   status: String
+}
+
+input CreateChatMessageInput {
+  patient_user_id: Float!
+  doctor_user_id: Float!
+  type: String!
+  message: String!
+}
+
+input UpdateChatMessageInput {
+  message: String!
 }
