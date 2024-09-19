@@ -360,5 +360,5 @@ input UpdateChatMessageInput {
 }
 
 type Subscription {
-  newMessage: ChatMessageOutput!
+  newMessage(patient_user_id: Float!, doctor_user_id: Float!): ChatMessageOutput!
 }

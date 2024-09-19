@@ -1,5 +1,5 @@
 // src\modules\auth\jwt-auth.guard.ts
-import { Injectable, ExecutionContext } from '@nestjs/common';
+import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_CLOSED_FOR_USER, IS_OPEN_FOR_DEVELOPMENT, IS_PUBLIC_KEY } from './auth.decorator';
@@ -41,14 +41,31 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const ctx = GqlExecutionContext.create(context).getContext();
-    const { req } = ctx;
-    
-    this.decodeAndPassJWTInRequest(this.extractJwtFromRequest(req), req);
+    const { req, connection } = ctx;
+
+    console.log('req::', req);
+    console.log("conon:", connection);
+
+    this.decodeAndPassJWTInRequest(this.extractJwtFromRequest(req, connection), req);
+    console.log('requser::', req.user);
     return super.canActivate(new ExecutionContextHost([req]));
   }
 
-  extractJwtFromRequest(request) {
-    return request?.headers?.authorization?.split(' ')[1];
+  extractJwtFromRequest(request, connection) {
+    if (request.headers) {
+      return request.headers.authorization.split(' ')[1];
+    }
+
+    console.log(
+      'request.connectionParams',
+      request.connectionParams.Authorization.split(' ')[1],
+    );
+
+    if (request.connectionParams) {
+      return request.connectionParams.Authorization.split(' ')[1];
+    }
+
+    throw new UnauthorizedException('Authorization token not found');
   }
 
   decodeAndPassJWTInRequest(jwt: string, req: any) {
