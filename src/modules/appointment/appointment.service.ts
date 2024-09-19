@@ -12,7 +12,7 @@ import * as cron from 'node-cron';
 
 @Injectable()
 export class AppointmentService {
-  minsForCron = '1';
+  minsForCron = '5';
 
   constructor(
     @InjectRepository(Appointment)
@@ -29,7 +29,7 @@ export class AppointmentService {
     const limit = 10;
     const currentDate = new Date();
 
-    cron.schedule(`* * * * *`, async () => {
+    cron.schedule(`${this.minsForCron} * * * *`, async () => {
       const twoHoursAhead = new Date(
         currentDate.getTime() + 2 * 60 * 60 * 1000,
       );
@@ -52,7 +52,7 @@ export class AppointmentService {
       const inprogressAppointment = twoHoursAheadAppointment.filter(
         (appointment) => appointment.status === 'on-going',
       );
-      
+
       const fiveMinsBelowAppointment: Appointment[] = [];
 
       const otherAppointments = twoHoursAheadAppointment.filter(
@@ -60,7 +60,7 @@ export class AppointmentService {
           let addToOthers = true;
 
           if (
-            currentDate <= appointment.appointment_date_time && 
+            currentDate <= appointment.appointment_date_time &&
             appointment.appointment_date_time <= fiveMinAhead &&
             newStatusForOnHold.includes(appointment.status)
           ) {

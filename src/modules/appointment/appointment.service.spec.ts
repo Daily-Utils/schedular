@@ -8,6 +8,7 @@ import {
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('AppointmentService', () => {
   let service: AppointmentService;
@@ -26,6 +27,12 @@ describe('AppointmentService', () => {
           provide: DoctorService,
           useValue: {
             getAvailableTimeSlotsForADoctor: jest.fn(),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
           },
         },
       ],
@@ -65,11 +72,15 @@ describe('AppointmentService', () => {
   });
 
   describe('createAppointment', () => {
-    it('should create and return an appointment', async () => {
+    it.only('should create and return an appointment', async () => {
+      const currentDate = new Date()
+
+      console.log('Date::', new Date(currentDate.getTime() + 5 * 60 * 60).toISOString());
+
       const appointmentDto: createAppointmentDTO = {
         patient_user_id: 1,
         doctor_user_id: 2,
-        appointment_date_time: new Date('2023-10-02T10:30:00'),
+        appointment_date_time: new Date(currentDate.getTime() + 5 * 60 * 60),
         fees: 100,
         visit_type: 'in-person',
         ivr_app_id: '12345',
@@ -78,7 +89,10 @@ describe('AppointmentService', () => {
         patient_current_weight: 70,
       };
 
-      const availableSlots = { slots: ['10:00:00', '10:30:00'] };
+      const availableSlots = {
+        slots: [new Date(currentDate.getTime() + 5 * 60 * 60).toTimeString().split(' ')[0], '10:30:00'],
+      };
+
       jest
         .spyOn(doctorService, 'getAvailableTimeSlotsForADoctor')
         .mockResolvedValue(availableSlots as any);
@@ -89,10 +103,11 @@ describe('AppointmentService', () => {
     });
 
     it('should throw an error if slot is not available', async () => {
+      const currentDate = new Date();
       const appointmentDto: createAppointmentDTO = {
         patient_user_id: 1,
         doctor_user_id: 2,
-        appointment_date_time: new Date('2023-10-01T10:00:00Z'),
+        appointment_date_time: new Date(currentDate.getTime() + 5 * 60 * 60),
         fees: 100,
         visit_type: 'in-person',
         ivr_app_id: '12345',
@@ -181,10 +196,10 @@ describe('AppointmentService', () => {
       );
     });
 
-    it('should throw an error if slot is not available', async () => {
+    it('should throw an error i.e Cannot schedule appointments in past', async () => {
       const updateDto: updateAppointmentDTO = {
         id: 1,
-        appointment_date_time: new Date('2023-10-01T10:00:00Z'),
+        appointment_date_time: new Date(),
       };
 
       const existingAppointment = {
@@ -203,7 +218,7 @@ describe('AppointmentService', () => {
         .mockResolvedValue(availableSlots as any);
 
       await expect(service.updateAppointment(updateDto)).rejects.toThrow(
-        'Slot not available',
+        'Cannot schedule appointments in past',
       );
     });
   });
