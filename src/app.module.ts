@@ -19,6 +19,7 @@ import { SupportTicketsModule } from './modules/SupportTickets/supporttickets.mo
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { ChatModule } from './modules/Chat/chat.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -38,6 +39,10 @@ import { ChatModule } from './modules/Chat/chat.module';
       inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    EventEmitterModule.forRoot({
+      maxListeners: 10,
+      verboseMemoryLeak: true,
+    }),
     AuthModule,
     UsersModule,
     GraphqlModule,
