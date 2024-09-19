@@ -8,7 +8,6 @@ import {
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
-import { NotFoundException } from '@nestjs/common';
 
 describe('AppointmentService', () => {
   let service: AppointmentService;
