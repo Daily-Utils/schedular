@@ -37,7 +37,7 @@ export class DoctorService {
 
   private parseTimeString(timeString: string, day: string): Date {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
-    const date = new Date();
+    const date = new Date(day);
     date.setHours(hours, minutes, seconds, 0);
     return date;
   }
