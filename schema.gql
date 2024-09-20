@@ -12,11 +12,6 @@ type UserGraphQL {
   phone: String!
 }
 
-type responseForModificationDTO {
-  status: String!
-  message: String!
-}
-
 type responseForAllDoctorsFind {
   id: Float!
   username: String!
@@ -64,6 +59,11 @@ type singleSearchResponse {
   default_fee: Float!
 }
 
+type ResponseDTO {
+  message: String!
+  status: String!
+}
+
 type PatientOutput {
   id: Float!
   username: String!
@@ -103,11 +103,6 @@ type getAllTimingsForADoctorOutputDTO {
   break_to: String!
 }
 
-type timingsOutputs {
-  status: String!
-  message: String!
-}
-
 type SupportOutputDTO {
   status: String!
   message: String!
@@ -128,11 +123,6 @@ type FeedbackCreateOutput {
   waiting_time: Float!
 }
 
-type FeedbackUpdateDeleteOutput {
-  status: String!
-  message: String!
-}
-
 type outputAppointment {
   id: Float!
   fees: Float!
@@ -148,11 +138,6 @@ type outputAppointment {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type outputForAppointment {
-  status: String!
-  message: String!
-}
 
 type ChatMessageOutput {
   chat_id: Float!
@@ -208,25 +193,25 @@ input RolePermissionVerificationInput {
 type Mutation {
   login(login: LoginInput!): AuthResponse!
   register(register: RegisterInput!): UserGraphQL!
-  modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): responseForModificationDTO!
-  deleteDoctorById(id: Float!): responseForModificationDTO!
+  modifyDoctorById(id: Float!, updateDoctorDto: UpdateDoctorDto!): ResponseDTO!
+  deleteDoctorById(id: Float!): ResponseDTO!
   modifyPatientDetails(user_id: Float!, updatePatientDetails: UpdatePatientDto!): responseForModificationDTOPaitent!
   deletePatient(user_id: Float!): responseForModificationDTOPaitent!
   addPermissionToRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
   removePermissionFromRole(rolePermissionInput: RolePermissionVerificationInput!): RoleOutputForModification!
-  updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): timingsOutputs!
-  deleteSingleTiming(doctor_id: Float!, day: String!): timingsOutputs!
-  addTiming(createTimingDTO: createTimingDto!): timingsOutputs!
+  updateTimingDetails(doctor_id: Float!, day: String!, updateTimingDetails: UpdateTimingDto!): ResponseDTO!
+  deleteSingleTiming(doctor_id: Float!, day: String!): ResponseDTO!
+  addTiming(createTimingDTO: createTimingDto!): ResponseDTO!
   createSupportTicket(createSupportTicket: CreateSupportTicketDto!): supportTicketCreateOutputDTO!
   updateSupportTicket(updateSupportTicket: UpdateSupportDTO!): SupportOutputDTO!
   deleteSupportTicket(id: Float!): SupportOutputDTO!
   createFeedback(feedbackData: CreateFeedbackInput!): FeedbackCreateOutput!
-  deleteFeedback(id: Float!): FeedbackUpdateDeleteOutput!
-  updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): FeedbackUpdateDeleteOutput!
+  deleteFeedback(id: Float!): ResponseDTO!
+  updateFeedback(feedbackUpdateData: UpdateFeedbackInput!): ResponseDTO!
   createAppointment(appointment: createAppointmentDTO!): outputAppointment!
   getAppointmentById(id: Float!): outputAppointment!
-  updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): outputForAppointment!
-  deleteAppointment(id: Float!): outputForAppointment!
+  updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): ResponseDTO!
+  deleteAppointment(id: Float!): ResponseDTO!
   createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
   updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): DeleteUpdateChat!
   deleteChat(chat_id: Float!): DeleteUpdateChat!

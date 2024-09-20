@@ -48,12 +48,14 @@ export class AppointmentService {
       const newStatusForOnHold = ['scheduled', 'rescheduled'];
 
       const fiveMinAhead = new Date(currentDate.getTime() + 5 * 60 * 1000);
+      const fifteenMinAhead = new Date(currentDate.getTime() + 15 * 60 * 1000);
 
       const inprogressAppointment = twoHoursAheadAppointment.filter(
         (appointment) => appointment.status === 'on-going',
       );
 
       const fiveMinsBelowAppointment: Appointment[] = [];
+      const fiveToFifteenAppointment: Appointment[] = [];
 
       const otherAppointments = twoHoursAheadAppointment.filter(
         (appointment) => {
@@ -66,6 +68,13 @@ export class AppointmentService {
           ) {
             addToOthers = false;
             fiveMinsBelowAppointment.push(appointment);
+          } else if (
+            appointment.appointment_date_time > fiveMinAhead &&
+            appointment.appointment_date_time <= fifteenMinAhead &&
+            newStatusForOnHold.includes(appointment.status)
+          ) {
+            addToOthers = false;
+            fiveToFifteenAppointment.push(appointment);
           }
 
           return appointment.status !== 'on-going' && addToOthers;
@@ -85,6 +94,11 @@ export class AppointmentService {
       this.eventEmitter.emit(
         'cron.job.update.five.minutes.below.ongoing.appointment',
         fiveMinsBelowAppointment,
+      );
+
+      this.eventEmitter.emit(
+        'cron.job.update.five.to.fifteen.minutes.below.ongoing.appointment',
+        fiveToFifteenAppointment,
       );
     });
   }

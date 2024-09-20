@@ -46,3 +46,7 @@ async function addDefaultTimingsToADoctor(){
         console.error('Transaction failed, rolled back because of :', error.message);
     }
 }
+
+addDefaultTimingsToADoctor().catch((error) =>
+  console.error('Error running script:', error),
+);
