@@ -1,23 +1,21 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '../roles.enum';
+import { Category, Permission } from '../permission.enum';
 
 @InputType()
 export class RolePermissionVerificationInput {
   @Field()
-  @IsNotEmpty()
-  @IsString()
-  role_name: 'admin' | 'patient' | 'guest';
+  @IsEnum(Role)
+  role_name: Role;
 
   @Field()
   @IsNotEmpty()
-  @IsString()
-  permission: 'create' | 'read' | 'update' | 'delete';
+  @IsEnum(Permission)
+  permission: Permission;
 
   @Field()
   @IsNotEmpty()
-  @IsString()
-  category:
-    | 'appointment_permission'
-    | 'feedback_permission'
-    | 'support_tickets_permissions';
+  @IsEnum(Category)
+  category: Category;
 }

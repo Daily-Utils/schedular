@@ -1,18 +1,18 @@
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '../roles.enum';
 
 @InputType()
 export class RoleInput {
   @Field()
-  @IsNotEmpty()
-  @IsString()
-  role_name: 'admin' | 'patient' | 'guest';
+  @IsEnum(Role)
+  role_name: Role;
 }
 
 @ObjectType()
 export class RoleOutput {
   @Field()
-  roles_name: 'admin' | 'patient' | 'guest';
+  roles_name: string;
 
   @Field(() => [String])
   appointment_permission: string[];

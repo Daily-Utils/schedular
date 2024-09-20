@@ -19,15 +19,3 @@ export class ChatMessageOutput {
   @Field()
   message: string;
 }
-
-@ObjectType()
-export class DeleteUpdateChat {
-  @Field()
-  @IsString()
-  status: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  message: string;
-}

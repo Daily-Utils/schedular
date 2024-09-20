@@ -5,6 +5,7 @@ import { SupportTickets } from './supporttickets.entity';
 import { Repository } from 'typeorm';
 import { CreateSupportTicketDto } from './dtos/createSupportTicket.dto';
 import { UpdateSupportDTO } from './dtos/updateSupportDTO';
+import { TicketStatus } from './supporttickets.enum';
 
 describe('SupportTicketsService', () => {
   let service: SupportTicketsService;
@@ -37,7 +38,7 @@ describe('SupportTicketsService', () => {
         // Add necessary properties here
         patient_user_id: 1,
         message: 'Test message',
-        status: 'open',
+        status: TicketStatus.OPEN,
       };
       const savedTicket = { id: 1, ...createSupportTicketDto };
 

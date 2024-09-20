@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNumber, IsOptional, isString, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, isString, IsString } from 'class-validator';
+import { WeekDay } from '../timings.enum';
 
 @InputType()
 export class createTimingDto {
@@ -8,8 +9,8 @@ export class createTimingDto {
   doctor_user_id: number;
 
   @Field()
-  @IsString()
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  @IsEnum(WeekDay)
+  day: WeekDay;
 
   @Field()
   @IsString()

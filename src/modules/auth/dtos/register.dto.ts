@@ -5,10 +5,12 @@ import {
   IsNotEmpty,
   IsString,
   IsStrongPassword,
-  Min,
   IsOptional,
   ValidateIf,
+  IsEnum,
 } from 'class-validator';
+import { Role } from '../../roles/roles.enum';
+import { BloodGroup } from '../../Patient/patient.enum';
 
 @InputType()
 export class RegisterInput {
@@ -40,9 +42,8 @@ export class RegisterInput {
   age: number;
 
   @Field()
-  @IsString()
-  @IsNotEmpty()
-  role: 'admin' | 'doctor' | 'patient';
+  @IsEnum(Role)
+  role: Role;
 
   @Field()
   @IsString()
@@ -109,8 +110,9 @@ export class RegisterInput {
 
   @Field({ nullable: true })
   @IsOptional()
+  @IsEnum(BloodGroup)
   @ValidateIf((o) => o.role === 'patient')
-  blood_group?: 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
+  blood_group?: BloodGroup;
 
   @Field({ nullable: true })
   @IsOptional()

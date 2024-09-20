@@ -5,6 +5,7 @@ import { TimingsService } from './timings.service';
 import { Timings } from './timings.entity';
 import { createTimingDto } from './dtos/create_timing.dto';
 import { UpdateTimingDto } from './dtos/update_timing.dto';
+import { WeekDay } from './timings.enum';
 
 describe('TimingsService', () => {
   let service: TimingsService;
@@ -33,7 +34,7 @@ describe('TimingsService', () => {
     it('should add a new timing', async () => {
       const createDto: createTimingDto = {
         doctor_user_id: 1,
-        day: 'monday',
+        day: WeekDay.MONDAY,
         from: '09:00',
         to: '17:00',
         break_from: '12:00',

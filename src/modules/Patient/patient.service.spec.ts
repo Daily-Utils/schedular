@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CreatePatientDto } from './dtos/patient.dtos';
 import { UpdatePatientDto } from './dtos/update_patient.dto';
+import { BloodGroup } from './patient.enum';
 
 describe('PatientService', () => {
   let service: PatientService;
@@ -45,7 +46,7 @@ describe('PatientService', () => {
       const createPatientDto: CreatePatientDto = {
         user_id: 1,
         weight: 70,
-        blood_group: 'A+',
+        blood_group: BloodGroup.AB_NEGATIVE,
         health_issues: ['diabetes'],
         family_member: [],
         relation: [],
@@ -97,7 +98,7 @@ describe('PatientService', () => {
           user_id: 1,
           user: { username: 'user1', age: 30 },
           weight: 70,
-          blood_group: 'A+',
+          blood_group: BloodGroup.AB_NEGATIVE,
           health_issues: ['diabetes'],
         },
       ];

@@ -6,6 +6,7 @@ import { Chat } from './chat.entity';
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
 import { NotFoundException } from '@nestjs/common';
+import { ChatType } from './chat.enum';
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -35,7 +36,7 @@ describe('ChatService', () => {
       const createChatMessageInput: CreateChatMessageInput = {
         patient_user_id: 1,
         doctor_user_id: 2,
-        type: 'text',
+        type: ChatType.SIMPLE,
         message: 'Hello, Doctor!',
       };
 

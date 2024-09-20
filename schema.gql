@@ -147,11 +147,6 @@ type ChatMessageOutput {
   message: String!
 }
 
-type DeleteUpdateChat {
-  status: String!
-  message: String!
-}
-
 type Query {
   findAll: [UserGraphQL!]!
   findAllDoctors: responseForAllDoctorsFindArray!
@@ -213,8 +208,8 @@ type Mutation {
   updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): ResponseDTO!
   deleteAppointment(id: Float!): ResponseDTO!
   createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
-  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): DeleteUpdateChat!
-  deleteChat(chat_id: Float!): DeleteUpdateChat!
+  updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): ResponseDTO!
+  deleteChat(chat_id: Float!): ResponseDTO!
 }
 
 input LoginInput {
