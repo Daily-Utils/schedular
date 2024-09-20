@@ -14,7 +14,6 @@ const pubSub = new PubSub();
       driver: ApolloDriver,
       playground: false, // Disable default playground
       autoSchemaFile: 'schema.gql',
-
       subscriptions: {
         'graphql-ws': {
           path: '/graphql',
