@@ -4,7 +4,6 @@ import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
   DoctorAvailableSlots,
   DoctorResponseDto,
-  responseForAllDoctorsFind,
   responseForAllDoctorsFindArray,
   responseForModificationDTO,
 } from './dtos/output.dto';

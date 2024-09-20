@@ -1,7 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TimingsService } from './timings.service';
-import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
   getAllTimingsForADoctorOutputDTO,
   timingsOutputs,

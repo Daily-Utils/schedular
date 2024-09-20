@@ -4,7 +4,6 @@ import { Appointment } from "./appointment.entity";
 import { Repository } from "typeorm";
 import { OnEvent } from '@nestjs/event-emitter';
 
-
 @Injectable()
 export class AppointmentCronService {
   constructor(

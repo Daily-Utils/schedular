@@ -5,7 +5,6 @@ import { User } from './schemas/user.entity';
 import { RegisterInput } from '../auth/dtos/register.dto';
 import { LoginInput } from '../auth/dtos/login.dto';
 import * as bcrypt from 'bcrypt';
-import { CreateDoctorDto } from '../doctor/dtos/doctor.dto';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../Patient/patient.service';
 

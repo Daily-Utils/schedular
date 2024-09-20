@@ -8,7 +8,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
-import { ObjectType } from '@nestjs/graphql';
 import { Doctor } from '../doctor/doctor.entity';
 
 

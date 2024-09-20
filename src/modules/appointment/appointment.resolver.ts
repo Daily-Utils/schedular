@@ -1,7 +1,6 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AppointmentService } from './appointment.service';
-import { OpenForDevelopment } from '../auth/auth.decorator';
 import { outputAppointment, outputForAppointment } from './dtos/output.dto';
 import {
   createAppointmentDTO,
