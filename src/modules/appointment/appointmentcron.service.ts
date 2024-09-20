@@ -47,7 +47,7 @@ export class AppointmentCronService {
       .execute();
   }
 
-  @OnEvent('cron.job.update.five.to.fifteen.minutes.below.appointment')
+  @OnEvent('cron.job.update.five.to.fifteen.minutes.below.ongoing.appointment')
   async handleCronJobForFiveToFifteenMinsAheadAppointments(
     payload: [Appointment],
   ) {

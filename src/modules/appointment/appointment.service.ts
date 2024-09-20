@@ -71,7 +71,7 @@ export class AppointmentService {
           } else if (
             appointment.appointment_date_time > fiveMinAhead &&
             appointment.appointment_date_time <= fifteenMinAhead &&
-            newStatusForOnHold.includes(appointment.status)
+            appointment.status === 'on-hold'
           ) {
             addToOthers = false;
             fiveToFifteenAppointment.push(appointment);
