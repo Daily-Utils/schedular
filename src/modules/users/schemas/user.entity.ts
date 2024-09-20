@@ -11,6 +11,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Patient } from '../../Patient/patient.entity';
+import { Role } from '../../roles/roles.enum';
 
 @Entity({ name: 'users' })
 export class User {

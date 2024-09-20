@@ -33,7 +33,7 @@ describe('TimingsService', () => {
     it('should add a new timing', async () => {
       const createDto: createTimingDto = {
         doctor_user_id: 1,
-        day: 'Monday',
+        day: 'monday',
         from: '09:00',
         to: '17:00',
         break_from: '12:00',
@@ -43,7 +43,7 @@ describe('TimingsService', () => {
       const timing = { ...createDto, id: 1 };
       jest.spyOn(repository, 'create').mockReturnValue(timing as any);
       jest.spyOn(repository, 'save').mockResolvedValue(timing as any);
-
+      jest.spyOn(repository, 'findOne').mockResolvedValue(false as any);
 
       await service.addTimings(createDto);
 

@@ -18,7 +18,6 @@ export class AuthService {
     const savedUser = await this.userService.createUser(registerDto);
     return savedUser;
   }
-  
 
   async login(loginDto: LoginInput) {
     const user = await this.userService.validateUser(loginDto);

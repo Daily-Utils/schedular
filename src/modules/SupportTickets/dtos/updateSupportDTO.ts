@@ -15,7 +15,7 @@ export class UpdateSupportDTO {
 
   @Field()
   @IsOptional()
-  status?: string;
+  status?: 'open' | 'closed';
 
   @Field()
   @IsNumber()

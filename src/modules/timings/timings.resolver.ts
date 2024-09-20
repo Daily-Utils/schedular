@@ -1,9 +1,7 @@
 import { Inject, Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TimingsService } from './timings.service';
-import {
-  getAllTimingsForADoctorOutputDTO
-} from './dtos/output.dto';
+import { getAllTimingsForADoctorOutputDTO } from './dtos/output.dto';
 import { UpdateTimingDto } from './dtos/update_timing.dto';
 import { createTimingDto } from './dtos/create_timing.dto';
 import { Roles } from '../roles/roles.decorator';
@@ -61,7 +59,15 @@ export class TimingsResolver {
   @Mutation(() => ResponseDTO)
   async deleteSingleTiming(
     @Args('doctor_id') doctor_id: number,
-    @Args('day') day: string,
+    @Args('day')
+    day:
+      | 'monday'
+      | 'tuesday'
+      | 'wednesday'
+      | 'thursday'
+      | 'friday'
+      | 'saturday'
+      | 'sunday',
   ) {
     try {
       await this.timingsService.deleteSingleTiming(doctor_id, day);

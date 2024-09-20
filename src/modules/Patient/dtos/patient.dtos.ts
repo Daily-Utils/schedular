@@ -25,7 +25,7 @@ export class CreatePatientDto {
 
   @IsNotEmpty()
   @IsString()
-  readonly blood_group: string;
+  readonly blood_group: 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
 
   @IsNumber()
   @IsNotEmpty()

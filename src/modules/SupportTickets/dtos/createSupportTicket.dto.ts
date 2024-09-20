@@ -14,5 +14,5 @@ export class CreateSupportTicketDto {
     
     @Field()
     @IsString()
-    status: string;
+    status: 'open' | 'closed';
 }

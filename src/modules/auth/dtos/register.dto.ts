@@ -42,7 +42,7 @@ export class RegisterInput {
   @Field()
   @IsString()
   @IsNotEmpty()
-  role: string;
+  role: 'admin' | 'doctor' | 'patient';
 
   @Field()
   @IsString()
@@ -110,7 +110,7 @@ export class RegisterInput {
   @Field({ nullable: true })
   @IsOptional()
   @ValidateIf((o) => o.role === 'patient')
-  blood_group?: string;
+  blood_group?: 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
 
   @Field({ nullable: true })
   @IsOptional()

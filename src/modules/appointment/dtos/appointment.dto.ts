@@ -22,7 +22,7 @@ export class createAppointmentDTO {
 
   @Field()
   @IsString()
-  status: string
+  status: 'scheduled' | 'rescheduled' | 'on-hold' | 'on-going' | 'completed' | 'reschedule_needed';
 
   @Field()
   @IsNumber()
@@ -77,5 +77,5 @@ export class updateAppointmentDTO {
 
   @Field({ nullable: true })
   @IsOptional()
-  status?: string;
+  status?: 'scheduled' | 'rescheduled' | 'on-hold' | 'on-going' | 'completed' | 'reschedule_needed';
 }

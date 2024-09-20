@@ -37,7 +37,7 @@ describe('SupportTicketsService', () => {
         // Add necessary properties here
         patient_user_id: 1,
         message: 'Test message',
-        status: 'Test status',
+        status: 'open',
       };
       const savedTicket = { id: 1, ...createSupportTicketDto };
 
@@ -74,7 +74,7 @@ describe('SupportTicketsService', () => {
         id: 1,
         patient_user_id: 1,
         message: 'Test message',
-        status: 'Test status',
+        status: 'open',
         // Add necessary properties here
       };
       const updateResult = { affected: 1 };

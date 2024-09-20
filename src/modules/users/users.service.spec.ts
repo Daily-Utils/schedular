@@ -76,7 +76,7 @@ describe('UsersService', () => {
         password: 'password',
         sex: 'male',
         age: 30,
-        role: 'doctor',
+        role: 'doctor' as 'doctor',
         phone: '1234567890',
         services: ['General'],
         speciality: ['General'],

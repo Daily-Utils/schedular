@@ -9,7 +9,7 @@ export class createTimingDto {
 
   @Field()
   @IsString()
-  day: string;
+  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
   @Field()
   @IsString()
