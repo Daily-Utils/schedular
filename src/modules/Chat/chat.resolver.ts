@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Subscription } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
@@ -6,6 +6,8 @@ import { ChatMessageOutput, DeleteUpdateChat } from './dtos/outputchat.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { PubSub } from 'graphql-subscriptions';
+const pubSub = new PubSub();
 
 @Resolver()
 export class ChatResolver {
@@ -34,7 +36,6 @@ export class ChatResolver {
   }
 
   // Mutation to create a new chat message
-  //@UseGuards(JwtAuthGuard)
   @Roles([Role.Admin, Role.Patient, Role.Doctor], {
     check_permission: false,
     permission_category: '',
@@ -46,11 +47,35 @@ export class ChatResolver {
     createChatMessageInput: CreateChatMessageInput,
   ) {
     try {
-      return await this.chatService.createChatMessage(createChatMessageInput);
+      const newMessage = await this.chatService.createChatMessage(
+        createChatMessageInput,
+      );
+      pubSub.publish('newMessage', { newMessage });
+      return newMessage;
     } catch (e) {
       Logger.error(e);
       throw new Error('Failed to create chat message');
     }
+  }
+
+  @Roles([Role.Admin, Role.Patient, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Subscription(() => ChatMessageOutput, {
+    filter: (payload, variables) => {
+      return (
+        payload.newMessage.patient_user_id === variables.patient_user_id &&
+        payload.newMessage.doctor_user_id === variables.doctor_user_id
+      );
+    },
+  })
+  newMessage(
+    @Args('patient_user_id') patient_user_id: number,
+    @Args('doctor_user_id') doctor_user_id: number,
+  ) {
+    return pubSub.asyncIterator('newMessage');
   }
 
   // Mutation to update a chat message
@@ -70,13 +95,13 @@ export class ChatResolver {
       return {
         status: 'success',
         message: 'Chat message updated successfully',
-      }
+      };
     } catch (e) {
       Logger.error(e);
       return {
         status: 'failure',
         message: `Failed to update chat message: ${e.message}`,
-      }
+      };
     }
   }
 
@@ -102,6 +127,3 @@ export class ChatResolver {
     }
   }
 }
-
-
-

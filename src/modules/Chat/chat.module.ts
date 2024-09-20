@@ -8,6 +8,6 @@ import { ChatResolver } from "./chat.resolver";
     imports: [
         TypeOrmModule.forFeature([Chat]),
     ],
-    providers: [ChatService, ChatResolver]
+    providers: [ChatService, ChatResolver,]
 })
 export class ChatModule {}
