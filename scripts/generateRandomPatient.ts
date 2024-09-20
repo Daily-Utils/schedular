@@ -15,7 +15,7 @@ function generateRandomPatient() {
       age: faker.number.int({ min: 0, max: 100 }),
       family_member: [],
       relation: [],
-      blood_group: faker.helpers.arrayElement(['A', 'B', 'AB', 'O']),
+      blood_group: faker.helpers.arrayElement(['A+', 'B+', 'AB-', 'O-']),
       weight: faker.number.int({ min: 30, max: 150 }),
     },
   };
