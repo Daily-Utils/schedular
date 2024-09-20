@@ -3,7 +3,7 @@ import { IsString } from "class-validator";
 
 
 @ObjectType()
-export class response{
+export class ResponseDTO{
     @Field()
     @IsString()
     message: string;

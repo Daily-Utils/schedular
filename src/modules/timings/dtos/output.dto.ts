@@ -1,6 +1,4 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { IsNotEmpty, IsString } from "class-validator";
-
 
 @ObjectType()
 export class getAllTimingsForADoctorOutputDTO{
@@ -22,15 +20,3 @@ export class getAllTimingsForADoctorOutputDTO{
     @Field()
     break_to: string;
 }
-
-@ObjectType()
-export class timingsOutputs {
-  @Field()
-  @IsString()
-  status: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  message: string;
-} 

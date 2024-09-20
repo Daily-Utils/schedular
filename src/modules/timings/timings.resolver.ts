@@ -2,13 +2,13 @@ import { Inject, Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TimingsService } from './timings.service';
 import {
-  getAllTimingsForADoctorOutputDTO,
-  timingsOutputs,
+  getAllTimingsForADoctorOutputDTO
 } from './dtos/output.dto';
 import { UpdateTimingDto } from './dtos/update_timing.dto';
 import { createTimingDto } from './dtos/create_timing.dto';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { ResponseDTO } from '../dtos/response.dto';
 
 @Resolver()
 export class TimingsResolver {
@@ -32,7 +32,7 @@ export class TimingsResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => timingsOutputs)
+  @Mutation(() => ResponseDTO)
   async updateTimingDetails(
     @Args('doctor_id') doctor_id: number,
     @Args('day') day: string,
@@ -58,7 +58,7 @@ export class TimingsResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => timingsOutputs)
+  @Mutation(() => ResponseDTO)
   async deleteSingleTiming(
     @Args('doctor_id') doctor_id: number,
     @Args('day') day: string,
@@ -83,7 +83,7 @@ export class TimingsResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => timingsOutputs)
+  @Mutation(() => ResponseDTO)
   async addTiming(@Args('createTimingDTO') createTimingDTO: createTimingDto) {
     try {
       await this.timingsService.addTimings(createTimingDTO);

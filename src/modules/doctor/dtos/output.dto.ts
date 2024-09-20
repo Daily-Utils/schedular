@@ -2,18 +2,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @ObjectType()
-export class responseForModificationDTO {
-  @Field()
-  @IsNumber()
-  status: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsString()
-  message: string;
-}
-
-@ObjectType()
 export class responseForAllDoctorsFind {
   @Field()
   @IsNumber()

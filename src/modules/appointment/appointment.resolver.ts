@@ -1,7 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AppointmentService } from './appointment.service';
-import { outputAppointment, outputForAppointment } from './dtos/output.dto';
+import { outputAppointment } from './dtos/output.dto';
+import { ResponseDTO } from '../dtos/response.dto';
+
 import {
   createAppointmentDTO,
   updateAppointmentDTO,
@@ -68,7 +70,7 @@ export class AppointmentResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => outputForAppointment)
+  @Mutation(() => ResponseDTO)
   async updateAppointment(
     @Args('updateAppointmentDTO') updateAppointmentDTO: updateAppointmentDTO,
   ) {
@@ -92,7 +94,7 @@ export class AppointmentResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => outputForAppointment)
+  @Mutation(() => ResponseDTO)
   async deleteAppointment(@Args('id') id: number) {
     try {
       await this.appointmentService.deleteAppointment(id);
