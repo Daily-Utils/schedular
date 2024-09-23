@@ -11,20 +11,12 @@ async function addDefaultTimingsToADoctor() {
   await queryRunner.connect();
 
   try {
-    // check whether doctor exists
-    const doctor = await queryRunner.query(`
-            SELECT * FROM users WHERE user_id = ${doctor_user_id}
-        `);
-
-    if (doctor.length === 0) {
-      console.error('Doctor does not exist');
-      return;
-    }
-
     // check if user have timings
     const timings = await queryRunner.query(`
-            SELECT * FROM timings WHERE doctor_user_id = ${doctor_user_id}
+            SELECT * FROM "Timings" WHERE doctor_user_id = ${doctor_user_id}
         `);
+
+    console.log(timings);
 
     if (timings.length > 0) {
       console.error(
@@ -44,16 +36,31 @@ async function addDefaultTimingsToADoctor() {
     ];
 
     for (const day of days) {
-      await queryRunner.query(`
-                INSERT INTO timings (doctor_user_id, day, from, to, break_from, break_to) VALUES
-                (${doctor_user_id}, '${day}', '09:00:00', '17:00:00', '13:00:00', '14:00:00')
-            `);
+      console.log('days', day);
+      await queryRunner.query(
+        `INSERT INTO "Timings" (doctor_user_id, day, "to", "from", break_from, break_to) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [doctor_user_id, day, '17:00:00', '09:00:00', '13:00:00', '14:00:00'],
+      );
     }
+    await queryRunner.commitTransaction();
   } catch (error) {
+    await queryRunner.rollbackTransaction();
     console.error(
       'Transaction failed, rolled back because of :',
       error.message,
     );
+  } finally {
+    try {
+      await queryRunner.release();
+    } catch (releaseError) {
+      console.error('Failed to release query runner:', releaseError);
+    }
+
+    try {
+      await dataSource.destroy();
+    } catch (destroyError) {
+      console.error('Failed to close data source:', destroyError);
+    }
   }
 }
 
