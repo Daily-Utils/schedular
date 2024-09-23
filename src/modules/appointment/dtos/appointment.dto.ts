@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import {
+  IsArray,
   IsDate,
   IsEnum,
   IsNumber,
@@ -7,6 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { AppointmentStatus } from '../appointment.enum';
+import { preferenceType } from '../appointment.enum';
 
 @InputType()
 export class createAppointmentDTO {
@@ -23,8 +25,8 @@ export class createAppointmentDTO {
   appointment_date_time: Date;
 
   @Field()
-  @IsString()
-  status: 'scheduled' | 'rescheduled' | 'on-hold' | 'on-going' | 'completed' | 'reschedule_needed';
+  @IsEnum(AppointmentStatus)
+  status: AppointmentStatus;
 
   @Field()
   @IsNumber()
@@ -81,4 +83,27 @@ export class updateAppointmentDTO {
   @IsOptional()
   @IsEnum(AppointmentStatus)
   status?: AppointmentStatus;
+}
+
+@InputType()
+export class bulkUpdateDTO {
+  @Field()
+  @IsNumber()
+  doctor_user_id: number;
+
+  @Field()
+  @IsArray()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  appointment_ids: number[];
+
+  @Field()
+  to: Date;
+
+  @Field()
+  from: Date;
+
+  @Field()
+  @IsEnum(preferenceType)
+  preference: preferenceType;
 }

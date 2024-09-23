@@ -21,7 +21,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctxType = host.getType<'http' | 'graphql' | 'ws' | 'rpc'>();
 
     if (ctxType === 'http') {
-      
       const { httpAdapter } = this.httpAdapterHost;
       const ctx = host.switchToHttp();
       const request = ctx.getRequest();

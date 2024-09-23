@@ -3,6 +3,7 @@ import { Appointment } from './appointment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
+  bulkUpdateDTO,
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
@@ -103,9 +104,14 @@ export class AppointmentService {
     });
   }
 
+  stripTime(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
   checkIfAppointmentIsInPast(appointment_date: Date) {
-    const current_date = new Date();
-    return appointment_date < current_date;
+    const current_date = this.stripTime(new Date());
+    const appointment_day = this.stripTime(appointment_date);
+    return appointment_day < current_date;
   }
 
   async getAllAppointmentsForDoctor(doctorId: number) {
@@ -154,6 +160,7 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentDTO: updateAppointmentDTO) {
     const updateData = Object.fromEntries(
       Object.entries(updateAppointmentDTO).filter(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, v]) => v !== undefined && v !== null,
       ),
     );
@@ -202,6 +209,41 @@ export class AppointmentService {
       updateAppointmentDTO.id,
       updateData,
     );
+  }
+
+  async bulkRescheduleAppointments(updateData: bulkUpdateDTO) {
+    // create a timeline from and to parameters
+    const from = new Date(updateData.from);
+    const to = new Date(updateData.to);
+
+    // check whether this is not 15 days
+    if (from.getTime() - to.getTime() > 15 * 24 * 60 * 60 * 1000) {
+      throw new Error(
+        'Cannot bulk reschedule appointments for more than 15 days',
+      );
+    }
+
+    let current = new Date(from);
+    while (current <= to) {
+      const date_selected = current.toISOString().split('T')[0];
+      const availableSlots =
+        await this.doctorService.getAvailableTimeSlotsForADoctor(
+          updateData.doctor_user_id,
+          date_selected,
+        );
+
+      const isSlotAvailable = availableSlots.slots.find(
+        (slot) => slot === current.toTimeString().split(' ')[0],
+      );
+
+      if (!isSlotAvailable) {
+        throw new Error('Slot not available');
+      }
+
+      current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+    }
+
+    return;
   }
 
   async deleteAppointment(id: number) {

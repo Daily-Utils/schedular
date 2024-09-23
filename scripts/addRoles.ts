@@ -1,5 +1,5 @@
-import {configService} from './utils/configService';
-import {DataSource} from 'typeorm';
+import { configService } from './utils/configService';
+import { DataSource } from 'typeorm';
 
 async function createRolesTable() {
   const dataSource = new DataSource(configService);

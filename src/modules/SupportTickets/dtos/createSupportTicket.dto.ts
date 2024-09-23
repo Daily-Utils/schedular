@@ -1,7 +1,6 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsEnum, IsNumber, IsString } from "class-validator";
-import { TicketStatus } from "../supporttickets.enum";
-
+import { Field, InputType } from '@nestjs/graphql';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { TicketStatus } from '../supporttickets.enum';
 
 @InputType()
 export class CreateSupportTicketDto {

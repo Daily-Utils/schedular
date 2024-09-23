@@ -24,7 +24,6 @@ export class RolesGuard {
       permission_type: string;
     }>(PERMISSION_KEY, [context.getHandler(), context.getClass()]);
 
-
     if (!requiredRoles) {
       return true;
     }
@@ -32,7 +31,7 @@ export class RolesGuard {
     const ctx = GqlExecutionContext.create(context).getContext();
     const { req } = ctx;
     const user = req.user;
-    
+
     if (permission && permission.check_permission) {
       const hasPermission = await this.permissionsService.hasPermission(
         user.user_assignment,

@@ -6,3 +6,8 @@ export enum AppointmentStatus {
   COMPLETED = 'completed',
   RESCHEDULE_NEEDED = 'reschedule_needed',
 }
+
+export enum preferenceType {
+  ASC = 'asc',
+  DESC = 'dsc',
+}

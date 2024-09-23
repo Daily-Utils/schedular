@@ -6,11 +6,7 @@ import { FeedbackService } from './feedback.service';
 import { FeedbackResolver } from './feedback.resolver';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Feedback]),
-  ],
+  imports: [TypeOrmModule.forFeature([Feedback])],
   providers: [FeedbackService, FeedbackResolver],
 })
 export class FeedbackModule {}
-
-

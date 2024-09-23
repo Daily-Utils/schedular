@@ -39,36 +39,35 @@ export class searchDTO {
   default_fee?: number;
 }
 
-
 @ObjectType()
-export class singleSearchResponse{
-    @Field()
-    id: number;
+export class singleSearchResponse {
+  @Field()
+  id: number;
 
-    @Field()
-    username: string;
+  @Field()
+  username: string;
 
-    @Field(() => [String])
-    services: string[];
+  @Field(() => [String])
+  services: string[];
 
-    @Field(() => [String])
-    speciality: string[];
+  @Field(() => [String])
+  speciality: string[];
 
-    @Field()
-    experience: number;
+  @Field()
+  experience: number;
 
-    @Field()
-    average_consulting_time: string;
+  @Field()
+  average_consulting_time: string;
 
-    @Field()
-    facility_name: string;
+  @Field()
+  facility_name: string;
 
-    @Field()
-    facility_type: string;
+  @Field()
+  facility_type: string;
 
-    @Field()
-    facility_location: string;
+  @Field()
+  facility_location: string;
 
-    @Field()
-    default_fee: number;
+  @Field()
+  default_fee: number;
 }

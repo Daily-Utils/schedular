@@ -9,6 +9,7 @@ import {
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppointmentStatus } from './appointment.enum';
 
 jest.mock('node-cron', () => ({
   schedule: jest.fn(),
@@ -18,6 +19,7 @@ describe('AppointmentService', () => {
   let service: AppointmentService;
   let repository: Repository<Appointment>;
   let doctorService: DoctorService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let eventEmitter: EventEmitter2;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,14 +42,19 @@ describe('AppointmentService', () => {
           },
         },
       ],
-    }).overrideProvider(AppointmentService)
+    })
+      .overrideProvider(AppointmentService)
       .useFactory({
         factory: (
           appointmentRepository: Repository<Appointment>,
           doctorService: DoctorService,
           eventEmitter: EventEmitter2,
         ) => {
-          return new AppointmentService(appointmentRepository, doctorService, eventEmitter);
+          return new AppointmentService(
+            appointmentRepository,
+            doctorService,
+            eventEmitter,
+          );
         },
         inject: [getRepositoryToken(Appointment), DoctorService, EventEmitter2],
       })
@@ -93,7 +100,7 @@ describe('AppointmentService', () => {
 
   describe('createAppointment', () => {
     it.only('should create and return an appointment', async () => {
-      const currentDate = new Date()
+      const currentDate = new Date();
 
       const appointmentDto: createAppointmentDTO = {
         patient_user_id: 1,
@@ -102,13 +109,18 @@ describe('AppointmentService', () => {
         fees: 100,
         visit_type: 'in-person',
         ivr_app_id: '12345',
-        status: 'scheduled',
+        status: AppointmentStatus.SCHEDULED,
         patient_complaint: 'Headache',
         patient_current_weight: 70,
       };
 
       const availableSlots = {
-        slots: [new Date(currentDate.getTime() + 5 * 60 * 60).toTimeString().split(' ')[0], '10:30:00'],
+        slots: [
+          new Date(currentDate.getTime() + 5 * 60 * 60)
+            .toTimeString()
+            .split(' ')[0],
+          '10:30:00',
+        ],
       };
 
       jest
@@ -129,7 +141,7 @@ describe('AppointmentService', () => {
         fees: 100,
         visit_type: 'in-person',
         ivr_app_id: '12345',
-        status: 'scheduled',
+        status: AppointmentStatus.SCHEDULED,
         patient_complaint: 'Headache',
         patient_current_weight: 70,
       };

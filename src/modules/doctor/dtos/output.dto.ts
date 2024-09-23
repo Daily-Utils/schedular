@@ -86,7 +86,7 @@ export class DoctorResponseDto {
 }
 
 @ObjectType()
-export class DoctorAvailableSlots{
+export class DoctorAvailableSlots {
   @Field(() => [String])
   @IsArray()
   slots: string[];

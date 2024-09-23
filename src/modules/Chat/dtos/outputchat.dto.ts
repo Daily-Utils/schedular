@@ -11,7 +11,6 @@ export class ChatMessageOutput {
 
   @Field()
   doctor_user_id: number;
-  
 
   @Field()
   type: string;
