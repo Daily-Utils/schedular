@@ -268,6 +268,10 @@ export class AppointmentService {
   }
 
   async bulkRescheduleAppointments(updateData: bulkUpdateDTO) {
+    if (updateData.appointment_ids.length === 0) {
+      throw new Error('No appointments to reschedule');
+    }
+
     // create a timeline from and to parameters
     const from = new Date(updateData.from);
     const to = new Date(updateData.to);
@@ -280,20 +284,54 @@ export class AppointmentService {
     }
 
     let current = new Date(from);
-    while (current <= to) {
+    let currentIdx = 0;
+    while (current <= to && currentIdx <= updateData.appointment_ids.length) {
       const date_selected = current.toISOString().split('T')[0];
+
+      const appointmentId = updateData.appointment_ids[currentIdx];
+      const appointment = await this.appointmentRepository.findOne({
+        where: { id: appointmentId },
+      });
+
+      const appointments = await this.appointmentRepository.find({
+        where: {
+          doctor_user_id: updateData.doctor_user_id,
+          patient_user_id: appointment.patient_user_id,
+          appointment_date_time: Between(
+            new Date(date_selected),
+            new Date(date_selected + 'T23:59:59'),
+          ),
+        },
+      });
+
+      if (appointments.length > 0) {
+        current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+        continue;
+      }
+
       const availableSlots =
         await this.doctorService.getAvailableTimeSlotsForADoctor(
           updateData.doctor_user_id,
           date_selected,
         );
 
-      const isSlotAvailable = availableSlots.slots.find(
-        (slot) => slot === current.toTimeString().split(' ')[0],
-      );
+      if (availableSlots.slots.length === 0) {
+        current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+        continue;
+      }
 
-      if (!isSlotAvailable) {
-        throw new Error('Slot not available');
+      for (let i = 0; i < availableSlots.slots.length; i++) {
+        if (currentIdx <= updateData.appointment_ids.length) {
+          await this.appointmentRepository.update(
+            updateData.appointment_ids[currentIdx],
+            {
+              appointment_date_time: new Date(
+                availableSlots.actualTimings[currentIdx],
+              ),
+            },
+          );
+          currentIdx++;
+        }
       }
 
       current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
