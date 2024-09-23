@@ -45,7 +45,7 @@ async function addDefaultTimingsToADoctor() {
 
     for (const day of days) {
       await queryRunner.query(`
-                INSERT INTO timings (doctor_user_id, day, to, from, break_from, break_to) VALUES
+                INSERT INTO timings (doctor_user_id, day, from, to, break_from, break_to) VALUES
                 (${doctor_user_id}, '${day}', '09:00:00', '17:00:00', '13:00:00', '14:00:00')
             `);
     }
