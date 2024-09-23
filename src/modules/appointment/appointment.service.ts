@@ -10,6 +10,7 @@ import {
 import { DoctorService } from '../doctor/doctor.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as cron from 'node-cron';
+import { Between } from 'typeorm';
 
 @Injectable()
 export class AppointmentService {
@@ -126,9 +127,52 @@ export class AppointmentService {
     });
   }
 
+  async checkWhetherPatientHasAppointmentForTheDay(
+    appointment_date_time: Date,
+    patientId: number,
+  ) {
+    const startOfDay = new Date(
+      appointment_date_time.getFullYear(),
+      appointment_date_time.getMonth(),
+      appointment_date_time.getDate(),
+    );
+
+    // Calculate the end of the day
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(startOfDay.getDate() + 1);
+
+    // Get appointments for the day
+    const exist_appointment = await this.appointmentRepository.find({
+      where: {
+        appointment_date_time: Between(startOfDay, endOfDay),
+      },
+    });
+
+    // check if patient_user_id already has an appointment
+    const patient_appointment = exist_appointment.find(
+      (app) => app.patient_user_id === patientId,
+    );
+
+    if (patient_appointment) {
+      return true;
+    }
+
+    return false;
+  }
+
   async createAppointment(appointment: createAppointmentDTO) {
     if (this.checkIfAppointmentIsInPast(appointment.appointment_date_time)) {
       throw new Error('Cannot schedule appointments in past');
+    }
+
+    // get appointments for day
+    if (
+      await this.checkWhetherPatientHasAppointmentForTheDay(
+        appointment.appointment_date_time,
+        appointment.patient_user_id,
+      )
+    ) {
+      throw new Error('Patient already has an appointment for the day');
     }
 
     const date_seleced = new Date(appointment.appointment_date_time)
@@ -184,6 +228,18 @@ export class AppointmentService {
         throw new Error('Cannot schedule appointments in past');
       }
 
+      const appointment = await this.appointmentRepository.findOne({
+        where: { id: updateAppointmentDTO.id },
+      });
+
+      if (
+        await this.checkWhetherPatientHasAppointmentForTheDay(
+          updateData.appointment_date_time,
+          appointment.patient_user_id,
+        )
+      ) {
+        throw new Error('Patient already has an appointment for the day');
+      }
       const date_selected = new Date(updateData.appointment_date_time)
         .toISOString()
         .split('T')[0];
