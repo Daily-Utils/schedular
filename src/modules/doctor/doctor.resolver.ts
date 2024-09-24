@@ -13,7 +13,10 @@ import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
 import { searchDTO, singleSearchResponse } from './dtos/search.dto';
 import { ResponseDTO } from '../dtos/response.dto';
-import { AppointmentResponse, searchAppointmentDTO } from './dtos/searchappointment.dto';
+import {
+  AppointmentResponse,
+  searchAppointmentDTO,
+} from './dtos/searchappointment.dto';
 
 @Resolver()
 export class DoctorResolver {
@@ -133,5 +136,4 @@ export class DoctorResolver {
   ) {
     return await this.doctorService.searchAppointment(searchAppointmentDTO);
   }
-
 }

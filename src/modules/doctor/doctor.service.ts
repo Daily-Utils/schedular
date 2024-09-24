@@ -295,15 +295,18 @@ export class DoctorService {
       .createQueryBuilder('doctor')
       .leftJoinAndSelect('doctor.appointments', 'appointment')
       .select([
+        'doctor.user_id',
         'appointment.id',
         'appointment.patient_user_id',
         'appointment.fees',
         'appointment.status',
         'appointment.visit_type',
         'appointment.created_at',
-      ]);
+      ])
+      .where('doctor.user_id = :doctor_user_id', {
+        doctor_user_id: searchAppointments.doctor_user_id,
+      });
 
-    //let ignoreFuther = false;
     if (searchAppointments.patient_user_id) {
       queryBuilder.andWhere('appointment.patient_user_id = :patient_user_id', {
         patient_user_id: searchAppointments.patient_user_id,
@@ -317,8 +320,8 @@ export class DoctorService {
     }
 
     if (searchAppointments.status && searchAppointments.status.trim() !== '') {
-      queryBuilder.andWhere('appointment.status = :status', {
-        status: searchAppointments.status,
+      queryBuilder.andWhere('appointment.status ILIKE :status', {
+        status: `%${searchAppointments.status}%`,
       });
     }
 
@@ -326,11 +329,29 @@ export class DoctorService {
       searchAppointments.visit_type &&
       searchAppointments.visit_type.trim() !== ''
     ) {
-      queryBuilder.andWhere('appointment.visit_type = :visittype', {
-        visittype: searchAppointments.visit_type,
+      console.log(
+        'searchAppointments.visit_type 123123',
+        searchAppointments.visit_type,
+      );
+      queryBuilder.andWhere('appointment.visit_type ILIKE :visit_type', {
+        visit_type: `%${searchAppointments.visit_type}%`,
       });
     }
 
-    return await queryBuilder.getMany();
+    const searchedAppointments = await queryBuilder.getMany();
+
+    console.log('searchedAppointments', searchedAppointments);
+
+    const result = searchedAppointments[0].appointments.map((appointment) => ({
+      id: appointment.id,
+      doctor_user_id: searchedAppointments[0].user_id,
+      patient_id: appointment.patient_user_id,
+      fees: appointment.fees,
+      status: appointment.status,
+      visit_type: appointment.visit_type,
+      created_at: appointment.created_at,
+    }));
+
+    return result;
   }
 }

@@ -66,6 +66,7 @@ type ResponseDTO {
 
 type AppointmentResponse {
   id: Float!
+  doctor_user_id: Float!
   patient_id: Float!
   fees: Float!
   status: String!
@@ -186,6 +187,7 @@ input searchDTO {
 }
 
 input searchAppointmentDTO {
+  doctor_user_id: Float!
   patient_user_id: Float
   id: Float
   status: String

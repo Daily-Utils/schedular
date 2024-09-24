@@ -1,15 +1,17 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsOptional, IsString, IsDate, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsNumber } from 'class-validator';
 
 @InputType()
 export class searchAppointmentDTO {
-  
+  @Field()
+  @IsNumber()
+  doctor_user_id: number;
+
   @Field({ nullable: true })
   @IsOptional()
   @IsNumber()
   patient_user_id?: number;
-  
-  
+
   @Field({ nullable: true })
   @IsOptional()
   @IsNumber()
@@ -30,6 +32,9 @@ export class searchAppointmentDTO {
 export class AppointmentResponse {
   @Field()
   id: number;
+
+  @Field()
+  doctor_user_id: number;
 
   @Field()
   patient_id: number;
