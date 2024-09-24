@@ -330,8 +330,6 @@ export class AppointmentService {
           date_selected,
         );
 
-      console.log('AVL SOLTS', availableSlots);
-
       if (availableSlots.slots.length === 0) {
         current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
         continue;

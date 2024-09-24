@@ -114,7 +114,11 @@ export class AppointmentResolver {
     }
   }
 
-  @OpenForDevelopment()
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
   @Mutation(() => ResponseDTO)
   async bulkUpdateAppointments(@Args('bulkUpdate') bulkUpdate: bulkUpdateDTO) {
     try {
