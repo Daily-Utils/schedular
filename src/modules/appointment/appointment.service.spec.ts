@@ -127,7 +127,7 @@ describe('AppointmentService', () => {
         .spyOn(doctorService, 'getAvailableTimeSlotsForADoctor')
         .mockResolvedValue(availableSlots as any);
       jest.spyOn(repository, 'save').mockResolvedValue(appointmentDto as any);
-
+      jest.spyOn(repository, 'find').mockResolvedValue([] as any);
       const result = await service.createAppointment(appointmentDto);
       expect(result).toEqual(appointmentDto);
     });
