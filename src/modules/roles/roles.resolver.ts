@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import { RolesService } from './roles.service';
-import { RoleInput, RoleOutput, RoleOutputForModification } from './dto/role.dto';
+import {
+  RoleInput,
+  RoleOutput,
+  RoleOutputForModification,
+} from './dto/role.dto';
 import { RolePermissionVerificationInput } from './dto/rolePermission.dto';
 import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from './roles.guard';

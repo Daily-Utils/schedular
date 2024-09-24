@@ -117,15 +117,15 @@ describe('UsersService', () => {
         chat: [],
         timings: [],
         feedbacks: [],
-        user_id: 0
+        user_id: 0,
       };
 
       jest
         .spyOn(doctorService, 'createDoctorForUser')
         .mockResolvedValue(doctor);
-      
+
       const result = await service.createUser(registerDto);
-      
+
       expect(result).toEqual(savedUser);
       expect(doctorService.createDoctorForUser).toHaveBeenCalledTimes(1);
     });
@@ -133,7 +133,11 @@ describe('UsersService', () => {
 
   describe('validateUser', () => {
     it('should return a user if credentials are valid', async () => {
-      const loginDto = { username: 'testuser', password: 'password', phone: '1234567890' };
+      const loginDto = {
+        username: 'testuser',
+        password: 'password',
+        phone: '1234567890',
+      };
       const user = new User();
       user.username = loginDto.username;
       user.password = await bcrypt.hash(loginDto.password, 10);
@@ -145,7 +149,11 @@ describe('UsersService', () => {
     });
 
     it('should return null if credentials are invalid', async () => {
-      const loginDto = { username: 'testuser', password: 'password', phone: '1234567890' };
+      const loginDto = {
+        username: 'testuser',
+        password: 'password',
+        phone: '1234567890',
+      };
 
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 

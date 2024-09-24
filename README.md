@@ -40,3 +40,12 @@ After devloping database and starting server please run this
 ```sh
 npx ts-node scripts/addRoles.ts
 ```
+
+To backup, please read
+
+srcipts/backup.sh
+
+```sh
+./scripts/backup.sh
+```
+

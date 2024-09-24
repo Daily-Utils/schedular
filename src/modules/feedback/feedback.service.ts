@@ -20,10 +20,12 @@ export class FeedbackService {
   }
 
   async getFeedbacksForAPaitent(patient_user_id: number) {
-    return this.feedbackRepository.find({ where: { patient_user_id: patient_user_id } });
+    return this.feedbackRepository.find({
+      where: { patient_user_id: patient_user_id },
+    });
   }
 
-  async updateFeedback(updateFeedbackDTO: UpdateFeedbackInput){
+  async updateFeedback(updateFeedbackDTO: UpdateFeedbackInput) {
     return await this.feedbackRepository.update(
       { id: updateFeedbackDTO.id },
       {
@@ -35,8 +37,7 @@ export class FeedbackService {
     );
   }
 
-  async deleteFeedback(id: number) {  
+  async deleteFeedback(id: number) {
     return this.feedbackRepository.delete(id);
   }
 }
-

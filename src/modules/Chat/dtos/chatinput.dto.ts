@@ -24,5 +24,3 @@ export class CreateChatMessageInput {
   @IsString()
   message: string;
 }
-
-

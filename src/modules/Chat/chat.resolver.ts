@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Resolver, Mutation, Args, Query, Subscription } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateChatMessageInput } from './dtos/chatinput.dto';

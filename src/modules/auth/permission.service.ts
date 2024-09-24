@@ -11,12 +11,14 @@ export class PermissionsService {
     requiredRoles: Role[],
     check_permission: boolean,
     permission_category: string,
-    permission_type: string
+    permission_type: string,
   ): Promise<boolean> {
-    if(!check_permission) {
-        return requiredRoles.some((role) => role === user_assignment);
+    if (!check_permission) {
+      return requiredRoles.some((role) => role === user_assignment);
     }
     const user = await this.rolesService.getPermisionsForRole(user_assignment);
-    return user[permission_category].some((permission) => permission === permission_type);
+    return user[permission_category].some(
+      (permission) => permission === permission_type,
+    );
   }
 }

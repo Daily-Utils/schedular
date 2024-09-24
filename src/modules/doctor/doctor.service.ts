@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -173,9 +173,8 @@ export class DoctorService {
             appointment.status === 'in-process' ||
             appointment.status === ' on-hold'),
       )
-      .map(
-        (appointment) =>
-          this.formatTimeString(appointment.appointment_date_time),
+      .map((appointment) =>
+        this.formatTimeString(appointment.appointment_date_time),
       );
 
     const availableSlots = slots.filter((slot) => !bookedSlots.includes(slot));
@@ -183,7 +182,6 @@ export class DoctorService {
       (actualTime) => !bookedSlots.includes(this.formatTimeString(actualTime)),
     );
 
-  
     return {
       slots: availableSlots,
       actualTimings: availableActualTime,

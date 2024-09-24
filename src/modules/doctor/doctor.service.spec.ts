@@ -9,7 +9,6 @@ import { CreateDoctorDto } from './dtos/doctor.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { searchDTO } from './dtos/search.dto';
 
-
 describe('DoctorService', () => {
   let service: DoctorService;
   let doctorRepository: Repository<Doctor>;
@@ -171,13 +170,13 @@ describe('DoctorService', () => {
         delete: jest.fn(),
       };
 
-    //   jest
-    //     .spyOn(dataSource, 'transaction')
-    //     .mockImplementation(
-    //       async (cb: (entityManager: any) => Promise<void>) => {
-    //         await cb(mockEntityManager);
-    //       },
-    //     );
+      //   jest
+      //     .spyOn(dataSource, 'transaction')
+      //     .mockImplementation(
+      //       async (cb: (entityManager: any) => Promise<void>) => {
+      //         await cb(mockEntityManager);
+      //       },
+      //     );
 
       await service.deleteDoctorById(1);
 

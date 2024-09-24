@@ -17,7 +17,9 @@ export class ChatService {
   ) {}
 
   // Create a new chat message and publish the event for subscriptions
-  async createChatMessage(createChatMessageInput: CreateChatMessageInput): Promise<ChatMessageOutput> {
+  async createChatMessage(
+    createChatMessageInput: CreateChatMessageInput,
+  ): Promise<ChatMessageOutput> {
     const chatMessage = this.chatRepository.create({
       ...createChatMessageInput,
     });
@@ -51,7 +53,10 @@ export class ChatService {
   }
 
   // Update an existing chat message
-  async updateChatMessage(chat_id: number, updateChatMessageInput: UpdateChatMessageInput) {
+  async updateChatMessage(
+    chat_id: number,
+    updateChatMessageInput: UpdateChatMessageInput,
+  ) {
     const chat = await this.chatRepository.findOne({ where: { chat_id } });
     if (!chat) {
       throw new NotFoundException('Chat message not found');
@@ -94,12 +99,12 @@ export class ChatService {
 
   // Delete a chat message
   async deleteChat(chat_id: number) {
-    const chatMessage = await this.chatRepository.findOne({ where: { chat_id } });
+    const chatMessage = await this.chatRepository.findOne({
+      where: { chat_id },
+    });
     if (!chatMessage) {
       throw new Error('Chat message not found');
     }
     await this.chatRepository.delete(chat_id);
   }
 }
-
-

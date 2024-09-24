@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import { DoctorService } from './doctor.service';
 import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
   DoctorAvailableSlots,
   DoctorResponseDto,
-  responseForAllDoctorsFindArray
+  responseForAllDoctorsFindArray,
 } from './dtos/output.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { Logger } from '@nestjs/common';

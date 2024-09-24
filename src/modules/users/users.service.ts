@@ -8,7 +8,6 @@ import * as bcrypt from 'bcrypt';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../Patient/patient.service';
 
-
 @Injectable()
 export class UsersService {
   patientRepository: any;

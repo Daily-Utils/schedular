@@ -21,7 +21,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctxType = host.getType<'http' | 'graphql' | 'ws' | 'rpc'>();
 
     if (ctxType === 'http') {
-      
       const { httpAdapter } = this.httpAdapterHost;
       const ctx = host.switchToHttp();
       const request = ctx.getRequest();
@@ -55,6 +54,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
           ? exception.getStatus()
           : HttpStatus.INTERNAL_SERVER_ERROR;
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const responseBody = {
         code: httpStatus,
         timestamp: new Date().toISOString(),

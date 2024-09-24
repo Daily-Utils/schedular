@@ -21,7 +21,11 @@ describe('AuthController (e2e)', () => {
   it('/auth/register (POST)', () => {
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ username: 'dummytestuser', email: 'dummytestuser@example.com', password: 'dummytestuser' })
+      .send({
+        username: 'dummytestuser',
+        email: 'dummytestuser@example.com',
+        password: 'dummytestuser',
+      })
       .expect(201);
   });
 
