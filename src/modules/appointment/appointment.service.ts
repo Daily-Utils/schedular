@@ -273,6 +273,12 @@ export class AppointmentService {
       throw new Error('No appointments to reschedule');
     }
 
+    if (updateData.preference === 'asc') {
+      updateData.appointment_ids.sort((a, b) => a - b);
+    } else {
+      updateData.appointment_ids.sort((a, b) => b - a);
+    }
+
     // create a timeline from and to parameters
     const from = new Date(updateData.from);
     const to = new Date(updateData.to);
