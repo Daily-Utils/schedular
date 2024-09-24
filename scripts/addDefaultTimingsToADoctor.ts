@@ -1,7 +1,7 @@
 import { configService } from './utils/configService';
 import { DataSource } from 'typeorm';
 
-const doctor_user_id = 1;
+const doctor_user_id = 2;
 
 async function addDefaultTimingsToADoctor() {
   const dataSource = new DataSource(configService);

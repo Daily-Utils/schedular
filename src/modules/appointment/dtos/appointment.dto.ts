@@ -91,8 +91,7 @@ export class bulkUpdateDTO {
   @IsNumber()
   doctor_user_id: number;
 
-  @Field()
-  @IsArray()
+  @Field(() => [Number])
   @IsArray()
   @IsNumber({}, { each: true })
   appointment_ids: number[];

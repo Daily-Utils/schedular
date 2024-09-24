@@ -54,6 +54,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
           ? exception.getStatus()
           : HttpStatus.INTERNAL_SERVER_ERROR;
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const responseBody = {
         code: httpStatus,
         timestamp: new Date().toISOString(),

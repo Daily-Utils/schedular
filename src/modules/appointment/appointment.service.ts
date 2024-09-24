@@ -228,18 +228,19 @@ export class AppointmentService {
         throw new Error('Cannot schedule appointments in past');
       }
 
-      const appointment = await this.appointmentRepository.findOne({
-        where: { id: updateAppointmentDTO.id },
-      });
+      // const appointment = await this.appointmentRepository.findOne({
+      //   where: { id: updateAppointmentDTO.id },
+      // });
 
-      if (
-        await this.checkWhetherPatientHasAppointmentForTheDay(
-          updateData.appointment_date_time,
-          appointment.patient_user_id,
-        )
-      ) {
-        throw new Error('Patient already has an appointment for the day');
-      }
+      // if (
+      //   await this.checkWhetherPatientHasAppointmentForTheDay(
+      //     updateData.appointment_date_time,
+      //     appointment.patient_user_id,
+      //   )
+      // ) {
+      //   throw new Error('Patient already has an appointment for the day');
+      // }
+
       const date_selected = new Date(updateData.appointment_date_time)
         .toISOString()
         .split('T')[0];
@@ -304,6 +305,8 @@ export class AppointmentService {
         },
       });
 
+      console.log('APP BET TIMELINE', appointments);
+
       if (appointments.length > 0) {
         current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
         continue;
@@ -315,6 +318,8 @@ export class AppointmentService {
           date_selected,
         );
 
+      console.log('AVL SOLTS', availableSlots);
+
       if (availableSlots.slots.length === 0) {
         current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
         continue;
@@ -323,11 +328,9 @@ export class AppointmentService {
       for (let i = 0; i < availableSlots.slots.length; i++) {
         if (currentIdx <= updateData.appointment_ids.length) {
           await this.appointmentRepository.update(
-            updateData.appointment_ids[currentIdx],
+            { id: updateData.appointment_ids[currentIdx] }, // Criteria object
             {
-              appointment_date_time: new Date(
-                availableSlots.actualTimings[currentIdx],
-              ),
+              appointment_date_time: availableSlots.actualTimings[currentIdx],
             },
           );
           currentIdx++;

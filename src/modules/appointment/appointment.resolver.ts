@@ -127,7 +127,7 @@ export class AppointmentResolver {
       Logger.error(error);
       return {
         status: 'error',
-        message: `Appointments not updated: ${error.message}`,
+        message: `Appointments not updated: ${error}`,
       };
     }
   }

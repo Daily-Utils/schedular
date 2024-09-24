@@ -207,6 +207,7 @@ type Mutation {
   getAppointmentById(id: Float!): outputAppointment!
   updateAppointment(updateAppointmentDTO: updateAppointmentDTO!): ResponseDTO!
   deleteAppointment(id: Float!): ResponseDTO!
+  bulkUpdateAppointments(bulkUpdate: bulkUpdateDTO!): ResponseDTO!
   createChatMessage(createChatMessageInput: CreateChatMessageInput!): ChatMessageOutput!
   updateChatMessage(id: Float!, updateChatMessageInput: UpdateChatMessageInput!): ResponseDTO!
   deleteChat(chat_id: Float!): ResponseDTO!
@@ -326,6 +327,14 @@ input updateAppointmentDTO {
   patient_complaint: String
   patient_current_weight: Float
   status: String
+}
+
+input bulkUpdateDTO {
+  doctor_user_id: Float!
+  appointment_ids: [Float!]!
+  to: DateTime!
+  from: DateTime!
+  preference: String!
 }
 
 input CreateChatMessageInput {
