@@ -289,10 +289,11 @@ export class DoctorService {
 
     return mappedDoctors;
   }
+
   async searchAppointment(searchAppointments: searchAppointmentDTO) {
     const queryBuilder = this.doctorRepository
       .createQueryBuilder('doctor')
-      .leftJoinAndSelect('doctor.appointments', 'appointment')     
+      .leftJoinAndSelect('doctor.appointments', 'appointment')
       .select([
         'appointment.id',
         'appointment.patient_user_id',
@@ -301,14 +302,14 @@ export class DoctorService {
         'appointment.visit_type',
         'appointment.created_at',
       ]);
-  
+
     //let ignoreFuther = false;
     if (searchAppointments.patient_user_id) {
       queryBuilder.andWhere('appointment.patient_user_id = :patient_user_id', {
         patient_user_id: searchAppointments.patient_user_id,
       });
     }
-  
+
     if (searchAppointments.id) {
       queryBuilder.andWhere('appointment.id = :id', {
         id: searchAppointments.id,
@@ -320,15 +321,16 @@ export class DoctorService {
         status: searchAppointments.status,
       });
     }
-  
-    if (searchAppointments.visit_type && searchAppointments.visit_type.trim() !== '') {
+
+    if (
+      searchAppointments.visit_type &&
+      searchAppointments.visit_type.trim() !== ''
+    ) {
       queryBuilder.andWhere('appointment.visit_type = :visittype', {
         visittype: searchAppointments.visit_type,
       });
     }
-  
+
     return await queryBuilder.getMany();
   }
-  
-
 }
