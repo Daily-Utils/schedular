@@ -15,9 +15,6 @@ async function addDefaultTimingsToADoctor() {
     const timings = await queryRunner.query(`
             SELECT * FROM "Timings" WHERE doctor_user_id = ${doctor_user_id}
         `);
-
-    console.log(timings);
-
     if (timings.length > 0) {
       console.error(
         'Timings already exists for the doctor! Try adding manually for this doctor',

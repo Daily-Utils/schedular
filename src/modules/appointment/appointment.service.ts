@@ -228,18 +228,26 @@ export class AppointmentService {
         throw new Error('Cannot schedule appointments in past');
       }
 
-      // const appointment = await this.appointmentRepository.findOne({
-      //   where: { id: updateAppointmentDTO.id },
-      // });
+      const existingAppointmentDate = new Date(
+        appointment.appointment_date_time,
+      );
+      const newAppointmentDate = new Date(updateData.appointment_date_time);
 
-      // if (
-      //   await this.checkWhetherPatientHasAppointmentForTheDay(
-      //     updateData.appointment_date_time,
-      //     appointment.patient_user_id,
-      //   )
-      // ) {
-      //   throw new Error('Patient already has an appointment for the day');
-      // }
+      const isSameDay =
+        existingAppointmentDate.getFullYear() ===
+          newAppointmentDate.getFullYear() &&
+        existingAppointmentDate.getMonth() === newAppointmentDate.getMonth() &&
+        existingAppointmentDate.getDate() === newAppointmentDate.getDate();
+
+      if (
+        !isSameDay &&
+        (await this.checkWhetherPatientHasAppointmentForTheDay(
+          updateData.appointment_date_time,
+          appointment.patient_user_id,
+        ))
+      ) {
+        throw new Error('Patient already has an appointment for the day');
+      }
 
       const date_selected = new Date(updateData.appointment_date_time)
         .toISOString()
@@ -310,8 +318,6 @@ export class AppointmentService {
           ),
         },
       });
-
-      console.log('APP BET TIMELINE', appointments);
 
       if (appointments.length > 0) {
         current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
