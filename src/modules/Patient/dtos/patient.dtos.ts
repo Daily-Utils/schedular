@@ -1,10 +1,11 @@
 import {
   IsNotEmpty,
   IsArray,
-  IsOptional,
   IsNumber,
   IsString,
+  IsEnum,
 } from 'class-validator';
+import { BloodGroup } from '../patient.enum';
 
 export class CreatePatientDto {
   @IsArray()
@@ -24,9 +25,8 @@ export class CreatePatientDto {
   @IsNotEmpty()
   readonly user_id: number;
 
-  @IsNotEmpty()
-  @IsString()
-  readonly blood_group: string;
+  @IsEnum(BloodGroup)
+  readonly blood_group: BloodGroup;
 
   @IsNumber()
   @IsNotEmpty()

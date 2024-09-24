@@ -2,11 +2,13 @@ import { Resolver, Mutation, Args, Query, Subscription } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateChatMessageInput } from './dtos/chatinput.dto';
 import { UpdateChatMessageInput } from './dtos/updatedchat.dto';
-import { ChatMessageOutput, DeleteUpdateChat } from './dtos/outputchat.dto';
+import { ChatMessageOutput } from './dtos/outputchat.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
 import { PubSub } from 'graphql-subscriptions';
+import { ResponseDTO } from '../dtos/response.dto';
+
 const pubSub = new PubSub();
 
 @Resolver()
@@ -84,7 +86,7 @@ export class ChatResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => DeleteUpdateChat) // Return the correct output type
+  @Mutation(() => ResponseDTO) // Return the correct output type
   async updateChatMessage(
     @Args('id') id: number,
     @Args('updateChatMessageInput')
@@ -110,7 +112,7 @@ export class ChatResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => DeleteUpdateChat)
+  @Mutation(() => ResponseDTO)
   async deleteChat(@Args('chat_id') chat_id: number) {
     try {
       await this.chatService.deleteChat(chat_id);

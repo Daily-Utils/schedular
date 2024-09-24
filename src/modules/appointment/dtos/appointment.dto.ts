@@ -1,11 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
 import {
   IsDate,
-  IsEmpty,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { AppointmentStatus } from '../appointment.enum';
 
 @InputType()
 export class createAppointmentDTO {
@@ -23,7 +24,7 @@ export class createAppointmentDTO {
 
   @Field()
   @IsString()
-  status: string
+  status: 'scheduled' | 'rescheduled' | 'on-hold' | 'on-going' | 'completed' | 'reschedule_needed';
 
   @Field()
   @IsNumber()
@@ -78,5 +79,6 @@ export class updateAppointmentDTO {
 
   @Field({ nullable: true })
   @IsOptional()
-  status?: string;
+  @IsEnum(AppointmentStatus)
+  status?: AppointmentStatus;
 }

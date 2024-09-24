@@ -1,8 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { object } from 'joi';
-
-
 
 @ObjectType()
 export class ChatMessageOutput {
@@ -20,17 +17,5 @@ export class ChatMessageOutput {
   type: string;
 
   @Field()
-  message: string;
-}
-
-@ObjectType()
-export class DeleteUpdateChat {
-  @Field()
-  @IsString()
-  status: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
   message: string;
 }

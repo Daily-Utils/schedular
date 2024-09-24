@@ -11,6 +11,14 @@ export class TimingsService {
   ) {}
 
   async addTimings(createdTimingDto: createTimingDto) {
+    const existingTiming = await this.timingsRepository.findOne({
+      where: { doctor_user_id: createdTimingDto.doctor_user_id, day: createdTimingDto.day },
+    });
+
+    if (existingTiming) {
+      throw new Error('Timing already exists');
+    }
+
     const timing = this.timingsRepository.create({
       ...createdTimingDto,
     });

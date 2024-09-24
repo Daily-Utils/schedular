@@ -2,10 +2,11 @@ import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { FeedbackService } from './feedback.service';
 import { Feedback } from './feedbacks.entity';
 import { CreateFeedbackInput, UpdateFeedbackInput } from './dto/feedback.dto';
-import { FeedbackCreateOutput, FeedbackUpdateDeleteOutput } from './dto/feedbackoutput.dto';
+import { FeedbackCreateOutput } from './dto/feedbackoutput.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { ResponseDTO } from '../dtos/response.dto';
 
 @Resolver()
 export class FeedbackResolver {
@@ -40,7 +41,7 @@ export class FeedbackResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => FeedbackUpdateDeleteOutput)
+  @Mutation(() => ResponseDTO)
   async deleteFeedback(@Args('id') id: number) {
     try {
       await this.feedbackService.deleteFeedback(id);
@@ -62,7 +63,7 @@ export class FeedbackResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => FeedbackUpdateDeleteOutput)
+  @Mutation(() => ResponseDTO)
   async updateFeedback(
     @Args('feedbackUpdateData') feedbackData: UpdateFeedbackInput,
   ) {

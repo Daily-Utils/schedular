@@ -35,14 +35,3 @@ export class outputAppointment {
   @IsOptional()
   status: string;
 }
-
-@ObjectType()
-export class outputForAppointment {
-  @Field()
-  @IsString()
-  status: string;
-
-  @Field()
-  @IsString()
-  message: string;
-}

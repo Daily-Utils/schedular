@@ -3,3 +3,5 @@ dev
 README.md
 test
 dist
+scripts
+node_modules

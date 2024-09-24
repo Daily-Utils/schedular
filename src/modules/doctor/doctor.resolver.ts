@@ -4,15 +4,14 @@ import { OpenForDevelopment } from '../auth/auth.decorator';
 import {
   DoctorAvailableSlots,
   DoctorResponseDto,
-  responseForAllDoctorsFind,
-  responseForAllDoctorsFindArray,
-  responseForModificationDTO,
+  responseForAllDoctorsFindArray
 } from './dtos/output.dto';
 import { UpdateDoctorDto } from './dtos/update_doctor.dto';
 import { Logger } from '@nestjs/common';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
 import { searchDTO, singleSearchResponse } from './dtos/search.dto';
+import { ResponseDTO } from '../dtos/response.dto';
 
 @Resolver()
 export class DoctorResolver {
@@ -44,7 +43,7 @@ export class DoctorResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => responseForModificationDTO)
+  @Mutation(() => ResponseDTO)
   async modifyDoctorById(
     @Args('id') id: number,
     @Args('updateDoctorDto') updateDoctorDto: UpdateDoctorDto,
@@ -72,7 +71,7 @@ export class DoctorResolver {
     permission_category: '',
     permission_type: '',
   })
-  @Mutation(() => responseForModificationDTO)
+  @Mutation(() => ResponseDTO)
   async deleteDoctorById(@Args('id') id: number, @Context() context: any) {
     try {
       await this.doctorService.deleteDoctorById(id);

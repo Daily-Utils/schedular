@@ -5,9 +5,9 @@ import { User } from './schemas/user.entity';
 import { RegisterInput } from '../auth/dtos/register.dto';
 import { LoginInput } from '../auth/dtos/login.dto';
 import * as bcrypt from 'bcrypt';
-import { CreateDoctorDto } from '../doctor/dtos/doctor.dto';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../Patient/patient.service';
+
 
 @Injectable()
 export class UsersService {
@@ -70,7 +70,7 @@ export class UsersService {
         relation: registerDto.relation,
         family_member: registerDto.family_member,
         user_id: savedUser.id,
-        blood_group: registerDto.blood_group || '',
+        blood_group: registerDto.blood_group,
         weight: registerDto.weight || 0,
       };
       const patient =

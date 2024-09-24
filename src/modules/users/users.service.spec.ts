@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Appointment } from '../appointment/appointment.entity';
 import { Doctor } from '../doctor/doctor.entity';
+import { Role } from '../roles/roles.enum';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -76,12 +77,12 @@ describe('UsersService', () => {
         password: 'password',
         sex: 'male',
         age: 30,
-        role: 'doctor',
+        role: Role.Doctor,
         phone: '1234567890',
         services: ['General'],
         speciality: ['General'],
         default_fee: 100,
-        average_consulting_time: "30",
+        average_consulting_time: '30',
         facility_name: 'Test Facility',
         facility_type: 'Clinic',
         facility_location: 'Test Location',

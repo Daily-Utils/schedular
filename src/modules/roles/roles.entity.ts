@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, PrimaryColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { User } from '../users/schemas/user.entity';
 
 @Entity('roles')

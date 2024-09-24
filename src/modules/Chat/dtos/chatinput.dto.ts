@@ -1,12 +1,10 @@
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsNumber, isNumber, IsString } from 'class-validator';
-
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ChatType } from '../chat.enum';
 
 @ObjectType()
 @InputType()
 export class CreateChatMessageInput {
-
- 
   @Field()
   @IsNotEmpty()
   @IsNumber()
@@ -18,9 +16,8 @@ export class CreateChatMessageInput {
   doctor_user_id: number;
 
   @Field()
-  @IsNotEmpty()
-  @IsString()
-  type: string; 
+  @IsEnum(ChatType)
+  type: ChatType;
 
   @Field()
   @IsNotEmpty()

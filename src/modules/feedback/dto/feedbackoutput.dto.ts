@@ -1,5 +1,4 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { IsString } from 'class-validator';
 
 @ObjectType()
 export class FeedbackCreateOutput {
@@ -17,15 +16,4 @@ export class FeedbackCreateOutput {
 
   @Field()
   waiting_time: number;
-}
-
-@ObjectType()
-export class FeedbackUpdateDeleteOutput {
-  @Field()
-  @IsString()
-  status: string;
-
-  @Field()
-  @IsString()
-  message: string;
 }
