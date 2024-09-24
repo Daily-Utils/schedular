@@ -11,7 +11,7 @@ export class PatientService {
   constructor(
     @InjectRepository(Patient) private patientRepository: Repository<Patient>,
     @Inject(forwardRef(() => UsersService))
-    private userService: UsersService
+    private userService: UsersService,
   ) {}
 
   async createPatientForUser(createPatientDto: CreatePatientDto) {
@@ -22,18 +22,19 @@ export class PatientService {
   }
 
   async getPatientByUserId(user_id: number) {
-    const patient = await this.patientRepository.createQueryBuilder('patient')
-    .leftJoinAndSelect('patient.user', 'user')
-    .select([
-      'patient.user_id',
-      'user.username',
-      'user.age',
-      'patient.weight',
-      'patient.blood_group',
-      'patient.health_issues',
-    ])
-    .where('patient.user_id = :user_id', { user_id })
-    .getOne();
+    const patient = await this.patientRepository
+      .createQueryBuilder('patient')
+      .leftJoinAndSelect('patient.user', 'user')
+      .select([
+        'patient.user_id',
+        'user.username',
+        'user.age',
+        'patient.weight',
+        'patient.blood_group',
+        'patient.health_issues',
+      ])
+      .where('patient.user_id = :user_id', { user_id })
+      .getOne();
 
     return {
       id: patient.user_id,
@@ -41,22 +42,23 @@ export class PatientService {
       age: patient.user.age,
       weight: patient.weight,
       blood_group: patient.blood_group,
-      health_issues: patient.health_issues
-    }
+      health_issues: patient.health_issues,
+    };
   }
 
-  async getAllPatients(){
-    const patients = await this.patientRepository.createQueryBuilder('patient')
-    .leftJoinAndSelect('patient.user', 'user')
-    .select([
-      'patient.user_id',
-      'user.username',
-      'user.age',
-      'patient.weight',
-      'patient.blood_group',
-      'patient.health_issues',
-    ])
-    .getMany();
+  async getAllPatients() {
+    const patients = await this.patientRepository
+      .createQueryBuilder('patient')
+      .leftJoinAndSelect('patient.user', 'user')
+      .select([
+        'patient.user_id',
+        'user.username',
+        'user.age',
+        'patient.weight',
+        'patient.blood_group',
+        'patient.health_issues',
+      ])
+      .getMany();
 
     const mapped_patients = patients.map((patient) => {
       return {
@@ -67,13 +69,15 @@ export class PatientService {
         blood_group: patient.blood_group,
         health_issues: patient.health_issues,
       };
-    })
+    });
 
     return mapped_patients;
   }
 
-  async modifyPatientDetails(user_id: number, updateDTO: UpdatePatientDto){
-    const patient = await this.patientRepository.findOne({ where: { user_id } });
+  async modifyPatientDetails(user_id: number, updateDTO: UpdatePatientDto) {
+    const patient = await this.patientRepository.findOne({
+      where: { user_id },
+    });
     if (!patient) {
       return null;
     }
@@ -85,4 +89,3 @@ export class PatientService {
     await this.userService.deleteUser(user_id);
   }
 }
-

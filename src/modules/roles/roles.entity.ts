@@ -18,4 +18,3 @@ export class Roles {
   @OneToMany(() => User, (user) => user.roleEntity)
   users: User[];
 }
-

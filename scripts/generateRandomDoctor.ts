@@ -17,7 +17,7 @@ async function generateRandomDoctor() {
         phone: faker.phone.number(),
         services: [faker.lorem.words(2), faker.lorem.words(3)],
         role: 'doctor',
-        password: "Pass@123",
+        password: 'Pass@123',
         email: faker.internet.email(),
         facility_type: faker.helpers.arrayElement(['clinic', 'hospital']),
         facility_name: faker.company.name(),

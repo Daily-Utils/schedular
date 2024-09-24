@@ -1,22 +1,22 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class getAllTimingsForADoctorOutputDTO{
-    @Field()
-    id: number;
+export class getAllTimingsForADoctorOutputDTO {
+  @Field()
+  id: number;
 
-    @Field()
-    day: string;
+  @Field()
+  day: string;
 
-    @Field()
-    from: string;
+  @Field()
+  from: string;
 
-    @Field()
-    to: string;
+  @Field()
+  to: string;
 
-    @Field()
-    break_from: string;
+  @Field()
+  break_from: string;
 
-    @Field()
-    break_to: string;
+  @Field()
+  break_to: string;
 }

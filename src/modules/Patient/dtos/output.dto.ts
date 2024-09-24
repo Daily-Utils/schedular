@@ -1,6 +1,5 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
-
+import { Field, ObjectType } from '@nestjs/graphql';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @ObjectType()
 export class PatientOutput {

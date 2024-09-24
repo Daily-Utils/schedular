@@ -1,9 +1,8 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { Timings } from "./timings.entity";
-import { Repository } from "typeorm";
-import { createTimingDto } from "./dtos/create_timing.dto";
-import { UpdateTimingDto } from "./dtos/update_timing.dto";
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Timings } from './timings.entity';
+import { Repository } from 'typeorm';
+import { createTimingDto } from './dtos/create_timing.dto';
+import { UpdateTimingDto } from './dtos/update_timing.dto';
 
 export class TimingsService {
   constructor(
@@ -12,7 +11,10 @@ export class TimingsService {
 
   async addTimings(createdTimingDto: createTimingDto) {
     const existingTiming = await this.timingsRepository.findOne({
-      where: { doctor_user_id: createdTimingDto.doctor_user_id, day: createdTimingDto.day },
+      where: {
+        doctor_user_id: createdTimingDto.doctor_user_id,
+        day: createdTimingDto.day,
+      },
     });
 
     if (existingTiming) {
@@ -41,16 +43,16 @@ export class TimingsService {
       .where('doctor.user_id = :doctor_user_id', { doctor_user_id })
       .getMany();
 
-      const mapped_timings = timings.map((timing) => {
-        return {
-          id: timing.doctor.user_id,
-          day: timing.day,
-          from: timing.from,
-          to: timing.to,
-          break_from: timing.break_from,
-          break_to: timing.break_to,
-        };
-      })
+    const mapped_timings = timings.map((timing) => {
+      return {
+        id: timing.doctor.user_id,
+        day: timing.day,
+        from: timing.from,
+        to: timing.to,
+        break_from: timing.break_from,
+        break_to: timing.break_to,
+      };
+    });
 
     return mapped_timings;
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AppointmentService } from './appointment.service';
@@ -7,9 +8,11 @@ import { ResponseDTO } from '../dtos/response.dto';
 import {
   createAppointmentDTO,
   updateAppointmentDTO,
+  bulkUpdateDTO,
 } from './dtos/appointment.dto';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
+import { OpenForDevelopment } from '../auth/auth.decorator';
 
 @Resolver()
 export class AppointmentResolver {
@@ -107,6 +110,28 @@ export class AppointmentResolver {
       return {
         status: 'error',
         message: `Appointment not deleted: ${error.message}`,
+      };
+    }
+  }
+
+  @Roles([Role.Admin, Role.Doctor], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Mutation(() => ResponseDTO)
+  async bulkUpdateAppointments(@Args('bulkUpdate') bulkUpdate: bulkUpdateDTO) {
+    try {
+      await this.appointmentService.bulkRescheduleAppointments(bulkUpdate);
+      return {
+        status: 'success',
+        message: 'Appointments updated successfully',
+      };
+    } catch (error) {
+      Logger.error(error);
+      return {
+        status: 'error',
+        message: `Appointments not updated: ${error}`,
       };
     }
   }

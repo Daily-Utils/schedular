@@ -6,5 +6,5 @@ export class UpdateSupportTicketInput {
   @Field()
   @IsOptional()
   @IsString()
-  status?: string; 
+  status?: string;
 }

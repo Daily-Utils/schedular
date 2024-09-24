@@ -1,7 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Patient } from '../Patient/patient.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
-
 
 @ObjectType()
 @Entity('SupportTickets')

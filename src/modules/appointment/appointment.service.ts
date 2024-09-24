@@ -3,12 +3,14 @@ import { Appointment } from './appointment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
+  bulkUpdateDTO,
   createAppointmentDTO,
   updateAppointmentDTO,
 } from './dtos/appointment.dto';
 import { DoctorService } from '../doctor/doctor.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as cron from 'node-cron';
+import { Between } from 'typeorm';
 
 @Injectable()
 export class AppointmentService {
@@ -103,9 +105,14 @@ export class AppointmentService {
     });
   }
 
+  stripTime(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
   checkIfAppointmentIsInPast(appointment_date: Date) {
-    const current_date = new Date();
-    return appointment_date < current_date;
+    const current_date = this.stripTime(new Date());
+    const appointment_day = this.stripTime(appointment_date);
+    return appointment_day < current_date;
   }
 
   async getAllAppointmentsForDoctor(doctorId: number) {
@@ -120,9 +127,52 @@ export class AppointmentService {
     });
   }
 
+  async checkWhetherPatientHasAppointmentForTheDay(
+    appointment_date_time: Date,
+    patientId: number,
+  ) {
+    const startOfDay = new Date(
+      appointment_date_time.getFullYear(),
+      appointment_date_time.getMonth(),
+      appointment_date_time.getDate(),
+    );
+
+    // Calculate the end of the day
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(startOfDay.getDate() + 1);
+
+    // Get appointments for the day
+    const exist_appointment = await this.appointmentRepository.find({
+      where: {
+        appointment_date_time: Between(startOfDay, endOfDay),
+      },
+    });
+
+    // check if patient_user_id already has an appointment
+    const patient_appointment = exist_appointment.find(
+      (app) => app.patient_user_id === patientId,
+    );
+
+    if (patient_appointment) {
+      return true;
+    }
+
+    return false;
+  }
+
   async createAppointment(appointment: createAppointmentDTO) {
     if (this.checkIfAppointmentIsInPast(appointment.appointment_date_time)) {
       throw new Error('Cannot schedule appointments in past');
+    }
+
+    // get appointments for day
+    if (
+      await this.checkWhetherPatientHasAppointmentForTheDay(
+        appointment.appointment_date_time,
+        appointment.patient_user_id,
+      )
+    ) {
+      throw new Error('Patient already has an appointment for the day');
     }
 
     const date_seleced = new Date(appointment.appointment_date_time)
@@ -154,6 +204,7 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentDTO: updateAppointmentDTO) {
     const updateData = Object.fromEntries(
       Object.entries(updateAppointmentDTO).filter(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, v]) => v !== undefined && v !== null,
       ),
     );
@@ -175,6 +226,27 @@ export class AppointmentService {
     if (updateData.appointment_date_time) {
       if (this.checkIfAppointmentIsInPast(updateData.appointment_date_time)) {
         throw new Error('Cannot schedule appointments in past');
+      }
+
+      const existingAppointmentDate = new Date(
+        appointment.appointment_date_time,
+      );
+      const newAppointmentDate = new Date(updateData.appointment_date_time);
+
+      const isSameDay =
+        existingAppointmentDate.getFullYear() ===
+          newAppointmentDate.getFullYear() &&
+        existingAppointmentDate.getMonth() === newAppointmentDate.getMonth() &&
+        existingAppointmentDate.getDate() === newAppointmentDate.getDate();
+
+      if (
+        !isSameDay &&
+        (await this.checkWhetherPatientHasAppointmentForTheDay(
+          updateData.appointment_date_time,
+          appointment.patient_user_id,
+        ))
+      ) {
+        throw new Error('Patient already has an appointment for the day');
       }
 
       const date_selected = new Date(updateData.appointment_date_time)
@@ -202,6 +274,83 @@ export class AppointmentService {
       updateAppointmentDTO.id,
       updateData,
     );
+  }
+
+  async bulkRescheduleAppointments(updateData: bulkUpdateDTO) {
+    if (updateData.appointment_ids.length === 0) {
+      throw new Error('No appointments to reschedule');
+    }
+
+    if (updateData.preference === 'asc') {
+      updateData.appointment_ids.sort((a, b) => a - b);
+    } else {
+      updateData.appointment_ids.sort((a, b) => b - a);
+    }
+
+    // create a timeline from and to parameters
+    const from = new Date(updateData.from);
+    const to = new Date(updateData.to);
+
+    // check whether this is not 15 days
+    if (from.getTime() - to.getTime() > 15 * 24 * 60 * 60 * 1000) {
+      throw new Error(
+        'Cannot bulk reschedule appointments for more than 15 days',
+      );
+    }
+
+    let current = new Date(from);
+    let currentIdx = 0;
+    while (current <= to && currentIdx <= updateData.appointment_ids.length) {
+      const date_selected = current.toISOString().split('T')[0];
+
+      const appointmentId = updateData.appointment_ids[currentIdx];
+      const appointment = await this.appointmentRepository.findOne({
+        where: { id: appointmentId },
+      });
+
+      const appointments = await this.appointmentRepository.find({
+        where: {
+          doctor_user_id: updateData.doctor_user_id,
+          patient_user_id: appointment.patient_user_id,
+          appointment_date_time: Between(
+            new Date(date_selected),
+            new Date(date_selected + 'T23:59:59'),
+          ),
+        },
+      });
+
+      if (appointments.length > 0) {
+        current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+        continue;
+      }
+
+      const availableSlots =
+        await this.doctorService.getAvailableTimeSlotsForADoctor(
+          updateData.doctor_user_id,
+          date_selected,
+        );
+
+      if (availableSlots.slots.length === 0) {
+        current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+        continue;
+      }
+
+      for (let i = 0; i < availableSlots.slots.length; i++) {
+        if (currentIdx <= updateData.appointment_ids.length) {
+          await this.appointmentRepository.update(
+            { id: updateData.appointment_ids[currentIdx] }, // Criteria object
+            {
+              appointment_date_time: availableSlots.actualTimings[currentIdx],
+            },
+          );
+          currentIdx++;
+        }
+      }
+
+      current = new Date(current.getTime() + 24 * 60 * 60 * 1000);
+    }
+
+    return;
   }
 
   async deleteAppointment(id: number) {

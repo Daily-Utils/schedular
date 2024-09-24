@@ -10,7 +10,6 @@ import {
 import { Patient } from '../Patient/patient.entity';
 import { Doctor } from '../doctor/doctor.entity';
 
-
 @Entity('Feedbacks')
 export class Feedback {
   @PrimaryGeneratedColumn()
