@@ -5,6 +5,7 @@ export enum AppointmentStatus {
   ON_GOING = 'on-going',
   COMPLETED = 'completed',
   RESCHEDULE_NEEDED = 'reschedule_needed',
+  CANCELLED = 'cancelled',
 }
 
 export enum preferenceType {
