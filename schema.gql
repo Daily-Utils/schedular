@@ -64,6 +64,20 @@ type ResponseDTO {
   status: String!
 }
 
+type AppointmentResponse {
+  id: Float!
+  patient_id: Float!
+  fees: Float!
+  status: String!
+  visit_type: String!
+  created_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type PatientOutput {
   id: Float!
   username: String!
@@ -134,11 +148,6 @@ type outputAppointment {
   status: String!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type ChatMessageOutput {
   chat_id: Float!
   patient_user_id: Float!
@@ -153,6 +162,7 @@ type Query {
   findDoctorById(id: Float!): DoctorResponseDto!
   searchDoctor(searchTerm: searchDTO!): [singleSearchResponse!]!
   getAvaliableSlotsForAppointmentsWithADoctor(doctorId: Float!, date: String!): DoctorAvailableSlots!
+  searchAppointments(searchTerm: searchAppointmentDTO!): [AppointmentResponse!]!
   getAllPatientDetails: [PatientOutput!]!
   getPatientByUserId(user_id: Float!): PatientOutput!
   findAllPermissionForRoles(roleInput: RoleInput!): RoleOutput!
@@ -173,6 +183,13 @@ input searchDTO {
   facility_location: String
   facility_type: String
   default_fee: Float
+}
+
+input searchAppointmentDTO {
+  patient_user_id: Float
+  id: Float
+  status: String
+  visit_type: String
 }
 
 input RoleInput {
