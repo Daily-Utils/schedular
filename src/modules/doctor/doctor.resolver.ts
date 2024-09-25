@@ -13,6 +13,10 @@ import { Roles } from '../roles/roles.decorator';
 import { Role } from '../roles/roles.enum';
 import { searchDTO, singleSearchResponse } from './dtos/search.dto';
 import { ResponseDTO } from '../dtos/response.dto';
+import {
+  AppointmentResponse,
+  searchAppointmentDTO,
+} from './dtos/searchappointment.dto';
 
 @Resolver()
 export class DoctorResolver {
@@ -118,5 +122,18 @@ export class DoctorResolver {
       doctorId,
       date,
     );
+  }
+
+  @Roles([Role.Admin, Role.Doctor, Role.Patient], {
+    check_permission: false,
+    permission_category: '',
+    permission_type: '',
+  })
+  @Query(() => [AppointmentResponse])
+  async searchAppointments(
+    @Args('searchTerm') searchAppointmentDTO: searchAppointmentDTO,
+    @Context() context: any,
+  ) {
+    return await this.doctorService.searchAppointment(searchAppointmentDTO);
   }
 }

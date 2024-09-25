@@ -12,6 +12,7 @@ import { UsersService } from '../users/users.service';
 import { DataSource } from 'typeorm';
 import { searchDTO } from './dtos/search.dto';
 import { DayOfWeek } from './dtos/day-of-week.enum';
+import { searchAppointmentDTO } from './dtos/searchappointment.dto';
 
 @Injectable()
 export class DoctorService {
@@ -287,5 +288,70 @@ export class DoctorService {
     }));
 
     return mappedDoctors;
+  }
+
+  async searchAppointment(searchAppointments: searchAppointmentDTO) {
+    const queryBuilder = this.doctorRepository
+      .createQueryBuilder('doctor')
+      .leftJoinAndSelect('doctor.appointments', 'appointment')
+      .select([
+        'doctor.user_id',
+        'appointment.id',
+        'appointment.patient_user_id',
+        'appointment.fees',
+        'appointment.status',
+        'appointment.visit_type',
+        'appointment.created_at',
+      ])
+      .where('doctor.user_id = :doctor_user_id', {
+        doctor_user_id: searchAppointments.doctor_user_id,
+      });
+
+    if (searchAppointments.patient_user_id) {
+      queryBuilder.andWhere('appointment.patient_user_id = :patient_user_id', {
+        patient_user_id: searchAppointments.patient_user_id,
+      });
+    }
+
+    if (searchAppointments.id) {
+      queryBuilder.andWhere('appointment.id = :id', {
+        id: searchAppointments.id,
+      });
+    }
+
+    if (searchAppointments.status && searchAppointments.status.trim() !== '') {
+      queryBuilder.andWhere('appointment.status ILIKE :status', {
+        status: `%${searchAppointments.status}%`,
+      });
+    }
+
+    if (
+      searchAppointments.visit_type &&
+      searchAppointments.visit_type.trim() !== ''
+    ) {
+      console.log(
+        'searchAppointments.visit_type 123123',
+        searchAppointments.visit_type,
+      );
+      queryBuilder.andWhere('appointment.visit_type ILIKE :visit_type', {
+        visit_type: `%${searchAppointments.visit_type}%`,
+      });
+    }
+
+    const searchedAppointments = await queryBuilder.getMany();
+
+    console.log('searchedAppointments', searchedAppointments);
+
+    const result = searchedAppointments[0].appointments.map((appointment) => ({
+      id: appointment.id,
+      doctor_user_id: searchedAppointments[0].user_id,
+      patient_id: appointment.patient_user_id,
+      fees: appointment.fees,
+      status: appointment.status,
+      visit_type: appointment.visit_type,
+      created_at: appointment.created_at,
+    }));
+
+    return result;
   }
 }
