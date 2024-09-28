@@ -8,6 +8,10 @@ See the .env.example
 
 Setup the env correctly
 
+## Database Schema Diagram
+
+To View the database diagram: [dbdiagram.io](https://dbdocs.io/ssiddharthsutar/schedular)
+
 ## Api Docs
 
 To view Api docs Visit: [ApiDog Link](https://c1jfsswjgp.apidog.io/)
