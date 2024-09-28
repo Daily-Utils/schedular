@@ -1,6 +1,8 @@
 # Nest Server
 
-A nestjs server designed for scheduling
+A nestjs server designed for scheduling between doctor and patient
+
+It uses stream scheduling by default!
 
 ## ENV
 
