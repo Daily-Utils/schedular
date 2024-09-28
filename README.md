@@ -8,6 +8,10 @@ See the .env.example
 
 Setup the env correctly
 
+## Api Docs
+
+To view Api docs Visit: [text](https://c1jfsswjgp.apidog.io/)
+
 ## Devlopment database
 
 Check the dev folder on local
